@@ -35,7 +35,7 @@ tasks.named('test') {
 }
 
 /* 리액트를 함께 빌드하도록 설정 */
-def frontendDir = "$projectDir/src/main/frontend/reactapp"
+def frontendDir = "$projectDir/src/main/frontend"
 
 sourceSets {
 	main {
