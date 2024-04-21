@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @AllArgsConstructor
 @Document(collation = "playlist")
-public class PlaylistDAO {
+public class Playlist {
     @Id
     private String id;
     private String name;
