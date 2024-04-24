@@ -17,8 +17,8 @@ public class MusicService {
     }
     /**
      * 음악을 추가한다.
-     * @param music
-     * @return
+     * @param music 생성할 음악의 정보
+     * @return 생성된 음악의 DB 정보
      */
     public Music createMusic(Music music) {
         Music savedMusic = musicRepository.save(music);
@@ -41,9 +41,14 @@ public class MusicService {
      * @param id 음악의 UUID
      * @return 발견된 음악, 없으면 null
      */
-    public Music getMusicById(int id) {
-        //TODO
-        return null;
+    public Music getMusicById(String id) {
+        Music music = musicRepository.findById(id).orElse(null);
+        if (music == null) {
+            log.info("music not found");
+        } else {
+            log.info(music.toString());
+        }
+        return music;
     }
 
     /**
@@ -52,8 +57,15 @@ public class MusicService {
      * @return 업데이트된 음악
      */
     public Music updateMusic(Music music) {
-        //TODO
-        return null;
+        Music prevMusic = musicRepository.findById(music.getId()).orElse(null);
+        if (prevMusic != null) {
+            Music newMusic = musicRepository.save(prevMusic);
+            log.info(newMusic.toString());
+            return newMusic;
+        } else {
+            log.info("update target music not found");
+            return null;
+        }
     }
 
     /**
@@ -61,7 +73,7 @@ public class MusicService {
      * @param id 삭제할 음악의 id
      */
     public void deleteMusicById(String id) {
-        //TODO
+        //TODO 파일도 찾아서 삭제한다.
         log.info(id);
         musicRepository.deleteById(id);
     }
