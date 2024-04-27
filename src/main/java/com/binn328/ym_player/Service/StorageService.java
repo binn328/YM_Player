@@ -16,4 +16,11 @@ public class StorageService {
     public void saveMusic(MultipartFile musicFile, String fileName) {
 
     }
+
+    /**
+     * 음악의 id를 받아 해당 id의 파일을 제거하는 함수
+     * @param id 제거될 음악의 id 입니다.
+     */
+    public void deleteMusicById(String id) {
+    }
 }

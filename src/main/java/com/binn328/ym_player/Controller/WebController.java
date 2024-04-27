@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WebController {
     @GetMapping("/")
-    public String test() {
+    public String homePage() {
         return "index.html";
+    }
+    @GetMapping("/test")
+    public String testPage() {
+        return "test.html";
     }
 }

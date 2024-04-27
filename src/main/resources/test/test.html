@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+    <div style="border: 1px solid black">
+        <!-- 노래 추가 테스트 폼 -->
+        <form method="POST" action="http://localhost:8080/api/music" enctype=multipart/form-data>
+            제목 : <input type="text" name="title" /><br>
+            가수 : <input type="text" name="artist" /><br>
+            그룹 : <input type="text" name="group" /><br>
+            파일 : <input type="file" name="file" /><br>
+            <input type="hidden" name="favorite" value="false">
+            <input type="submit" value="확인">
+        </form>
+    </div>
+    </body>
+</html>

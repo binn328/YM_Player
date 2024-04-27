@@ -1,6 +1,6 @@
 package com.binn328.ym_player.Service;
 
-import com.binn328.ym_player.DAO.Music;
+import com.binn328.ym_player.Model.Music;
 import com.binn328.ym_player.Repository.MusicRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

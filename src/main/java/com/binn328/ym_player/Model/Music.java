@@ -1,4 +1,4 @@
-package com.binn328.ym_player.DAO;
+package com.binn328.ym_player.Model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;

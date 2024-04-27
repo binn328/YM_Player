@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   ym-player:
-    image: binn328/ym-player
+    image: binn328/ym-player:latest
     #restart: always
     ports:
       - 8080:8080
