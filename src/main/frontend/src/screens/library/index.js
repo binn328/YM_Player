@@ -136,7 +136,7 @@ export default function Library() {
             value={albumName}
             onChange={handleAlbumNameChange}
           />
-          <label htmlFor="album-cover-input" className="white-text">
+          <label htmlFor="album-cover-input" className="text-color">
             Select image
           </label>
           <input
@@ -149,10 +149,7 @@ export default function Library() {
             Create Album
           </button>
         </div>
-        <div>
-          <label htmlFor="audio-input" className="white-text">
-            Select music file
-          </label>
+        <div id="select-music">Select music file
           <input
             id="audio-input"
             type="file"
@@ -203,7 +200,7 @@ export default function Library() {
                     </li>
                   ))}
                 </ul>
-                <button onClick={() => handleSongAdd(album)}>Add Song</button>
+                <button id="add-song" onClick={() => handleSongAdd(album)}>Add Song</button>
               </div>
             ) : null}
             {editMode && selectedAlbum === album ? (
@@ -220,9 +217,9 @@ export default function Library() {
                   onChange={handleAlbumCoverEdit}
                 />
                 {editAlbumCover && (
-                  <button onClick={() => handleSaveAlbumCover(album)}>Save Cover</button>
+                  <button id="save-cover" onClick={() => handleSaveAlbumCover(album)}>Save Cover</button>
                 )}
-                <button onClick={() => handleSaveAlbumName(album)}>Save Name</button>
+                <button id="save-name" onClick={() => handleSaveAlbumName(album)}>Save Name</button>
               </div>
             ) : (
               <button id="edit" onClick={() => setEditMode(true)}>Edit</button>
