@@ -21,11 +21,11 @@ public class Music {
     private String group;
     private boolean favorite;
     // private chapter;
-    public Music(String id, String title, String artist, String group) {
-        this.id = id;
-        this.title = title;
-        this.artist = artist;
-        this.group = group;
-        this.favorite = false;
-    }
+//    public Music(String id, String title, String artist, String group, boolean favorite) {
+//        this.id = id;
+//        this.title = title;
+//        this.artist = artist;
+//        this.group = group;
+//        this.favorite = favorite;
+//    }
 }

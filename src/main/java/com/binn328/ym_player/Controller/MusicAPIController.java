@@ -38,12 +38,6 @@ public class MusicAPIController {
         return ResponseEntity.ok(musicRepository.findAll());
     }
 
-    @GetMapping("/env")
-    public String getEnv() {
-        log.info("env: " + System.getenv("DATA_DIR"));
-        return "";
-    }
-
     /**
      * 특정 id의 음악을 반환합니다.
      * @param id 음악의 id입니다.
@@ -91,7 +85,7 @@ public class MusicAPIController {
         return new ResponseEntity<>(savedMusic, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<Music> updateMusic(MusicForm form, @PathVariable String id) {
         // TODO JSON 을 받게 수정하거나, musicForm 대신 그냥 Music을 넣어도 되지 않을까?
         Music musicUpdateData = form.toEntity();
@@ -111,12 +105,13 @@ public class MusicAPIController {
                 musicToUpdate.setGroup(musicUpdateData.getGroup());
             }
             // 좋아요 여부 업데이트
-            musicToUpdate.setFavorite(musicToUpdate.isFavorite());
+            musicToUpdate.setFavorite(musicUpdateData.isFavorite());
 
+            log.info(musicToUpdate.toString());
             // db에 저장
-            musicRepository.save(musicToUpdate);
+            Music savedMusic = musicRepository.save(musicToUpdate);
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(savedMusic, HttpStatus.OK);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -125,7 +120,7 @@ public class MusicAPIController {
      * 음악을 제거합니다.
      * @param id 제거될 음악의 id 입니다.
      */
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<Music> deleteMusic(@PathVariable String id) {
 
         // DB에 해당 음악이 없으면 notFound()
