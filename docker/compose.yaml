@@ -3,6 +3,7 @@ services:
   ym-player:
     image: binn328/ym-player:latest
     #restart: always
+    user: root
     ports:
       - 8080:8080
     volumes:

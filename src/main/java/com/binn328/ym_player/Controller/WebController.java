@@ -12,8 +12,4 @@ public class WebController {
     public String homePage() {
         return "index.html";
     }
-    @GetMapping("/test")
-    public String testPage() {
-        return "test.html";
-    }
 }

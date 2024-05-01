@@ -5,7 +5,9 @@ import com.binn328.ym_player.DTO.MusicForm;
 import com.binn328.ym_player.Repository.MusicRepository;
 import com.binn328.ym_player.Service.StorageService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +18,9 @@ import java.util.Optional;
 @Log4j2
 @RestController
 @RequestMapping("/api/music")
+/**
+ * /api/music 아래에서 동작하는 API 컨트롤러
+ */
 public class MusicAPIController {
     private final MusicRepository musicRepository;
     private final StorageService storageService;
@@ -33,6 +38,12 @@ public class MusicAPIController {
         return ResponseEntity.ok(musicRepository.findAll());
     }
 
+    @GetMapping("/env")
+    public String getEnv() {
+        log.info("env: " + System.getenv("DATA_DIR"));
+        return "";
+    }
+
     /**
      * 특정 id의 음악을 반환합니다.
      * @param id 음악의 id입니다.
@@ -48,20 +59,34 @@ public class MusicAPIController {
         }
     }
 
+    @GetMapping(value = "/item/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<Resource> getMusicByItemId(@PathVariable String id) {
+        Resource file = storageService.getMusic(id);
+        if (file == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(file);
+        }
+    }
+
     /**
      * 음악을 추가합니다.
      * 우선 데이터베이스에 저장하여 id를 가져온 후, 해당 id를 이름으로 파일을 저장합니다.
      * @param form 추가될 음악의 정보입니다.
-     * @return
+     * @return 실패시 502, 성공 시 202
      */
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<Music> addMusic(MusicForm form, @RequestPart("file") MultipartFile file) {
-
+        // 받아온 음악을 엔티티화
         Music music = form.toEntity();
-        // 가져온 음악 정보 로깅
         log.info(music.toString());
+        // DB에 저장
         Music savedMusic = musicRepository.save(music);
-        storageService.saveMusic(file, savedMusic.getId());
+        // 음악파일을 저장, 실패하면 작업을 되돌리고 서버 오류를 반환
+        if (!storageService.saveMusic(file, savedMusic.getId())) {
+            musicRepository.deleteById(savedMusic.getId());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
 
         return new ResponseEntity<>(savedMusic, HttpStatus.CREATED);
     }
@@ -102,17 +127,21 @@ public class MusicAPIController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Music> deleteMusic(@PathVariable String id) {
-        // TODO 음악이 제대로 제거되었는지 확인하기
 
-        if (musicRepository.existsById(id)) {
-            storageService.deleteMusicById(id);
-            musicRepository.deleteById(id);
-
-            return ResponseEntity.noContent().build();
-        } else {
+        // DB에 해당 음악이 없으면 notFound()
+        if (!musicRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
 
+        // 저장소에서 삭제에 실패했다면 Internal Server Error
+        if (!storageService.deleteMusicById(id)) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
 
+        // DB에서 음악을 제거
+        musicRepository.deleteById(id);
+
+        // 모두 통과했다면 noContent
+        return ResponseEntity.noContent().build();
     }
 }
