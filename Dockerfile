@@ -1,6 +1,6 @@
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:21-alpine
 LABEL authors="binn328"
-VOLUME /tmp
-#ARG JAR_FILE
+ENV DATA_DIR="/data"
 COPY build/libs/*.jar app.jar
+RUN mkdir -p /data/music
 ENTRYPOINT ["java","-jar","/app.jar"]

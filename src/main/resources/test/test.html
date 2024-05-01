@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+    <div style="border: 1px solid black">
+        <!-- 노래 추가 테스트 폼 -->
+        <form method="POST" action="http://localhost:8080/api/music" enctype=multipart/form-data>
+            제목 : <input type="text" name="title" /><br>
+            가수 : <input type="text" name="artist" /><br>
+            그룹 : <input type="text" name="group" /><br>
+            파일 : <input type="file" name="file" /><br>
+            <input type="hidden" name="favorite" value="false">
+            <input type="submit" value="확인">
+        </form>
+    </div>
+    <!-- 노래 재생 테스트, item/{id}를 넣으면 해당 노래가 재생됨-->
+    <div>
+        <audio controls autoplay>
+            <source src="http://localhost:8080/api/music/item/663202e5aed26504f068f0fa" type="audio/mpeg">
+        </audio>
+    </div>
+    </body>
+</html>
