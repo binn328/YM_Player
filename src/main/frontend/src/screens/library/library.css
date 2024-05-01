@@ -5,7 +5,6 @@
     flex-wrap: wrap;
     justify-content: flex-start;
   }
-  
   .album-card {
     width: 200px;
     height: auto;
@@ -51,21 +50,35 @@
     margin-bottom: 5px;
   }
   
-  .white-text {
-    color: #fff;
-    padding: 10px;
-  }
   
   .create-album {
+    padding: 5px;
+    margin-right: 250px;
+    background-color: #F8D9C0;
+    border-radius: 10px;
+    padding-top: 8px;
+    margin-top: 2px;
+  }
+  #create-album {
+    background-color: #e99d72;
+    border-radius: 5px;
     color: #fff;
-    padding: 10px;
-    margin-right: 170px;
+    padding: 4px;
   }
   
   .audio-input {
-    color: #fff;
-    padding: 10px;
+    color: black;
+    padding: 5px;
     margin-top: 2px;
+    background-color: #F8D9C0;
+    border-radius: 0px 10px 10opx 0px;
+  }
+  #select-music {
+    background-color: #F8D9C0;
+    padding: 5px;
+    color: #818181;
+    border-radius: 10px;
+    float: left;
   }
   
   .edit-album-details {
@@ -74,11 +87,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
   }
   
-  .edit-album-details input[type="text"],
+  .edit-album-details input[type="text"]{
+    margin-bottom: 10px;
+  }
   .edit-album-details input[type="file"] {
     margin-bottom: 10px;
+    margin-left: 70px;
   }
   
   .edit-album-details button {
@@ -107,4 +124,26 @@
     border: none; /* 테두리 없음 */
     cursor: pointer; /* 포인터 커서 */
     font-size: 12px; /* 글꼴 크기 */
+  }
+  #save-name {
+    background-color: #e99d72;
+    border-radius: 5px;
+    color: #fff;
+    padding: 4px;
+  }
+  #save-name {
+    background-color: #e99d72;
+    border-radius: 5px;
+    color: #fff;
+    padding: 4px;
+  }
+  .text-color {
+    color: #818181;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  #add-song {
+    background-color: #fff;
+    border-radius: 5px;
+    margin-left: 60px;
   }
