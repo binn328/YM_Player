@@ -1,0 +1,53 @@
+/* App.css */
+
+/* 폰트 설정 */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+
+.app-container {
+    font-family: 'Orbitron', sans-serif; 
+    width:100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    flex-direction: column; 
+    background-color: black; 
+}
+
+.ym-player {
+    font-size:200%;
+    color: white; 
+    text-align: center; 
+}
+
+.start-button {
+    padding: 10px 20px;
+    font-size: 30px;
+    background-color: #3e3beb; /* 버튼 배경색 */
+    color: white; /* 버튼 텍스트 색상 */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-family: 'Orbitron', sans-serif; 
+}
+
+.start-button:hover {
+    background-color: #4341c0; /* 호버시 배경색 변경 */
+}
+
+
+/* 추가*/
+
+@keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .ym-player h1 svg {
+    animation: spin 4s linear infinite; /* 아이콘에 애니메이션 적용 */
+  }
