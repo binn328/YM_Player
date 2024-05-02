@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   ym-player:
-    image: binn328/ym-player:compose-test
+    image: binn328/ym-player:0.2.5
     #restart: always
     user: root
     ports:

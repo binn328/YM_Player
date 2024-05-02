@@ -1,0 +1,9 @@
+diff a/docker/compose.yaml b/docker/compose.yaml	(rejected hunks)
+@@ -1,6 +1,7 @@
+ version: '3.8'
+ services:
+   ym-player:
++    image: binn328/ym-player:compose-test
+     #restart: always
+     user: root
+     ports:
