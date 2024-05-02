@@ -1,32 +1,49 @@
-import React, {useState, useEffect} from 'react';
+
+import React, { useState } from 'react';
 import './sidebar.css';
 import SidebarButton from './sidebarButton';
-import {MdFavorite} from "react-icons/md";
-import {FaGripfire, FaPlay} from "react-icons/fa";
-import {FaSignOutAlt} from "react-icons/fa";
-import {IoLibrary} from "react-icons/io5";
-import {MdSpaceDashboard} from "react-icons/md";
-import {FaMusic} from "react-icons/fa6";
-import { AiFillFolderAdd } from "react-icons/ai";
+import { MdFavorite } from "react-icons/md";
+import { FaGripfire, FaPlay } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
+import { IoLibrary } from "react-icons/io5";
 
+import { FaMusic } from "react-icons/fa6";
+import { AiFillFolderAdd } from "react-icons/ai";
+import Modal from './modal'; // 모달 컴포넌트 import
+import profile from '../../blank-profile.png';
 
 export default function Sidebar() {
+    const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+    const [currentImage, setCurrentImage] = useState(null); // 현재 이미지 상태 관리
 
+    const handleImageClick = () => {
+        setIsModalOpen(true); // 이미지 클릭 시 모달 열기
+    };
 
     return (
-    <div className='sidebar-container'>
-  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdLAY3C19kL0nV2bI_plU3_YFCtra0dpsYkg&usqp=CAU"
-   className="profile-img" alt="profile" />
-  <div>
-  <SidebarButton title="Music" to="/music" icon={<FaMusic/>} />
-    <SidebarButton title="Feed" to="/feed" icon={<MdSpaceDashboard/>} />
-    <SidebarButton title="Trending" to="/trending" icon={<FaGripfire />}/>
-    <SidebarButton title="Player" to="/player" icon={<FaPlay/>} />
-    <SidebarButton title="Favorites" to="/favorites" icon={<MdFavorite/>} />
-    <SidebarButton  title="Library" to="/" icon={<IoLibrary/>} />
-    <SidebarButton title="Musicupload" to="/musicupload" icon={<AiFillFolderAdd />} />
-  </div>
-  <SidebarButton title="Sign Out" to="" icon={<FaSignOutAlt/>} />
-  </div>
+        <div className='sidebar-container'>
+            {/* 프로필 이미지 */}
+            <img
+                src={currentImage ? currentImage : profile}
+                className="profile-img"
+                alt="profile"
+                onClick={handleImageClick} // 이미지 클릭 시 모달 열기
+            />
+            <div>
+                {/* 사이드바 버튼들 */}
+                <SidebarButton title="Music" to="/music" icon={<FaMusic />} />
+                <SidebarButton title="Trending" to="/trending" icon={<FaGripfire />} />
+                <SidebarButton title="Player" to="/player" icon={<FaPlay />} />
+                <SidebarButton title="Favorites" to="/favorites" icon={<MdFavorite />} />
+                <SidebarButton title="Library" to="/library" icon={<IoLibrary />} />
+                <SidebarButton title="Musicupload" to="/musicupload" icon={<AiFillFolderAdd />} />
+            </div>
+            {/* 로그아웃 버튼 */}
+            <SidebarButton title="Home" to="" icon={<FaSignOutAlt />} />
+            
+            {/* 모달 */}
+            {isModalOpen && <Modal onClose={() => setIsModalOpen(false)} setCurrentImage={setCurrentImage} />}
+        </div>
     );
 }
+
