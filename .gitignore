@@ -42,3 +42,6 @@ out/
 ### docker data files ####
 /docker/mongo-data
 /docker/ym-data
+
+### docker compose file
+/docker/compose.yaml
