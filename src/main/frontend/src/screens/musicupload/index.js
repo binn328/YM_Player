@@ -1,30 +1,70 @@
 import React, { useState } from 'react';
+import './musicupload.css';
 
-function App() {
-  const [files, setFiles] = useState([]);
+function MusicForm() {
+  const [title, setTitle] = useState('');
+  const [artist, setArtist] = useState('');
+  const [group, setGroup] = useState('');
+  const [file, setFile] = useState(null);
 
-  const handleFileChange = (event) => {
-    const selectedFiles = Array.from(event.target.files);
-    setFiles([...files, ...selectedFiles]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('artist', artist);
+      formData.append('group', group);
+      formData.append('file', file);
+      formData.append('favorite', 'false');
+
+      const response = await fetch('http://localhost:8080/api/music', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      console.log('Music uploaded');
+
+      // Reset form state after submission
+      setTitle('');
+      setArtist('');
+      setGroup('');
+      setFile(null);
+    } catch (error) {
+      console.error('Error uploading music:', error);
+    }
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>My Music App</h1>
-      <input type="file" multiple onChange={handleFileChange} />
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        {files.map((file, index) => (
-          <div key={index} style={{ margin: '10px' }}>
-            <audio controls style={{ width: '200px' }}>
-              <source src={URL.createObjectURL(file)} type="audio/mpeg" />
-              Your browser does not support the audio element.
-            </audio>
-            <p style={{ marginTop: '10px' }}>File {index + 1}</p>
+    <div className="screen-container">
+      <div className='container'>
+        <form onSubmit={handleSubmit} encType="multipart/form-data" className="music-form">
+          <div className="form-group">
+            <label>제목 </label>
+            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
           </div>
-        ))}
+          <div className="form-group">
+            <label>가수 </label>
+            <input type="text" value={artist} onChange={(e) => setArtist(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <label>그룹 </label>
+            <input type="text" value={group} onChange={(e) => setGroup(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <label>파일 </label>
+            <input type="file" onChange={(e) => setFile(e.target.files[0])} required />
+          </div>
+          <input type="hidden" name="favorite" value="false" />
+          <button type="submit">확인</button>
+        </form>
       </div>
     </div>
   );
 }
 
-export default App;
+export default MusicForm;
