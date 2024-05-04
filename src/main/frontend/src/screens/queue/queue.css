@@ -1,80 +1,36 @@
 
-/*
-.music-container{
-    display: block;
-    align-items: center;
-    justify-content: center;
-}
-
-
-
-.icon {
-    font-size: 24px; 
-    height:80px;
-    width:80px;
-    border-radius:20px;
-    color:#f1ede9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: row;
-    margin:5px auto;
-    transition: all 0.2s ease;
-  cursor: pointer;
-  }
-
-  button {
-    background-color: transparent;
-    border: none;
-  }
-
-  .icon-btn{
-    font-size:250px;
-    border: 10px solid #f1ede9; 
-    padding:20px;
-    border-radius: 50%;
-    
-   
-   
-}
-
-*/
-
 .total-container {
     justify-content: center;
     align-items: center;
     height: 100vh; 
     display: flex;
   }
-  
-  .music-container {
-    
-    
-   
-    
-    text-align: center; /* 아이콘을 가운데 정렬 */
+  /* 보라색 네모 박스 */
+  .music-container {    
+    text-align: center; 
     border:15px solid white;
     padding:6%;
     background-color:rgb(158, 158, 252);
 }
-  
+ 
+  /*음표*/
   .icon-btn {
     font-size: 250px;
-    border: 10px solid #f1ede9; /* border 추가 */
-    border-radius: 50%; /* 원형 모양의 테두리를 위해 50%로 설정 */
+    border: 10px solid #f1ede9; 
+    border-radius: 50%; 
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 300px; /* 너비 조정 */
-    height: 300px; /* 높이 조정 */
+    width: 300px; 
+    height: 300px; 
     padding:30px;
     margin:20px;
   }
   
 
   
-  .icon {
-    font-size: 35px; /* 아이콘 크기 조정 */
+  button .icon {
+    font-size: 35px; 
     color: #f1ede9;
     margin: 5px;
     cursor: pointer;
