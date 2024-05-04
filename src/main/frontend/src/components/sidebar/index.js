@@ -6,6 +6,8 @@ import { MdFavorite } from "react-icons/md";
 import { FaGripfire, FaPlay } from "react-icons/fa";
 import { FaSignOutAlt } from "react-icons/fa";
 import { IoLibrary } from "react-icons/io5";
+import { PiQueueBold } from "react-icons/pi";
+import { FaList } from "react-icons/fa";
 
 import { FaMusic } from "react-icons/fa6";
 import { AiFillFolderAdd } from "react-icons/ai";
@@ -34,8 +36,10 @@ export default function Sidebar() {
                 <SidebarButton title="Music" to="/music" icon={<FaMusic />} />
                 <SidebarButton title="Trending" to="/trending" icon={<FaGripfire />} />
                 <SidebarButton title="Player" to="/player" icon={<FaPlay />} />
+                <SidebarButton title="playlist" to="/playlist" icon={<FaList />} />
                 <SidebarButton title="Favorites" to="/favorites" icon={<MdFavorite />} />
                 <SidebarButton title="Library" to="/library" icon={<IoLibrary />} />
+                <SidebarButton title="Queue" to="/queue" icon= {<PiQueueBold />} />
                 <SidebarButton title="Musicupload" to="/musicupload" icon={<AiFillFolderAdd />} />
             </div>
             {/* 로그아웃 버튼 */}

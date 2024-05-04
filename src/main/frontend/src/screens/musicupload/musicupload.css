@@ -31,7 +31,7 @@
     margin-top: 3px;
   }
   
-  button {
+  .container button {
     width: 100%;
     padding: 10px;
     background-color: #007bff;
@@ -41,7 +41,7 @@
     cursor: pointer;
   }
   
-  button:hover {
+  .container button:hover {
     background-color: #0056b3;
   }
   

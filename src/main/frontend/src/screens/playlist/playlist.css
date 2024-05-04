@@ -1,0 +1,90 @@
+.playlist-header {
+    font-size: 50px;
+    color: #ccc;
+}
+
+.playlist-container {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.song {
+    color: #ccc;
+    margin-top: 3%;
+    display: flex;
+    justify-content: center;
+    width: 80%;
+}
+
+.recently-added, .liked-songs {
+    margin-left: 5%;
+    border: 2px solid #ccc;
+    padding: 15px;
+    width: 40%;
+    height: 100%;
+}
+
+.song h3 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.song-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 130px;
+    cursor: pointer;
+    color: #f1ede9;
+}
+
+.add-playlist {
+    margin-top: 20px;
+}
+
+.add-playlist button {
+    color:#ccc;
+    font-size:55px;
+    padding:20px;
+    margin-top:50px;
+    margin-left:50px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+   
+}
+
+.add-playlist button:hover {
+    background-color: rgba(140, 144, 204, 0.3);
+}
+
+.playlists {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    justify-content: center;
+    align-items: center;
+    color: #ccc;
+}
+
+.playlists > div {
+    margin-right: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.playlists > div:last-child {
+    margin-right: 0;
+}
+
+.playlist-icon {
+    font-size: 90px;
+    cursor: pointer;
+    color: #f1ede9;
+    justify-content: center;
+}
