@@ -45,3 +45,6 @@ out/
 
 ### docker compose file
 /docker/compose.yaml
+
+### 노드모듈 ###
+node_modules/
