@@ -36,8 +36,8 @@
   font-weight: bold;
 }
 
-input[type="text"],
-input[type="file"] {
+.container input[type="text"],
+.container input[type="file"] {
   width: 100%;
   padding: 8px;
   border: 1px solid #1a518c;
