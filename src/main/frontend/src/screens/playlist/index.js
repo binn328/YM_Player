@@ -1,10 +1,12 @@
-// Playlist.js
+
 
 import React, { useState } from 'react';
 import { BsMusicPlayer } from 'react-icons/bs';
 import { TbMusicHeart, TbMusicExclamation } from 'react-icons/tb';
 import Modal from './modal'; // 모달 컴포넌트 불러오기
 import './playlist.css';
+
+
 
 const Playlist = () => {
   const [recentlyAdded, setRecentlyAdded] = useState([]);
@@ -42,7 +44,7 @@ const Playlist = () => {
   return (
     <div className="playlist-container screen-container">
       <div className="playlist-header">
-        <h2>Playlist</h2>
+        <h2>Play List</h2>
       </div>
       <div className="song">
         <div className="recently-added">
