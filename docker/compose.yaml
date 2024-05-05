@@ -1,9 +1,13 @@
 version: '3.8'
 services:
   ym-player:
+<<<<<<< Updated upstream
     # image 뒤의 태그를 개발 중인 브랜치의 이름으로 설정해주세요.
     # 예시: binn328/ym-player:add-album
     image: binn328/ym-player:music-upload
+=======
+    image: binn328/ym-player:0.2.4
+>>>>>>> Stashed changes
     #restart: always
     user: root
     ports:
