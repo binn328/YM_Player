@@ -1,9 +1,9 @@
-// modal.js
 
 import React from 'react';
 import './modal.css';
 
 const Modal = ({ isOpen, toggleModal, playlistName, handlePlaylistSubmit, handlePlaylistNameChange }) => {
+const isPlaylistNameEmpty = playlistName.trim() === '';
   return (
     isOpen && (
       <div className="modal-overlay">
@@ -11,12 +11,12 @@ const Modal = ({ isOpen, toggleModal, playlistName, handlePlaylistSubmit, handle
           <h2>플레이리스트 추가</h2>
           <input
             type="text"
-            placeholder="플레이리스트 이름"
+            placeholder="이름"
             value={playlistName}
             onChange={handlePlaylistNameChange}
           />
-          <button onClick={handlePlaylistSubmit}>확인</button>
           <button onClick={toggleModal}>취소</button>
+          <button onClick={handlePlaylistSubmit} disabled={isPlaylistNameEmpty}>확인</button>
         </div>
       </div>
     )
