@@ -8,10 +8,48 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align:center;
 }
 
 .modal {
   background-color: #fff;
-  padding: 20px;
+  padding: 40px;
+  border-radius: 10px;
+  max-width: 400px; 
+  max-height:300px;
+  width: 80%; 
+  
+}
+
+.modal h2 {
+  font-size: 30px;
+  margin-bottom: 30px;
+  
+}
+
+.modal input[type="text"] {
+  font-size: 20px;
+  width: calc(100% - 40px); 
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
   border-radius: 5px;
 }
+
+.modal button {
+  padding: 15px 30px;
+  margin-left: 20px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #201658;
+  color: white;
+  text-align: center;
+}
+
+.modal button:last-child {
+  margin-right: 0;
+}
+
+
