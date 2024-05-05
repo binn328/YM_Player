@@ -17,7 +17,7 @@
   /*display: flex;*/
 }
 
-h1{
+.container h1{
   margin-top: 0;
   color: #1a518c;
 }
@@ -32,7 +32,7 @@ h1{
   margin-left: 20px; /* Added margin to create space between file upload and input fields */
 }
 
-label {
+.container label {
   font-weight: bold;
 }
 
@@ -46,7 +46,7 @@ input[type="file"] {
   margin-top: 3px;
 }
 
-button {
+.container button {
   width: 100%;
   padding: 10px;
   background-color: #1a518c;
@@ -56,6 +56,6 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.container button:hover {
   background-color: #1a518c;
 }
