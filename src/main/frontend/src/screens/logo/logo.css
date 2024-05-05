@@ -1,6 +1,4 @@
-/* App.css */
 
-/* 폰트 설정 */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 
 .app-container {
@@ -23,8 +21,8 @@
 .start-button {
     padding: 10px 20px;
     font-size: 30px;
-    background-color: #3e3beb; /* 버튼 배경색 */
-    color: white; /* 버튼 텍스트 색상 */
+    background-color: #3e3beb; 
+    color: white; 
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -33,11 +31,9 @@
 }
 
 .start-button:hover {
-    background-color: #4341c0; /* 호버시 배경색 변경 */
+    background-color: #4341c0; 
 }
 
-
-/* 추가*/
 
 @keyframes spin {
     0% {
@@ -49,5 +45,5 @@
   }
   
   .ym-player h1 svg {
-    animation: spin 4s linear infinite; /* 아이콘에 애니메이션 적용 */
+    animation: spin 4s linear infinite; 
   }
