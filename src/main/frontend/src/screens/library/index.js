@@ -10,10 +10,9 @@ function Playlist() {
     fetchMusicData();
   }, []);
 
-  // 서버의 API URL을 구성하는 함수
   const getMusicUrl = (musicId) => {
     return `http://localhost:8080/api/music/item/${musicId}`;
-  };
+  };  
 
   const fetchMusicData = async () => {
     try {
@@ -29,11 +28,14 @@ function Playlist() {
     setCurrentTrack(music);
     if (music) {
       try {
+        // 해당 음악의 상세 정보 가져오기
         const response = await fetch(getMusicUrl(music.id));
         if (!response.ok) {
           throw new Error('Failed to fetch music data');
         }
         const musicData = await response.json();
+        
+        // 가져온 음악 데이터를 사용하여 음악을 재생
         audio.src = musicData.audioUrl;
         audio.play();
       } catch (error) {
@@ -42,7 +44,7 @@ function Playlist() {
     } else {
       audio.pause();
     }
-  };
+  };  
 
   return (
     <div className="screen-container">

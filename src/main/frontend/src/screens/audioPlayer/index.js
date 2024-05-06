@@ -104,8 +104,21 @@ export default function AudioPlayer({
   const [songArtist, setSongArtist] = useState("hello");
 
   useEffect(() => {
-    setSongTitle("hello");
-    setSongArtist("hello");
+    // 서버에서 음악 정보를 가져오는 함수
+    async function fetchMusicInfo() {
+      try {
+        const response = await fetch("http://localhost:8080/api/music");
+        const musicData = await response.json();
+        // 첫 번째 음악 정보를 가져와서 제목과 아티스트를 설정
+        const firstMusic = musicData[0];
+        setSongTitle(firstMusic.title);
+        setSongArtist(firstMusic.artist);
+      } catch (error) {
+        console.error("Error fetching music information:", error);
+      }
+    }
+
+    fetchMusicInfo();
   }, []);
 
   return (
