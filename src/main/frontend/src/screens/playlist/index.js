@@ -24,6 +24,10 @@ const Playlist = () => {
       .catch(error => console.error('Error fetching data:', error));
   }, []);
 
+  useEffect(() => {
+    setRecentlyAdded(serverSongs);
+  }, [serverSongs]);
+
   const addToRecentlyAdded = (song) => {
     setRecentlyAdded([song, ...recentlyAdded]);
   };
