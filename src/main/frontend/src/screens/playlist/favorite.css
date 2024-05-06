@@ -1,0 +1,54 @@
+.favorite-modal {
+    position: fixed;
+    width:70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-20%, -80%);
+    border-radius: 8px;
+  }
+  
+  .favorite-modal h2 {
+    /*font-size: 20px;*/
+    margin-top: 10px;
+  }
+  
+  .favorite-modal ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .favorite-modal li {
+    margin-bottom: 10px;
+  }
+  
+  .favorite-modal button {
+    background-color: #201658;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .favorite-modal button:hover {
+    background-color: #0f0b24;
+  }
+
+  .favorite-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .favorite-list li {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc; 
+    padding-bottom: 5px;
+  }
+  
+  .favorite-list li:last-child {
+    border-bottom: none; 
+  }
+  
+  
+  
