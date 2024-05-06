@@ -98,6 +98,16 @@ export default function AudioPlayer({
   currentTrack?.album?.artists.forEach((artist) => {
     artists.push(artist.name);
   });
+
+  // 초기값 설정
+  const [songTitle, setSongTitle] = useState("hello");
+  const [songArtist, setSongArtist] = useState("hello");
+
+  useEffect(() => {
+    setSongTitle("hello");
+    setSongArtist("hello");
+  }, []);
+
   return (
     <div className="player-body flex">
       <div className="player-left-body">
@@ -110,8 +120,9 @@ export default function AudioPlayer({
         />
       </div>
       <div className="player-right-body flex">
-        <p className="song-title">{currentTrack?.name}</p>
-        <p className="song-artist">{artists.join(" | ")}</p>
+        {/* songTitle과 songArtist state를 사용하여 값 설정 */}
+        <p className="song-title">{songTitle}</p>
+        <p className="song-artist">{songArtist}</p>
         <div className="player-right-bottom flex">
           <div className="song-duration flex">
             <p className="duration">0:{addZero(Math.round(trackProgress))}</p>
