@@ -4,6 +4,7 @@ import './library.css';
 function Playlist() {
   const [musicData, setMusicData] = useState([]);
   const [currentTrack, setCurrentTrack] = useState(null);
+  const [audio] = useState(new Audio());
 
   useEffect(() => {
     fetchMusicData();
@@ -21,28 +22,39 @@ function Playlist() {
 
   const playMusic = (music) => {
     setCurrentTrack(music);
+    if (music) {
+      audio.src = music.audioUrl;
+      audio.play();
+    } else {
+      audio.pause();
+    }
   };
 
   return (
-      <div className="screen-container">
-        <div>
-          <h1>My Playlist</h1>
-          <div className="playlist-container">
+    <div className="screen-container">
+      <div>
+        <h1>My Playlist</h1>
+        <div className='playlist-list'>
+          <div className="library-body">
             {musicData.map((music) => (
-              <div key={music.id} className="music-item" onClick={() => playMusic(music)}>
-                <strong>{music.title}</strong> by {music.artist} ({music.group})
-                {music.favorite && <span> - Favorite</span>}
+              <div key={music.id} className="music-card" onClick={() => playMusic(music)}>
+                <div className="music-info">
+                  <p className="music-title">{music.title}</p>
+                  <p>by {music.artist}</p>
+                  <p>({music.group})</p>
+                  {music.favorite && <p>Favorite</p>}
+                </div>
               </div>
             ))}
           </div>
-          {currentTrack && (
-            <div className="currently-playing">
-              <h2>Now Playing</h2>
-              <p>{currentTrack.title} by {currentTrack.artist} ({currentTrack.group})</p>
-              {/* Add audio player component and controls here */}
-            </div>
-          )}
         </div>
+        {currentTrack && (
+          <div className="currently-playing">
+            <h2>Now Playing</h2>
+            <p>{currentTrack.title} by {currentTrack.artist} ({currentTrack.group})</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
