@@ -21,7 +21,15 @@ function Playlist() {
     try {
       const response = await fetch(`http://localhost:8080/api/music/item/${id}`);
       // Assuming the server returns the music file to play
-      // Handle playing the music here (e.g., using an audio player)
+      const musicFileUrl = await response.json();
+      // Create an audio element
+      const audio = new Audio(musicFileUrl);
+      // Autoplay the audio
+      audio.autoplay = true;
+      // Add controls
+      audio.controls = true;
+      // Append the audio element to the body
+      document.body.appendChild(audio);
     } catch (error) {
       console.error('Error playing music:', error);
     }
