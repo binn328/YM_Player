@@ -20,7 +20,7 @@ function Playlist() {
 
   const playMusic = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/music/item/${id}`);
+      const response = await fetch('http://localhost:8080/api/music/item/${id}');
       const musicFileUrl = await response.json();
       // Create an audio element
       const audio = new Audio(musicFileUrl);
@@ -41,7 +41,7 @@ function Playlist() {
   };
 
   return (
-    <div className='body'>
+    <div className='screen-container'>
       <h1>My Playlist</h1>
       <ul>
         {musicData.map((music) => (
