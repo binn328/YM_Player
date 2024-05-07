@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './library.css';
 
 function Playlist() {
   const [musicData, setMusicData] = useState([]);
@@ -20,7 +21,6 @@ function Playlist() {
   const playMusic = async (id) => {
     try {
       const response = await fetch(`http://localhost:8080/api/music/item/${id}`);
-      // Assuming the server returns the music file to play
       const musicFileUrl = await response.json();
       // Create an audio element
       const audio = new Audio(musicFileUrl);
@@ -28,15 +28,20 @@ function Playlist() {
       audio.autoplay = true;
       // Add controls
       audio.controls = true;
-      // Append the audio element to the body
-      document.body.appendChild(audio);
+      // Create a container for the audio element
+      const audioContainer = document.createElement('div');
+      audioContainer.classList.add('audio-container');
+      // Append the audio element to the container
+      audioContainer.appendChild(audio);
+      // Append the container to the body
+      document.body.appendChild(audioContainer);
     } catch (error) {
       console.error('Error playing music:', error);
     }
   };
 
   return (
-    <div>
+    <div className='body'>
       <h1>My Playlist</h1>
       <ul>
         {musicData.map((music) => (
