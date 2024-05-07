@@ -119,7 +119,7 @@ export default Playlist;
 
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BsMusicPlayer } from 'react-icons/bs';
 import { TbMusicHeart, TbMusicExclamation } from 'react-icons/tb';
 import PlaylistRecentModal from './playlist_recent_modal';
@@ -135,6 +135,7 @@ const Playlist = () => {
   const [contextMenu, setContextMenu] = useState({ show: false, x: 0, y: 0, index: -1 }); // 컨텍스트 메뉴 상태
   const [recentModalOpen, setRecentModalOpen] = useState(false); // 최근에 추가된 곡 모달 상태
   const [favoriteModalOpen, setFavoriteModalOpen] = useState(false); // 좋아요 한 곡 모달 상태 추가
+  const [recentlyAddedCount, setRecentlyAddedCount] = useState(0);
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
@@ -180,6 +181,15 @@ const Playlist = () => {
     setContextMenu({ ...contextMenu, show: false });
   };
 
+  useEffect(() => {
+    fetch('http://localhost:8080/api/music')
+      .then(response => response.json())
+      .then(data => {
+        setRecentlyAddedCount(data.length); 
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
   return (
     <div className="playlist-container screen-container">
       <div className="playlist-header">
@@ -187,7 +197,7 @@ const Playlist = () => {
       </div>
       <div className="song">
         <div className="recently-added">
-          <h3>최근에 추가한 곡</h3>
+          <h3>최근에 추가한 곡({recentlyAddedCount})</h3>
           <div className="song-icons" onClick={toggleRecentModal}>
             <TbMusicExclamation />
           </div>
