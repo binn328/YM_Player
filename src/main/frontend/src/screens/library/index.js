@@ -3,7 +3,6 @@ import './library.css';
 
 function Playlist() {
   const [musicData, setMusicData] = useState([]);
-  const [currentTrack, setCurrentTrack] = useState(null);
 
   useEffect(() => {
     fetchMusicData();
@@ -19,30 +18,40 @@ function Playlist() {
     }
   };
 
-  const playMusic = (music) => {
-    setCurrentTrack(music);
+  const playMusic = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/music/item/${id}`);
+      const musicFileUrl = await response.json();
+      // Create an audio element
+      const audio = new Audio(musicFileUrl);
+      // Autoplay the audio
+      audio.autoplay = true;
+      // Add controls
+      audio.controls = true;
+      // Create a container for the audio element
+      const audioContainer = document.createElement('div');
+      audioContainer.classList.add('audio-container');
+      // Append the audio element to the container
+      audioContainer.appendChild(audio);
+      // Append the container to the body
+      document.body.appendChild(audioContainer);
+    } catch (error) {
+      console.error('Error playing music:', error);
+    }
   };
 
   return (
-      <div className="screen-container">
-        <div>
-          <h1>My Playlist</h1>
-          <div className="playlist-container">
-            {musicData.map((music) => (
-              <div key={music.id} className="music-item" onClick={() => playMusic(music)}>
-                <strong>{music.title}</strong> by {music.artist} ({music.group})
-                {music.favorite && <span> - Favorite</span>}
-              </div>
-            ))}
-          </div>
-          {currentTrack && (
-            <div className="currently-playing">
-              <h2>Now Playing</h2>
-              <p>{currentTrack.title} by {currentTrack.artist} ({currentTrack.group})</p>
-              {/* Add audio player component and controls here */}
-            </div>
-          )}
-        </div>
+    <div className='body'>
+      <h1>My Playlist</h1>
+      <ul>
+        {musicData.map((music) => (
+          <li key={music.id}>
+            <strong>{music.title}</strong> by {music.artist} ({music.group})
+            {music.favorite && <span> - Favorite</span>}
+            <button onClick={() => playMusic(music.id)}>Play</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

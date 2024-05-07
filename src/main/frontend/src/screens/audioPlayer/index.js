@@ -98,6 +98,29 @@ export default function AudioPlayer({
   currentTrack?.album?.artists.forEach((artist) => {
     artists.push(artist.name);
   });
+
+  // 초기값 설정
+  const [songTitle, setSongTitle] = useState("hello");
+  const [songArtist, setSongArtist] = useState("hello");
+
+  useEffect(() => {
+    // 서버에서 음악 정보를 가져오는 함수
+    async function fetchMusicInfo() {
+      try {
+        const response = await fetch("http://localhost:8080/api/music");
+        const musicData = await response.json();
+        // 첫 번째 음악 정보를 가져와서 제목과 아티스트를 설정
+        const firstMusic = musicData[0];
+        setSongTitle(firstMusic.title);
+        setSongArtist(firstMusic.artist);
+      } catch (error) {
+        console.error("Error fetching music information:", error);
+      }
+    }
+
+    fetchMusicInfo();
+  }, []);
+
   return (
     <div className="player-body flex">
       <div className="player-left-body">
@@ -110,8 +133,9 @@ export default function AudioPlayer({
         />
       </div>
       <div className="player-right-body flex">
-        <p className="song-title">{currentTrack?.name}</p>
-        <p className="song-artist">{artists.join(" | ")}</p>
+        {/* songTitle과 songArtist state를 사용하여 값 설정 */}
+        <p className="song-title">{songTitle}</p>
+        <p className="song-artist">{songArtist}</p>
         <div className="player-right-bottom flex">
           <div className="song-duration flex">
             <p className="duration">0:{addZero(Math.round(trackProgress))}</p>
