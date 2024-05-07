@@ -1,59 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import './library.css';
 
-function Playlist() {
-  const [musicData, setMusicData] = useState([]);
+function MusicPlayer() {
+  const [music, setMusic] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchMusicData();
+    const fetchMusic = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/music');
+        if (!response.ok) {
+          throw new Error('Failed to fetch music');
+        }
+        const data = await response.json();
+        setMusic(data);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchMusic();
   }, []);
 
-  const fetchMusicData = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/api/music');
-      const data = await response.json();
-      setMusicData(data);
-    } catch (error) {
-      console.error('Error fetching music data:', error);
-    }
+  const playMusic = (id) => {
+    return `http://localhost:8080/api/music/item/${id}`;
   };
 
-  const playMusic = async (id) => {
-    try {
-      const response = await fetch('http://localhost:8080/api/music/item/${id}');
-      const musicFileUrl = await response.json();
-      // Create an audio element
-      const audio = new Audio(musicFileUrl);
-      // Autoplay the audio
-      audio.autoplay = true;
-      // Add controls
-      audio.controls = true;
-      // Create a container for the audio element
-      const audioContainer = document.createElement('div');
-      audioContainer.classList.add('audio-container');
-      // Append the audio element to the container
-      audioContainer.appendChild(audio);
-      // Append the container to the body
-      document.body.appendChild(audioContainer);
-    } catch (error) {
-      console.error('Error playing music:', error);
-    }
-  };
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
-    <div className='screen-container'>
-      <h1>My Playlist</h1>
-      <ul>
-        {musicData.map((music) => (
-          <li key={music.id}>
-            <strong>{music.title}</strong> by {music.artist} ({music.group})
-            {music.favorite && <span> - Favorite</span>}
-            <button onClick={() => playMusic(music.id)}>Play</button>
-          </li>
-        ))}
-      </ul>
+    <div>
+      {music && (
+        <div>
+          <h2>Title: {music.title}</h2>
+          <h3>Artist: {music.artist}</h3>
+          <h3>Group: {music.group}</h3>
+          <audio controls autoPlay>
+            <source src={playMusic(music.id)} type="audio/mpeg" />
+          </audio>
+        </div>
+      )}
     </div>
   );
 }
 
-export default Playlist;
+export default MusicPlayer;
