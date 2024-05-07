@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 function MusicPlayer() {
   const [musicData, setMusicData] = useState([]);
   const [error, setError] = useState(null);
-  const [currentMusic, setCurrentMusic] = useState(null);
+  const [currentTrack, setCurrentTrack] = useState(null);
 
   useEffect(() => {
     fetchMusicData();
@@ -17,19 +17,14 @@ function MusicPlayer() {
       }
       const data = await response.json();
       setMusicData(data);
-      // 첫 번째 음악을 현재 재생 음악으로 설정
-      setCurrentMusic(data[0]);
+      setCurrentTrack(data[0]); // 첫 번째 음악을 현재 재생 음악으로 설정
     } catch (error) {
       setError(error.message);
     }
   };
 
-  const playMusic = (id) => {
-    return `http://localhost:8080/api/music/item/${id}`;
-  };
-
-  const handleMusicSelect = (selectedMusic) => {
-    setCurrentMusic(selectedMusic);
+  const playMusic = (music) => {
+    setCurrentTrack(music); // 선택한 음악을 현재 재생 음악으로 설정
   };
 
   if (error) {
@@ -37,26 +32,29 @@ function MusicPlayer() {
   }
 
   return (
-    <div>
+    <div className="screen-container">
       <div>
         <h1>My Playlist</h1>
-        <ul>
-          {musicData.map((music) => (
-            <li key={music.id} onClick={() => handleMusicSelect(music)}>
-              <strong>{music.title}</strong> by {music.artist} ({music.group})
-              {music.favorite && <span> - Favorite</span>}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        {currentMusic && (
-          <div>
-            <h2>Title: {currentMusic.title}</h2>
-            <h3>Artist: {currentMusic.artist}</h3>
-            <h3>Group: {currentMusic.group}</h3>
+        <div className='playlist-list'>
+          <div className="library-body">
+            {musicData.map((music) => (
+              <div key={music.id} className="music-card" onClick={() => playMusic(music)}>
+                <div className="music-info">
+                  <p className="music-title">{music.title}</p>
+                  <p>by {music.artist}</p>
+                  <p>({music.group})</p>
+                  {music.favorite && <p>Favorite</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        {currentTrack && (
+          <div className="currently-playing">
+            <h2>Now Playing</h2>
+            <p>{currentTrack.title} by {currentTrack.artist} ({currentTrack.group})</p>
             <audio controls autoPlay>
-              <source src={playMusic(currentMusic.id)} type="audio/mpeg" />
+              <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
             </audio>
           </div>
         )}
