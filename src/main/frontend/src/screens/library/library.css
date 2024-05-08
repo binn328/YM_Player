@@ -6,7 +6,14 @@
   justify-content: flex-start; /* 왼쪽에서부터 시작 */
 }
 
+.screen-container h1{
+  color: yellow;
+  margin-left: 5%;
+  margin-bottom: auto;
+}
+
 .music-card {
+  position: relative;
   width: 100px;
   height: 200px;
   border-radius: 20px;
@@ -19,10 +26,19 @@
   background: linear-gradient(75deg, rgb(40, 58, 88) 0%, rgba(54, 69, 98, 0) 100%);
 }
 
-.screen-container h1{
-  color: orange;
-  margin-left: 5%;
-  margin-bottom: auto;
+.music-controller {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.music-controller audio {
+  width: 90%;
+  margin: 5px 0;
 }
 
 /* 화면이 작아질 때 카드들 사이의 여백을 조정 */
