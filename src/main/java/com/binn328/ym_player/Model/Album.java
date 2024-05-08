@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * 앨범 정보를 담을 DAO
  */
@@ -18,4 +20,5 @@ public class Album {
     private String id;
     private String name;
     private boolean favorite;
+    private List<MusicId> musics;
 }

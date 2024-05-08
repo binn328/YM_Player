@@ -73,4 +73,19 @@ public class StorageService {
 
         return new FileSystemResource(file);
     }
+
+    public Resource getAlbumArt(String id) {
+        //TODO
+        return null;
+    }
+
+    public boolean saveAlbumArt(String id, MultipartFile file) {
+        //TODO
+        return true;
+    }
+
+    public boolean deleteArtById(String id) {
+
+        return true;
+    }
 }
