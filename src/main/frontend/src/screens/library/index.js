@@ -19,7 +19,6 @@ function MusicPlayer() {
       }
       const data = await response.json();
       setMusicData(data);
-      setCurrentTrack(data[0]); // 첫 번째 음악을 현재 재생 음악으로 설정
     } catch (error) {
       setError(error.message);
     }
@@ -48,22 +47,22 @@ function MusicPlayer() {
                   <p>({music.group})</p>
                   {music.favorite && <p>Favorite</p>}
                 </div>
-                {/* 재생 버튼 클릭 시 해당 음악 재생 */}
-                <button onClick={() => playMusic(music)}>Play</button>
+                {/* 음악 재생 컨트롤러 */}
+                {currentTrack && currentTrack.id === music.id && (
+                  <div className="music-controller">
+                    <audio controls autoPlay={isPlaying}>
+                      <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
+                    </audio>
+                  </div>
+                )}
+                {/* 현재 음악이 선택된 경우에만 재생 버튼 표시 */}
+                {!currentTrack && (
+                  <button onClick={() => playMusic(music)}>Play</button>
+                )}
               </div>
             ))}
           </div>
         </div>
-        {currentTrack && (
-          <div className="currently-playing">
-            <h2>Now Playing</h2>
-            <p>{currentTrack.title} by {currentTrack.artist} ({currentTrack.group})</p>
-            {/* 재생 상태에 따라 음악을 재생하거나 일시 정지 */}
-            <audio controls={isPlaying} autoPlay={isPlaying}>
-              <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
-            </audio>
-          </div>
-        )}
       </div>
     </div>
   );
