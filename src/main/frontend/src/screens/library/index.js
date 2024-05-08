@@ -25,12 +25,30 @@ function MusicPlayer() {
   };
 
   const playMusic = (music) => {
-    // 만약 현재 음악이 이미 재생 중이라면 정지시킵니다.
     if (currentTrack && currentTrack.id === music.id) {
       setIsPlaying(!isPlaying);
     } else {
       setCurrentTrack(music);
       setIsPlaying(true);
+    }
+  };
+
+  const toggleFavorite = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/music/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ favorite: !musicData.find(music => music.id === id).favorite }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update favorite status');
+      }
+      // 서버에서 데이터 다시 가져오기
+      fetchMusicData();
+    } catch (error) {
+      setError(error.message);
     }
   };
 
@@ -49,7 +67,9 @@ function MusicPlayer() {
                 <p className="music-title">{music.title}</p>
                 <p>by {music.artist}</p>
                 <p>({music.group})</p>
-                {music.favorite && <p>Favorite</p>}
+                <p onClick={(e) => { e.stopPropagation(); toggleFavorite(music.id); }}>
+                  {music.favorite ? '❤️' : '🖤'}
+                </p>
               </div>
               {currentTrack && currentTrack.id === music.id && (
                 <div className="music-controller">

@@ -6,7 +6,7 @@
     border-radius:30px;
 }*/
 
-.screen-container {
+/*.screen-container {
     width: calc(100% - 100px);
     height: 100%;
     background-color: #1e2a3e;
@@ -19,6 +19,14 @@
         #233656 100px
       ),
       repeating-linear-gradient(#1e2a3e55, #1e2a3e);
+  }*/
+
+  .screen-container {
+    width: calc(100% - 100px);
+    height: 100%;
+    background: linear-gradient(45deg, #19133a,#0089a9);
+    border-radius: 30px;
+    opacity: 1;
   }
 
   .flex {

@@ -1,7 +1,8 @@
 .main-body{
     height: 100vh;
     width:100vw;
-    background-color:#e99d72;
+    /*background-color:#e99d72;*/
+    background-color: #19133a;
     border-radius:30px;
     display:flex;
 }
