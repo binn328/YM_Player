@@ -10,9 +10,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class DownloadService {
     private static final String ytdlpPath = "";
+    private final StorageService storageService;
 
-    public String download(String url) {
+    public DownloadService(StorageService storageService) {
+        this.storageService = storageService;
+    }
 
-        return "";
+    public boolean download(String url, String id) {
+
+        return true;
     }
 }
