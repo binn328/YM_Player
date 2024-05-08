@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@Document(collation = "album")
+@Document(collection = "album")
 public class Album {
     @Id
     private String id;
