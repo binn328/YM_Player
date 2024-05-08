@@ -56,14 +56,8 @@ public class StorageService {
      * @return 성공 시 true, 실패 시 false
      */
     public boolean deleteMusicById(String id) {
-        try {
-            File deleteLocation = new File(musicDir + File.separator + id + ".mp3");
-            deleteLocation.delete();
-            return true;
-        } catch (Exception e) {
-            log.error(e);
-            return false;
-        }
+        File deleteLocation = new File(musicDir + File.separator + id + ".mp3");
+        return deleteLocation.delete();
     }
 
     /**
