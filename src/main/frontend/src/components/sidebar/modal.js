@@ -9,20 +9,19 @@ import image5 from '../../sample5.png';
 export default function Modal({ onClose, setCurrentImage }) {
     
 
-    // 이미지 선택 시
+    
     const handleImageClick = (imageUrl) => {
-        setCurrentImage(imageUrl); // 선택된 이미지를 현재 이미지로 설정
-        onClose(); // 모달 닫기
+        setCurrentImage(imageUrl); 
+        onClose(); 
     };
 
-    // 이미지 파일 선택 시
     const handleImageSelect = (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = () => {
-                setCurrentImage(reader.result); // 선택된 이미지를 현재 이미지로 설정
-                onClose(); // 모달 닫기
+                setCurrentImage(reader.result); 
+                onClose();
             };
             reader.readAsDataURL(file);
         }
