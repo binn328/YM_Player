@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 /**
  * MusicId를 생성할 때 order를 AutoIncreament 해주는 리스너
+ * TODO 하나의 Document가 아니라 여러개의 Document가 있으므로 id를 생성해서 따로 만들어주어야할까?
  */
 public class MusicIdModelListener extends AbstractMongoEventListener<MusicId> {
     private final SequenceGeneratorService sequenceGeneratorService;

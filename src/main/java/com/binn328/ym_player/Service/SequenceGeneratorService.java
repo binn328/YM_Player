@@ -26,7 +26,7 @@ public class SequenceGeneratorService {
         DatabaseSequence counter =
                 mongoOperations.findAndModify(
                         Query.query(where("_id").is(sequenceName)),
-                        new Update().inc("dseq", 1),
+                        new Update().inc("seq", 1),
                         FindAndModifyOptions.options().returnNew(true).upsert(true),
                         DatabaseSequence.class);
         return !Objects.isNull(counter) ? counter.getSeq() : 1;
