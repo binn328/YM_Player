@@ -38,7 +38,7 @@ public class PlaylistAPIController {
     }
 
     @PostMapping()
-    public ResponseEntity<Playlist> createAlbum(Playlist playlist) {
+    public ResponseEntity<Playlist> createPlaylist(Playlist playlist) {
         log.info(playlist.toString());
         Playlist savedPlaylist = playlistRepository.save(playlist);
         return ResponseEntity.ok(savedPlaylist);
