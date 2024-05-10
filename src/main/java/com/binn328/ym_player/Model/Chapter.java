@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class Chapter {
-    private int timestamp;
+    private long timestamp;
     private String title;
 }
