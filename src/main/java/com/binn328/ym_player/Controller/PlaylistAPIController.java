@@ -2,15 +2,16 @@ package com.binn328.ym_player.Controller;
 
 import com.binn328.ym_player.Model.Playlist;
 import com.binn328.ym_player.Repository.PlaylistRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@Log4j2
+@RestController
+@RequestMapping("/api/playlist")
 public class PlaylistAPIController {
     private final PlaylistRepository playlistRepository;
     public PlaylistAPIController(PlaylistRepository playlistRepository) {
@@ -34,6 +35,13 @@ public class PlaylistAPIController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping()
+    public ResponseEntity<Playlist> createAlbum(Playlist playlist) {
+        log.info(playlist.toString());
+        Playlist savedPlaylist = playlistRepository.save(playlist);
+        return ResponseEntity.ok(savedPlaylist);
     }
 
     @PostMapping("/update/{id}")
