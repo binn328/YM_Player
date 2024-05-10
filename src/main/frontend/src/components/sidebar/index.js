@@ -39,7 +39,7 @@ export default function Sidebar() {
                 <SidebarButton title="playlist" to="/playlist" icon={<FaList />} />
                 <SidebarButton title="Favorites" to="/favorites" icon={<MdFavorite />} />
                 <SidebarButton title="Library" to="/library" icon={<IoLibrary />} />
-                <SidebarButton title="Queue" to="/queue" icon= {<PiQueueBold />} />
+                <SidebarButton title="Album" to="/album" icon= {<PiQueueBold />} />
                 <SidebarButton title="Musicupload" to="/musicupload" icon={<AiFillFolderAdd />} />
             </div>
             {/* 로그아웃 버튼 */}

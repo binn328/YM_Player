@@ -45,6 +45,7 @@ import Playlist from "../playlist";
 import Favorites from "../favorites";
 import Music from "../queue";
 import Queue from "../queue";
+import Album from "../album";
 import './home.css'
 import Sidebar from "../../components/sidebar";
 import Musicupload from "../musicupload";
@@ -62,13 +63,13 @@ export default function Home(){
           <Route path="/" element={ <Logo />} />
         
             <Route path="/library" element={<Library />} />
-            
             <Route path="/trending" element={<Trending />} />
             <Route path="/player" element={<Player />} />
             <Route path="/playlist" element={<Playlist />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/music" element={<Music />} />
-            <Route path ="/queue" element={<Queue/>} />
+            
+            <Route path ="/album" element={<Album/>} />
             <Route path="/musicupload" element={<Musicupload />} />
             
   </Routes>
