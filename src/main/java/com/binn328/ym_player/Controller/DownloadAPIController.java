@@ -30,6 +30,8 @@ public class DownloadAPIController {
      */
     @PostMapping("/{url}")
     public ResponseEntity<Music> download(MusicForm form, @PathVariable String url) {
+        // TODO yt-dlp는 다운로드 시에 mp3에 메타데이터를 삽입하는 것 같다.
+        // TODO 해당 메타 데이터를 가져와서 데이터베이스에 삽입하도록 하면 편할 것 같다.
         Music musicToDownload = form.toEntity();
         Music savedMusic = musicRepository.save(musicToDownload);
 
