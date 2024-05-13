@@ -25,6 +25,7 @@ function MusicPlayer() {
   };
 
   const playMusic = (music) => {
+    // 만약 현재 음악이 이미 재생 중이라면 정지시킵니다.
     if (currentTrack && currentTrack.id === music.id) {
       setIsPlaying(!isPlaying);
     } else {
@@ -33,28 +34,8 @@ function MusicPlayer() {
     }
   };
 
-  const toggleFavorite = async (id) => {
-    try {
-      const response = await fetch(`{SERVER_URL}/api/music/update/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ favorite: !musicData.find((music) => music.id === id).favorite }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update favorite status');
-      }
-
-      setMusicData((prevData) =>
-        prevData.map((music) =>
-          music.id === id ? { ...music, favorite: !music.favorite } : music
-        )
-      );
-    } catch (error) {
-      setError(error.message);
-    }
+  const stopMusic = () => {
+    setIsPlaying(false);
   };
 
   if (error) {
@@ -74,22 +55,27 @@ function MusicPlayer() {
                 <p>({music.group})</p>
                 {music.favorite && <p>Favorite</p>}
               </div>
-              {currentTrack && currentTrack.id === music.id && (
-                <div className="music-controller">
-                  <audio controls autoPlay={isPlaying}>
-                    <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
-                  </audio>
-                </div>
-              )}
-              <button onClick={() => toggleFavorite(music.id)}>
-                {music.favorite ? 'Remove from Favorites' : 'Add to Favorites'}
-              </button>
             </div>
           ))}
         </div>
       </div>
+      {currentTrack && (
+        <MusicController
+          currentTrack={currentTrack}
+          isPlaying={isPlaying}
+          stopMusic={stopMusic}
+        />
+      )}
     </div>
   );
 }
+
+const MusicController = ({ currentTrack, isPlaying, stopMusic }) => (
+  <div className="music-controller">
+    <audio controls autoPlay={isPlaying} onEnded={stopMusic}>
+      <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
+    </audio>
+  </div>
+);
 
 export default MusicPlayer;
