@@ -36,23 +36,5 @@
             <source src="http://localhost:8080/api/music/item/66320eee5521fc2444274a36" type="audio/mpeg">
         </audio>
     </div>
-    <hr>
-    <div style="border: 1px solid black">
-        <!-- 앨범 추가 테스트 폼 -->
-        <form method="POST" action="http://localhost:8080/api/album">
-            제목 : <input type="text" name="name" /><br>
-            <input type="hidden" name="favorite" value="false">
-            <input type="submit" value="확인">
-        </form>
-    </div>
-    <div style="border: 1px solid black">
-        <!-- 앨범 아트 업로드 폼 -->
-        <form method="POST" action="http://localhost:8080/api/album/art/66435f78a7ceac0580d6d503" enctype=multipart/form-data>
-            <p>앨범아트 업로드 및 확인</p>
-            파일 : <input type="file" name="file" /><br>
-            <input type="submit" value="확인">
-        </form>
-        <img src="http://localhost:8080/api/album/art/66435f78a7ceac0580d6d503">
-    </div>
     </body>
 </html>

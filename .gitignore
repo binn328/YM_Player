@@ -49,6 +49,6 @@ out/
 ### 노드모듈 ###
 node_modules/
 src/main/resources/static/static/js/main.3fec3f5b.js.map
-
-### react 빌드 파일 ###
-/src/main/resources/static
+src/main/resources/static/static/js/main.10367160.js
+src/main/resources/static/static/js/main.10367160.js.LICENSE.txt
+src/main/resources/static/static/js/main.10367160.js.map

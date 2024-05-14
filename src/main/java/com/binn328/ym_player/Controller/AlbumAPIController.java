@@ -27,7 +27,7 @@ public class AlbumAPIController {
 
     /**
      * 모든 앨범 목록 반환
-     * @return DB에서 발견한 모든 앨범의 정보
+     * @return
      */
     @GetMapping()
     public ResponseEntity<List<Album>> getAllAlbums() {
@@ -36,8 +36,8 @@ public class AlbumAPIController {
 
     /**
      * 특정 id 앨범 반환
-     * @param id 검색할 앨범의 id
-     * @return 해당 앨범의 정보를 반환
+     * @param id
+     * @return
      */
     @GetMapping("/{id}")
     public ResponseEntity<Album> getAlbumById(@PathVariable String id) {
@@ -51,7 +51,7 @@ public class AlbumAPIController {
 
     /**
      * 앨범 아트를 반환
-     * @param id 검색할 앨범의 id
+     * @param id
      * @return
      */
     @GetMapping(value = "/art/{id}", produces = MediaType.IMAGE_PNG_VALUE)
@@ -66,24 +66,18 @@ public class AlbumAPIController {
 
     /**
      * 앨범을 생성
-     * @param album form으로 입력된 앨범의 정보
-     * @return DB에 입력된 앨범의 정보
+     * @param album
+     * @return
      */
     @PostMapping()
     public ResponseEntity<Album> createAlbum(Album album) {
         log.info(album.toString());
-        if(album.getName() != null) {
-            Album savedAlbum = albumRepository.save(album);
-            return ResponseEntity.ok(savedAlbum);
-        }
-        return ResponseEntity.badRequest().build();
+        Album savedAlbum = albumRepository.save(album);
+        return ResponseEntity.ok(savedAlbum);
     }
 
     /**
      * 앨범 아트를 업로드
-     * @param id 업로드할 앨범의 id
-     * @param file 업로드할 앨범 아트 파일
-     * @return id가 DB에 없으면 404, 업로드 실패 시 502, 성공시 200
      */
     @PostMapping("art/{id}")
     public ResponseEntity<Resource> createAlbumArt(@PathVariable String id, MultipartFile file) {
@@ -95,18 +89,19 @@ public class AlbumAPIController {
         if(storageService.saveAlbumArt(id, file)) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     /**
      * 앨범 정보 수정
-     * @param album json 형식의 수정될 앨범의 정보
-     * @return 수정된 앨범의 정보
+     * @param id
+     * @param album
+     * @return
      */
-    @PostMapping("/update")
-    public ResponseEntity<Album> updateAlbum(@RequestBody Album album) {
-        Optional<Album> targetAlbumOptional = albumRepository.findById(album.getId());
+    @PostMapping("/update/{id}")
+    public ResponseEntity<Album> updateAlbum(@PathVariable String id, Album album) {
+        Optional<Album> targetAlbumOptional = albumRepository.findById(id);
         if (targetAlbumOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -128,8 +123,8 @@ public class AlbumAPIController {
 
     /**
      * 앨범 삭제
-     * @param id 삭제할 앨범의 id
-     * @return 해당 id의 앨범이 없으면 404, 잘 되면 no content
+     * @param id
+     * @return
      */
     @PostMapping("/delete/{id}")
     public ResponseEntity<Album> deleteAlbum(@PathVariable String id) {
@@ -140,7 +135,7 @@ public class AlbumAPIController {
         Album targetAlbum = targetAlbumOptional.get();
         albumRepository.delete(targetAlbum);
 
-        log.info(storageService.deleteArtById(id));
+        storageService.deleteArtById(id);
 
         return ResponseEntity.noContent().build();
     }
