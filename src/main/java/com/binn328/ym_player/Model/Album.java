@@ -13,7 +13,6 @@ import java.util.List;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @Document(collection = "album")
 public class Album {
     @Id
