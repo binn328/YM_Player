@@ -48,3 +48,6 @@ out/
 
 ### 노드모듈 ###
 node_modules/
+
+### react 빌드 파일 ###
+/src/main/resources/static
