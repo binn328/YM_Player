@@ -17,10 +17,10 @@ public class MusicIdModelListener extends AbstractMongoEventListener<MusicId> {
     private final SequenceGeneratorService sequenceGeneratorService;
 
 
-    @Override
-    public void onBeforeConvert(BeforeConvertEvent<MusicId> event) {
-        if (event.getSource().getOrder() < 1) {
-            event.getSource().setOrder(sequenceGeneratorService.generateSequence(MusicId.SEQUENCE_NAME));
-        }
-    }
+//    @Override
+//    public void onBeforeConvert(BeforeConvertEvent<MusicId> event) {
+//        if (event.getSource().getOrder() < 1) {
+//            event.getSource().setOrder(sequenceGeneratorService.generateSequence(MusicId.SEQUENCE_NAME));
+//        }
+//    }
 }
