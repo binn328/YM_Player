@@ -30,7 +30,7 @@ public class AlbumAPIController {
      * @return DB에서 발견한 모든 앨범의 정보
      */
     @GetMapping()
-    public ResponseEntity<List<Album>> getAllAlbums() {
+    public ResponseEntity<List<Album>> getAlbums() {
         return ResponseEntity.ok(albumRepository.findAll());
     }
 
@@ -40,7 +40,7 @@ public class AlbumAPIController {
      * @return 해당 앨범의 정보를 반환
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Album> getAlbumById(@PathVariable String id) {
+    public ResponseEntity<Album> getAlbum(@PathVariable String id) {
         Optional<Album> album = albumRepository.findById(id);
         if (album.isPresent()) {
             return ResponseEntity.ok(album.get());
@@ -55,7 +55,7 @@ public class AlbumAPIController {
      * @return
      */
     @GetMapping(value = "/art/{id}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<Resource> getAlbumImage(@PathVariable String id) {
+    public ResponseEntity<Resource> getAlbumArt(@PathVariable String id) {
         Resource file = storageService.getAlbumArt(id);
         if (file == null) {
             return ResponseEntity.notFound().build();
