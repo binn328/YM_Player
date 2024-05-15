@@ -26,7 +26,7 @@
   background: linear-gradient(75deg, rgb(40, 58, 88) 0%, rgba(54, 69, 98, 0) 100%);
 }
 
-.music-controller {
+/*.music-controller {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -34,6 +34,36 @@
   display: flex;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
+}*/
+
+.music-controller {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.music-info {
+  text-align: center;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.controls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  margin: 0 10px;
+}
+
+.controls button:hover {
+  color: #555;
 }
 
 .music-controller audio {

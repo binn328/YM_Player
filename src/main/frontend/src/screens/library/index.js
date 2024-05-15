@@ -1,3 +1,4 @@
+// 라이브러리 재생 테스트2
 import React, { useState, useEffect } from 'react';
 import './library.css';
 
@@ -38,6 +39,10 @@ function MusicPlayer() {
     setIsPlaying(false);
   };
 
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying);
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -64,17 +69,32 @@ function MusicPlayer() {
           currentTrack={currentTrack}
           isPlaying={isPlaying}
           stopMusic={stopMusic}
+          togglePlay={togglePlay}
         />
       )}
     </div>
   );
 }
 
-const MusicController = ({ currentTrack, isPlaying, stopMusic }) => (
+const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay }) => (
   <div className="music-controller">
-    <audio controls autoPlay={isPlaying} onEnded={stopMusic}>
-      <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
-    </audio>
+    <div className="music-info">
+      <p className="music-title">{currentTrack.title}</p>
+      <p>{currentTrack.artist}</p>
+    </div>
+    <div className="player-controls">
+      <audio controls autoPlay={isPlaying} onEnded={stopMusic} className="audio-element">
+        <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
+      </audio>
+      <div className="controls">
+        <button onClick={togglePlay}>
+          {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
+        </button>
+        <button onClick={stopMusic}>
+          <i className="fas fa-stop"></i>
+        </button>
+      </div>
+    </div>
   </div>
 );
 
