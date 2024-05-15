@@ -54,5 +54,11 @@
         </form>
         <img src="http://localhost:8080/api/album/art/66435f78a7ceac0580d6d503">
     </div>
+    <!-- 재생목록 추가 테스트 폼 -->
+    <form method="POST" action="http://localhost:8080/api/playlist">
+        제목 : <input type="text" name="name" /><br>
+        <input type="hidden" name="favorite" value="false">
+        <input type="submit" value="확인">
+    </form>
     </body>
 </html>

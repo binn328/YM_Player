@@ -20,5 +20,5 @@ public class Playlist {
     private String id;
     private String name;
     private boolean favorite;
-    private List<MusicId> musics;
+    private List<MusicIdOrder> musics;
 }

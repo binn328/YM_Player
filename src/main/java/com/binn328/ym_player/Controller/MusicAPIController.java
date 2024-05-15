@@ -34,7 +34,7 @@ public class MusicAPIController {
      * @return 200 OK, 발견한 모든 음악을 반환합니다.
      */
     @GetMapping()
-    public ResponseEntity<List<Music>> getAllMusic() {
+    public ResponseEntity<List<Music>> getMusics() {
         return ResponseEntity.ok(musicRepository.findAll());
     }
 
@@ -44,7 +44,7 @@ public class MusicAPIController {
      * @return 있다면 200 OK, 아니면 404 를 반환합니다.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Music> getMusicById(@PathVariable String id) {
+    public ResponseEntity<Music> getMusic(@PathVariable String id) {
         Optional<Music> music = musicRepository.findById(id);
         if (music.isPresent()) {
             return ResponseEntity.ok(music.get());
@@ -54,7 +54,7 @@ public class MusicAPIController {
     }
 
     @GetMapping(value = "/item/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Resource> getMusicByItemId(@PathVariable String id) {
+    public ResponseEntity<Resource> getMusicItem(@PathVariable String id) {
         Resource file = storageService.getMusic(id);
         if (file == null) {
             return ResponseEntity.notFound().build();
@@ -70,7 +70,7 @@ public class MusicAPIController {
      * @return 실패시 502, 성공 시 202
      */
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Music> addMusic(MusicForm form, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<Music> createMusic(MusicForm form, @RequestPart("file") MultipartFile file) {
         // 받아온 음악을 엔티티화
         Music music = form.toEntity();
         log.info(music.toString());
