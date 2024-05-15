@@ -25,6 +25,9 @@ const isPlaylistNameEmpty = playlistName.trim() === '';
 
 export default Modal;
 */
+
+import './modal.css';
+
 const Modal = ({ isOpen, toggleModal, playlistName, handlePlaylistSubmit, handlePlaylistNameChange }) => {
   return (
     isOpen && (
