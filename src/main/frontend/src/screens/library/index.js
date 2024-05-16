@@ -1,4 +1,4 @@
-// 라이브러리 재생 테스트3
+//라이브러리 재생 테스트4
 import React, { useState, useEffect } from 'react';
 import './library.css';
 
@@ -7,6 +7,7 @@ function MusicPlayer() {
   const [error, setError] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedMusic, setSelectedMusic] = useState(null);
 
   useEffect(() => {
     fetchMusicData();
@@ -25,16 +26,19 @@ function MusicPlayer() {
     }
   };
 
-const playMusic = (music) => {
-  if (!currentTrack || currentTrack.id !== music.id) {
-    setCurrentTrack(music);
-    setIsPlaying(true);
-  }
-};
-
+  const playMusic = (music) => {
+    if (selectedMusic === music.id) {
+      setIsPlaying(!isPlaying);
+    } else {
+      setCurrentTrack(music);
+      setIsPlaying(true);
+      setSelectedMusic(music.id);
+    }
+  };
 
   const stopMusic = () => {
     setIsPlaying(false);
+    setSelectedMusic(null);
   };
 
   const togglePlay = () => {
@@ -54,46 +58,69 @@ const playMusic = (music) => {
             <div key={music.id} className="music-card" onClick={() => playMusic(music)}>
               <div className="music-info">
                 <p className="music-title">{music.title}</p>
-                <p>by {music.artist}</p>
-                <p>({music.group})</p>
-                {music.favorite && <p>Favorite</p>}
+                <p className="artist">by {music.artist}</p>
+                <p className="group">({music.group})</p>
+                {music.favorite && <p className="favorite">Favorite</p>}
               </div>
+              {selectedMusic === music.id && (
+                <MusicController
+                  currentTrack={currentTrack}
+                  isPlaying={isPlaying}
+                  stopMusic={stopMusic}
+                  togglePlay={togglePlay}
+                />
+              )}
             </div>
           ))}
         </div>
       </div>
-      {currentTrack && (
-        <MusicController
-          currentTrack={currentTrack}
-          isPlaying={isPlaying}
-          stopMusic={stopMusic}
-          togglePlay={togglePlay}
-        />
-      )}
     </div>
   );
 }
 
-const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay }) => (
-  <div className="music-controller">
-    <div className="music-info">
-      <p className="music-title">{currentTrack.title}</p>
-      <p>{currentTrack.artist}</p>
-    </div>
-    <div className="player-controls">
-      <audio controls autoPlay={isPlaying} onEnded={stopMusic} className="audio-element">
-        <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
-      </audio>
-      <div className="controls">
-        <button onClick={togglePlay}>
-          {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
-        </button>
-        <button onClick={stopMusic}>
-          <i className="fas fa-stop"></i>
-        </button>
+const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay }) => {
+  const [currentTime, setCurrentTime] = useState(0);
+
+  const handleTimeUpdate = (event) => {
+    setCurrentTime(event.target.currentTime);
+  };
+
+  return (
+    <div className="music-controller">
+      <div className="music-info">
+        <p className="music-title">{currentTrack.title}</p>
+        <p className="artist">{currentTrack.artist}</p>
+      </div>
+      <div className="player-controls">
+        <audio
+          controls
+          autoPlay={isPlaying}
+          onEnded={stopMusic}
+          onTimeUpdate={handleTimeUpdate}
+          className="audio-element"
+        >
+          <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
+        </audio>
+        <input
+          type="range"
+          min={0}
+          max={currentTrack.duration}
+          value={currentTime}
+          onChange={(e) => setCurrentTime(e.target.value)}
+          className="seek-bar"
+        />
+        <div className="controls">
+          <button onClick={togglePlay}>
+            {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
+          </button>
+          <button onClick={stopMusic}>
+            <i className="fas fa-stop"></i>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
 
 export default MusicPlayer;
