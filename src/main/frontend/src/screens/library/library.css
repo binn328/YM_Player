@@ -14,44 +14,62 @@
 
 .music-card {
   position: relative;
-  width: 100px;
-  height: 200px;
+  width: 180px;
+  height: 260px;
   border-radius: 20px;
   background-color: rgb(30, 42, 62);
   border: 1px solid rgba(235, 237, 240, 0.18);
-  padding: 1%;
   margin-right: 20px;
   margin-bottom: 20px;
-  background: rgb(30, 42, 62);
-  background: linear-gradient(75deg, rgb(40, 58, 88) 0%, rgba(54, 69, 98, 0) 100%);
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/*.music-controller {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
-}*/
-
-.music-controller {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
+.music-card:hover {
+  transform: translateY(-5px);
 }
 
 .music-info {
   text-align: center;
+  padding: 20px 10px;
 }
 
-.player-controls {
+.music-title {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.artist {
+  font-size: 14px;
+  color: #888;
+}
+
+.group {
+  font-size: 12px;
+  color: #888;
+}
+
+.favorite {
+  font-size: 12px;
+  color: #f00;
+}
+
+.music-controller {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(30, 42, 62, 0.9);
+  padding: 20px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-top: 20px;
+  justify-content: space-between;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.music-controller audio {
+  width: 80%;
+  margin-right: 20px;
 }
 
 .controls button {
@@ -59,22 +77,38 @@
   border: none;
   cursor: pointer;
   font-size: 24px;
-  margin: 0 10px;
+  color: #fff;
+  transition: color 0.3s;
 }
 
 .controls button:hover {
-  color: #555;
+  color: #aaa;
 }
 
-.music-controller audio {
-  width: 90%;
-  margin: 5px 0;
-}
-
-/* 화면이 작아질 때 카드들 사이의 여백을 조정 */
 @media screen and (max-width: 768px) {
+  .music-card {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .music-controller {
+    padding: 10px;
+  }
+
+  .music-controller audio {
+    width: 70%;
+  }
+
+  .controls button {
+    font-size: 20px;
+  }
+}
+
+/* 화면이 작아질 때 카드들 사이의 여백 조정 */
+/*@media screen and (max-width: 768px) {
   .music-card {
     margin-right: 10px;
     margin-bottom: 10px;
   }
-}
+}*/
