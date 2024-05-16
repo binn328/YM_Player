@@ -1,4 +1,4 @@
-// 라이브러리 재생 테스트2
+// 라이브러리 재생 테스트3
 import React, { useState, useEffect } from 'react';
 import './library.css';
 
@@ -25,15 +25,13 @@ function MusicPlayer() {
     }
   };
 
-  const playMusic = (music) => {
-    // 만약 현재 음악이 이미 재생 중이라면 정지시킵니다.
-    if (currentTrack && currentTrack.id === music.id) {
-      setIsPlaying(!isPlaying);
-    } else {
-      setCurrentTrack(music);
-      setIsPlaying(true);
-    }
-  };
+const playMusic = (music) => {
+  if (!currentTrack || currentTrack.id !== music.id) {
+    setCurrentTrack(music);
+    setIsPlaying(true);
+  }
+};
+
 
   const stopMusic = () => {
     setIsPlaying(false);
