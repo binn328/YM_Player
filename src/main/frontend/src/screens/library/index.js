@@ -1,6 +1,7 @@
-//음악 재생 테스트5
+//음악 재생 테스트6
 import React, { useState, useEffect } from 'react';
 import './library.css';
+import {FaHeart} from "react-icons/fa";
 
 function MusicPlayer() {
   const [musicData, setMusicData] = useState([]);
@@ -61,6 +62,50 @@ function MusicPlayer() {
     playMusic(nextMusic, nextIndex);
   };
 
+  
+  const toggleFavorite = async (music) => {
+    try {
+      console.log('Toggling favorite for:', music);
+
+      const formData = new FormData();
+      formData.append('id', music.id);
+      formData.append('title', music.title);
+      formData.append('artist', music.artist);
+      formData.append('group', music.group);
+      formData.append('favorite', !music.favorite);
+      if (music.chapters) {
+        formData.append('chapters', JSON.stringify(music.chapters)); // Assuming chapters is an array
+      }
+
+      console.log('FormData to send:', formData);
+
+      const response = await fetch(`http://localhost:8080/api/music/update/${music.id}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Server response error:', errorText);
+        throw new Error('Failed to update favorite status');
+      }
+
+      const updatedMusicData = await response.json();
+      console.log('Updated music data from server:', updatedMusicData);
+
+      const updatedMusicList = musicData.map(item => {
+        if (item.id === music.id) {
+          return updatedMusicData;
+        }
+        return item;
+      });
+      setMusicData(updatedMusicList);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
+
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -76,8 +121,12 @@ function MusicPlayer() {
                 <p className="music-title">{music.title}</p>
                 <p className="artist">by {music.artist}</p>
                 <p className="group">({music.group})</p>
-                {music.favorite && <p className="favorite">Favorite</p>}
+                {/*{music.favorite && <p className="favorite">Favorite</p>}*/}
               </div>
+              <button className='heart-button' onClick={(e) => {
+                e.stopPropagation(); toggleFavorite(music);}}>
+                  <FaHeart color={music.favorite ? 'red':'gray'}/>
+              </button>
             </div>
           ))}
         </div>
@@ -119,7 +168,7 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
         >
           <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
         </audio>
-        {/*<div className="controls">
+        <div className="controls">
           <button onClick={playPrevious}>
             <i className="fas fa-backward"></i>
           </button>
@@ -129,7 +178,7 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
           <button onClick={playNext}>
             <i className="fas fa-forward"></i>
           </button>
-  </div>*/}
+        </div>
       </div>
     </div>
   );
