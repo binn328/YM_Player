@@ -1,4 +1,4 @@
-//음악 재생 테스트7
+//음악 재생 테스트8
 import React, { useState, useEffect } from 'react';
 import './library.css';
 import {FaHeart} from "react-icons/fa";
@@ -11,7 +11,7 @@ function MusicPlayer() {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedMusic, setSelectedMusic] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0); // 현재 선택한 음악의 인덱스
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     fetchMusicData();
@@ -76,7 +76,7 @@ function MusicPlayer() {
       formData.append('group', music.group);
       formData.append('favorite', !music.favorite);
       if (music.chapters) {
-        formData.append('chapters', JSON.stringify(music.chapters)); // Assuming chapters is an array
+        formData.append('chapters', JSON.stringify(music.chapters));
       }
 
       console.log('FormData to send:', formData);
@@ -162,25 +162,22 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
         <p className="artist">{currentTrack.artist}</p>
       </div>
       <div className="player-controls">
-        <audio
-          controls
-          autoPlay={isPlaying}
-          onEnded={stopMusic}
-          onTimeUpdate={handleTimeUpdate}
-          className="audio-element"
-        >
-          <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
-        </audio>
-        <div className="controls">
-          <button onClick={playPrevious}>
-            <AiOutlineStepBackward />
-          </button>
-          <button onClick={togglePlay}>
-            {isPlaying ? <FaPause /> : <FaPlay />}
-          </button>
-          <button onClick={playNext}>
-            <AiOutlineStepForward />
-          </button>
+        <div className="custom-audio">
+          <div className="progress-bar">
+            {/* 음악 재생바 */}
+            <div className="progress" style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}></div>
+          </div>
+          <div className="controls">
+            <button onClick={playPrevious}>
+              <AiOutlineStepBackward />
+            </button>
+            <button onClick={togglePlay}>
+              {isPlaying ? <FaPause /> : <FaPlay />}
+            </button>
+            <button onClick={playNext}>
+              <AiOutlineStepForward />
+            </button>
+          </div>
         </div>
       </div>
     </div>
