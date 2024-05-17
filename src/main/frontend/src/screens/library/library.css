@@ -58,37 +58,20 @@
 .music-controller {
   position: fixed;
   bottom: 0;
-  left: 0;
-  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
   background-color: rgba(30, 42, 62, 0.9);
   padding: 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.music-controller audio {
-  width: 80%;
-  margin-right: 20px;
-}
-
-.controls button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 24px;
-  color: #fff;
-  transition: color 0.3s;
-}
-
-.controls button:hover {
-  color: #aaa;
+  z-index: 999;
 }
 
 @media screen and (max-width: 768px) {
   .music-card {
-    width: 100%;
+    width: calc(100% - 40px); /* Adjusted for padding */
     margin-right: 0;
     margin-bottom: 10px;
   }

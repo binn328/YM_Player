@@ -1,4 +1,4 @@
-//라이브러리 재생 테스트4
+//음악 재생 테스트5
 import React, { useState, useEffect } from 'react';
 import './library.css';
 
@@ -8,6 +8,7 @@ function MusicPlayer() {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedMusic, setSelectedMusic] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0); // 현재 선택한 음악의 인덱스
 
   useEffect(() => {
     fetchMusicData();
@@ -26,13 +27,14 @@ function MusicPlayer() {
     }
   };
 
-  const playMusic = (music) => {
+  const playMusic = (music, index) => {
     if (selectedMusic === music.id) {
       setIsPlaying(!isPlaying);
     } else {
       setCurrentTrack(music);
       setIsPlaying(true);
       setSelectedMusic(music.id);
+      setCurrentIndex(index);
     }
   };
 
@@ -45,6 +47,20 @@ function MusicPlayer() {
     setIsPlaying(!isPlaying);
   };
 
+  const playPrevious = () => {
+    const previousIndex = currentIndex === 0 ? musicData.length - 1 : currentIndex - 1;
+    const previousMusic = musicData[previousIndex];
+    setCurrentIndex(previousIndex);
+    playMusic(previousMusic, previousIndex);
+  };
+
+  const playNext = () => {
+    const nextIndex = (currentIndex + 1) % musicData.length;
+    const nextMusic = musicData[nextIndex];
+    setCurrentIndex(nextIndex);
+    playMusic(nextMusic, nextIndex);
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -54,31 +70,33 @@ function MusicPlayer() {
       <h1>My Playlist</h1>
       <div className='playlist-list'>
         <div className="library-body">
-          {musicData.map((music) => (
-            <div key={music.id} className="music-card" onClick={() => playMusic(music)}>
+          {musicData.map((music, index) => (
+            <div key={music.id} className="music-card" onClick={() => playMusic(music, index)}>
               <div className="music-info">
                 <p className="music-title">{music.title}</p>
                 <p className="artist">by {music.artist}</p>
                 <p className="group">({music.group})</p>
                 {music.favorite && <p className="favorite">Favorite</p>}
               </div>
-              {selectedMusic === music.id && (
-                <MusicController
-                  currentTrack={currentTrack}
-                  isPlaying={isPlaying}
-                  stopMusic={stopMusic}
-                  togglePlay={togglePlay}
-                />
-              )}
             </div>
           ))}
         </div>
       </div>
+      {selectedMusic && (
+        <MusicController
+          currentTrack={currentTrack}
+          isPlaying={isPlaying}
+          stopMusic={stopMusic}
+          togglePlay={togglePlay}
+          playPrevious={playPrevious}
+          playNext={playNext}
+        />
+      )}
     </div>
   );
 }
 
-const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay }) => {
+const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playPrevious, playNext }) => {
   const [currentTime, setCurrentTime] = useState(0);
 
   const handleTimeUpdate = (event) => {
@@ -101,26 +119,20 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay }) => 
         >
           <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
         </audio>
-        <input
-          type="range"
-          min={0}
-          max={currentTrack.duration}
-          value={currentTime}
-          onChange={(e) => setCurrentTime(e.target.value)}
-          className="seek-bar"
-        />
-        <div className="controls">
+        {/*<div className="controls">
+          <button onClick={playPrevious}>
+            <i className="fas fa-backward"></i>
+          </button>
           <button onClick={togglePlay}>
             {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
           </button>
-          <button onClick={stopMusic}>
-            <i className="fas fa-stop"></i>
+          <button onClick={playNext}>
+            <i className="fas fa-forward"></i>
           </button>
-        </div>
+  </div>*/}
       </div>
     </div>
   );
 };
-
 
 export default MusicPlayer;
