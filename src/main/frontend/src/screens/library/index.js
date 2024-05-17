@@ -1,7 +1,9 @@
-//음악 재생 테스트6
+//음악 재생 테스트7
 import React, { useState, useEffect } from 'react';
 import './library.css';
 import {FaHeart} from "react-icons/fa";
+import { AiOutlineStepBackward, AiOutlineStepForward } from "react-icons/ai";
+import { FaPause, FaPlay } from "react-icons/fa6";
 
 function MusicPlayer() {
   const [musicData, setMusicData] = useState([]);
@@ -29,15 +31,15 @@ function MusicPlayer() {
   };
 
   const playMusic = (music, index) => {
-    if (selectedMusic === music.id) {
-      setIsPlaying(!isPlaying);
-    } else {
+    if (selectedMusic !== music.id) {
       setCurrentTrack(music);
-      setIsPlaying(true);
       setSelectedMusic(music.id);
       setCurrentIndex(index);
+      setIsPlaying(true);
+    } else {
+      setIsPlaying(!isPlaying);
     }
-  };
+  };  
 
   const stopMusic = () => {
     setIsPlaying(false);
@@ -118,15 +120,16 @@ function MusicPlayer() {
           {musicData.map((music, index) => (
             <div key={music.id} className="music-card" onClick={() => playMusic(music, index)}>
               <div className="music-info">
-                <p className="music-title">{music.title}</p>
+                <p className="music-title">
+                  {music.title}
+                  <button className='heart-button' onClick={(e) => {
+                    e.stopPropagation(); toggleFavorite(music);}}>
+                      <FaHeart color={music.favorite ? 'red':'gray'}/>
+                  </button>
+                </p>
                 <p className="artist">by {music.artist}</p>
                 <p className="group">({music.group})</p>
-                {/*{music.favorite && <p className="favorite">Favorite</p>}*/}
               </div>
-              <button className='heart-button' onClick={(e) => {
-                e.stopPropagation(); toggleFavorite(music);}}>
-                  <FaHeart color={music.favorite ? 'red':'gray'}/>
-              </button>
             </div>
           ))}
         </div>
@@ -170,13 +173,13 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
         </audio>
         <div className="controls">
           <button onClick={playPrevious}>
-            <i className="fas fa-backward"></i>
+            <AiOutlineStepBackward />
           </button>
           <button onClick={togglePlay}>
-            {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
+            {isPlaying ? <FaPause /> : <FaPlay />}
           </button>
           <button onClick={playNext}>
-            <i className="fas fa-forward"></i>
+            <AiOutlineStepForward />
           </button>
         </div>
       </div>

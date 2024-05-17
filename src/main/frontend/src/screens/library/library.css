@@ -38,6 +38,7 @@
 .music-title {
   font-size: 16px;
   margin-bottom: 5px;
+  color: white;
 }
 
 .artist {
@@ -49,11 +50,11 @@
   font-size: 12px;
   color: #888;
 }
-/*
-.favorite {
-  font-size: 12px;
-  color: #f00;
-}*/
+
+.heart-button {
+  background-color: transparent;
+  border: none;
+}
 
 .music-controller {
   position: fixed;
