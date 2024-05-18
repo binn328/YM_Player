@@ -64,7 +64,7 @@
   width: 80%;
   background-color: rgba(30, 42, 62, 0.9);
   padding: 20px;
-  display: flex;
+  /*display: flex;*/
   align-items: center;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
   z-index: 999;
@@ -97,3 +97,16 @@
     margin-bottom: 10px;
   }
 }*/
+
+.song-duration{
+  width: 50%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.duration{
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}

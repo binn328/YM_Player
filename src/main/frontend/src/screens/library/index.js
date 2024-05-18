@@ -1,9 +1,11 @@
-//음악 재생 테스트8
+//음악 재생 테스트9
 import React, { useState, useEffect } from 'react';
 import './library.css';
 import {FaHeart} from "react-icons/fa";
 import { AiOutlineStepBackward, AiOutlineStepForward } from "react-icons/ai";
 import { FaPause, FaPlay } from "react-icons/fa6";
+import WaveAnimation from "./waveAnimation";
+import Controls from "./controls";
 
 function MusicPlayer() {
   const [musicData, setMusicData] = useState([]);
@@ -163,21 +165,14 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
       </div>
       <div className="player-controls">
         <div className="custom-audio">
-          <div className="progress-bar">
-            {/* 음악 재생바 */}
-            <div className="progress" style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}></div>
+          <div className="song-duration flex">
+            {/* 음악 재생바 
+            <div className="progress" style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}></div>*/}
+            <p className='duration'>0:01</p>
+            <WaveAnimation />
+            <p className='duration'>0:30</p>
           </div>
-          <div className="controls">
-            <button onClick={playPrevious}>
-              <AiOutlineStepBackward />
-            </button>
-            <button onClick={togglePlay}>
-              {isPlaying ? <FaPause /> : <FaPlay />}
-            </button>
-            <button onClick={playNext}>
-              <AiOutlineStepForward />
-            </button>
-          </div>
+          <Controls />
         </div>
       </div>
     </div>
