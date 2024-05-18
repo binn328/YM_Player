@@ -1,9 +1,11 @@
-//음악 재생 테스트8
+//음악 재생 테스트9
 import React, { useState, useEffect } from 'react';
 import './library.css';
 import {FaHeart} from "react-icons/fa";
 import { AiOutlineStepBackward, AiOutlineStepForward } from "react-icons/ai";
 import { FaPause, FaPlay } from "react-icons/fa6";
+import WaveAnimation from "./waveAnimation";
+import Controls from "./controls";
 
 function MusicPlayer() {
   const [musicData, setMusicData] = useState([]);
@@ -31,14 +33,10 @@ function MusicPlayer() {
   };
 
   const playMusic = (music, index) => {
-    if (selectedMusic !== music.id) {
-      setCurrentTrack(music);
-      setSelectedMusic(music.id);
-      setCurrentIndex(index);
-      setIsPlaying(true);
-    } else {
-      setIsPlaying(!isPlaying);
-    }
+    setCurrentTrack(music);
+    setSelectedMusic(music.id);
+    setCurrentIndex(index);
+    setIsPlaying(true);
   };  
 
   const stopMusic = () => {
@@ -151,6 +149,20 @@ function MusicPlayer() {
 const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playPrevious, playNext }) => {
   const [currentTime, setCurrentTime] = useState(0);
 
+  useEffect(() => {
+    const audio = document.querySelector('audio');
+
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    audio.addEventListener('timeupdate', updateTime);
+
+    return () => {
+      audio.removeEventListener('timeupdate', updateTime);
+    };
+  }, []);
+
   const handleTimeUpdate = (event) => {
     setCurrentTime(event.target.currentTime);
   };
@@ -162,22 +174,21 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
         <p className="artist">{currentTrack.artist}</p>
       </div>
       <div className="player-controls">
-        <div className="custom-audio">
-          <div className="progress-bar">
-            {/* 음악 재생바 */}
-            <div className="progress" style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}></div>
-          </div>
-          <div className="controls">
-            <button onClick={playPrevious}>
-              <AiOutlineStepBackward />
-            </button>
-            <button onClick={togglePlay}>
-              {isPlaying ? <FaPause /> : <FaPlay />}
-            </button>
-            <button onClick={playNext}>
-              <AiOutlineStepForward />
-            </button>
-          </div>
+        <audio controls onTimeUpdate={handleTimeUpdate}>
+          <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
+        </audio>
+        <input type='range' value={currentTime} id='progress' max={currentTrack.duration} />
+        
+        <div className='controls'>
+          <button onClick={playPrevious}>
+            <AiOutlineStepBackward />
+          </button>
+          <button onClick={togglePlay}>
+            {isPlaying ? <FaPause /> : <FaPlay />}
+          </button>
+          <button onClick={playNext}>
+            <AiOutlineStepForward />
+          </button>
         </div>
       </div>
     </div>
@@ -185,3 +196,4 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
 };
 
 export default MusicPlayer;
+
