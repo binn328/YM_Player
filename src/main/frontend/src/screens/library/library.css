@@ -64,15 +64,93 @@
   width: 80%;
   background-color: rgba(30, 42, 62, 0.9);
   padding: 20px;
-  /*display: flex;*/
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
   z-index: 999;
 }
 
+.music-controller .music-info {
+  text-align: left;
+  flex: 1;
+}
+
+.music-controller .player-controls {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.range-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.time-range-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.current-time, .duration-time {
+  margin: 0 10px;
+  color: white;
+}
+
+#progress {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #f53192;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+#progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: #f53192;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 2px rgba(255, 26, 26, 0.22);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.controls button {
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #f53192;
+  box-shadow: 0 5px 10px rgba(255, 26, 26, 0.22);
+  cursor: pointer;
+}
+
+.controls button:nth-child(2) {
+  transform: scale(1.2);
+  background: #f53192;
+  color: #fff;
+}
+
 @media screen and (max-width: 768px) {
   .music-card {
-    width: calc(100% - 40px); /* Adjusted for padding */
+    width: calc(100% - 40px);
     margin-right: 0;
     margin-bottom: 10px;
   }
@@ -82,76 +160,10 @@
   }
 
   .music-controller audio {
-    width: 70%;
+    width: 100%;
   }
 
   .controls button {
     font-size: 20px;
   }
-}
-
-/* 화면이 작아질 때 카드들 사이의 여백 조정 */
-/*@media screen and (max-width: 768px) {
-  .music-card {
-    margin-right: 10px;
-    margin-bottom: 10px;
-  }
-}*/
-/*
-.song-duration{
-  width: 50%;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.duration{
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0;
-  color: #fff;
-}*/
-
-#progress{
-  -webkit-appearance: none;
-  width: 100;
-  height: 6px;
-  background: #f53192;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 40px 0;
-}
-
-#progress::-webkit-slider-thumb{
-  -webkit-appearance: none;
-  background: #f53192;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 8px solid #fff;
-  box-shadow: 0 5px 5px rgba(255, 26, 26, 0.22);
-}
-
-.controls{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.controls button{
-  width: 60px;
-  height: 60px;
-  margin: 20px;
-  background: #fff;
-  display: inline-flex;
-  align-items: center;
-  border-radius: 50%;
-  color: #f53192;
-  box-shadow: 0 10px 20px rgba(255, 26, 26, 0.22);
-  cursor: pointer;
-}
-
-.controls button:nth-child(2){
-  transform: scale(1.5);
-  background: #f53192;
-  color: #fff;
 }
