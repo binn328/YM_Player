@@ -153,6 +153,20 @@ function MusicPlayer() {
 const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playPrevious, playNext }) => {
   const [currentTime, setCurrentTime] = useState(0);
 
+  useEffect(() => {
+    const audio = document.querySelector('audio');
+
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    audio.addEventListener('timeupdate', updateTime);
+
+    return () => {
+      audio.removeEventListener('timeupdate', updateTime);
+    };
+  }, []);
+
   const handleTimeUpdate = (event) => {
     setCurrentTime(event.target.currentTime);
   };
@@ -164,15 +178,21 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
         <p className="artist">{currentTrack.artist}</p>
       </div>
       <div className="player-controls">
-        <div className="custom-audio">
-          <div className="song-duration flex">
-            {/* 음악 재생바 
-            <div className="progress" style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}></div>*/}
-            <p className='duration'>0:01</p>
-            <WaveAnimation />
-            <p className='duration'>0:30</p>
-          </div>
-          <Controls />
+        <audio controls onTimeUpdate={handleTimeUpdate}>
+          <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
+        </audio>
+        <input type='range' value={currentTime} id='progress' max={currentTrack.duration} />
+        
+        <div className='controls'>
+          <button onClick={playPrevious}>
+            <AiOutlineStepBackward />
+          </button>
+          <button onClick={togglePlay}>
+            {isPlaying ? <FaPause /> : <FaPlay />}
+          </button>
+          <button onClick={playNext}>
+            <AiOutlineStepForward />
+          </button>
         </div>
       </div>
     </div>
@@ -180,3 +200,4 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
 };
 
 export default MusicPlayer;
+
