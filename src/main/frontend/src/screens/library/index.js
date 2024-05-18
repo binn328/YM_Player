@@ -33,14 +33,10 @@ function MusicPlayer() {
   };
 
   const playMusic = (music, index) => {
-    if (selectedMusic !== music.id) {
-      setCurrentTrack(music);
-      setSelectedMusic(music.id);
-      setCurrentIndex(index);
-      setIsPlaying(true);
-    } else {
-      setIsPlaying(!isPlaying);
-    }
+    setCurrentTrack(music);
+    setSelectedMusic(music.id);
+    setCurrentIndex(index);
+    setIsPlaying(true);
   };  
 
   const stopMusic = () => {
