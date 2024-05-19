@@ -1,9 +1,11 @@
-//음악 재생 테스트12
+//음악 반복 재생
 import React, { useState, useEffect, useRef } from 'react';
 import './library.css';
 import { FaHeart } from "react-icons/fa";
 import { AiOutlineStepBackward, AiOutlineStepForward } from "react-icons/ai";
 import { FaPause, FaPlay } from "react-icons/fa6";
+import { LuRepeat, LuRepeat1 } from "react-icons/lu";
+import MusicController from './musicController';
 
 function MusicPlayer() {
   const [musicData, setMusicData] = useState([]);
@@ -12,12 +14,25 @@ function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedMusic, setSelectedMusic] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [repeatMode, setRepeatMode] = useState('none'); // 'none', 'all', 'one'
 
   const audioRef = useRef(null);
 
   useEffect(() => {
     fetchMusicData();
   }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.addEventListener('ended', handleTrackEnd);
+    }
+    return () => {
+      if (audio) {
+        audio.removeEventListener('ended', handleTrackEnd);
+      }
+    };
+  }, [currentTrack, repeatMode]);
 
   const fetchMusicData = async () => {
     try {
@@ -72,10 +87,26 @@ function MusicPlayer() {
   };
 
   const playNext = () => {
-    const nextIndex = (currentIndex + 1) % musicData.length;
-    const nextMusic = musicData[nextIndex];
-    setCurrentIndex(nextIndex);
-    playMusic(nextMusic, nextIndex);
+    if (repeatMode === 'one') {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      const nextIndex = (currentIndex + 1) % musicData.length;
+      const nextMusic = musicData[nextIndex];
+      setCurrentIndex(nextIndex);
+      playMusic(nextMusic, nextIndex);
+    }
+  };
+
+  const handleTrackEnd = () => {
+    if (repeatMode === 'one') {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else if (repeatMode === 'all') {
+      playNext();
+    } else {
+      setIsPlaying(false);
+    }
   };
 
   const toggleFavorite = async (music) => {
@@ -114,6 +145,16 @@ function MusicPlayer() {
     }
   };
 
+  const handleRepeatToggle = () => {
+    if (repeatMode === 'none') {
+      setRepeatMode('all');
+    } else if (repeatMode === 'all') {
+      setRepeatMode('one');
+    } else {
+      setRepeatMode('none');
+    }
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -149,91 +190,12 @@ function MusicPlayer() {
           playPrevious={playPrevious}
           playNext={playNext}
           audioRef={audioRef}
+          repeatMode={repeatMode}
+          handleRepeatToggle={handleRepeatToggle}
         />
       )}
     </div>
   );
 }
-
-const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playPrevious, playNext, audioRef }) => {
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-
-    const updateTime = () => {
-      setCurrentTime(audio.currentTime);
-    };
-
-    const updateDuration = () => {
-      setDuration(audio.duration);
-    };
-
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', updateDuration);
-
-    return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadedmetadata', updateDuration);
-    };
-  }, []);
-
-  const handleTimeUpdate = (event) => {
-    setCurrentTime(event.target.currentTime);
-  };
-
-  const handleRangeChange = (event) => {
-    const audio = audioRef.current;
-    audio.currentTime = event.target.value;
-    setCurrentTime(event.target.value);
-  };
-
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60).toString().padStart(2, '0');
-    return `${minutes}:${seconds}`;
-  };
-
-  return (
-    <div className="screen-container">
-      <div className="music-controller">
-        <div className="music-info">
-          <p className="music-title">{currentTrack.title}</p>
-          <p className="artist">{currentTrack.artist}</p>
-        </div>
-        <div className="player-controls">
-          <audio ref={audioRef} onTimeUpdate={handleTimeUpdate}>
-            <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
-          </audio>
-          <div className="range-controls">
-            <div className="time-range-container">
-              <span className="current-time">{formatTime(currentTime)}</span>
-              <input
-                type='range'
-                value={currentTime}
-                id='progress'
-                max={duration}
-                onChange={handleRangeChange}
-              />
-              <span className="duration-time">{formatTime(duration)}</span>
-            </div>
-            <div className='controls'>
-              <button onClick={playPrevious}>
-                <AiOutlineStepBackward />
-              </button>
-              <button onClick={togglePlay}>
-                {isPlaying ? <FaPause /> : <FaPlay />}
-              </button>
-              <button onClick={playNext}>
-                <AiOutlineStepForward />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default MusicPlayer;

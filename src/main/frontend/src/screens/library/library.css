@@ -15,8 +15,8 @@
 
 .music-card {
   position: relative;
-  width: 180px;
-  height: 200px;
+  width: 160px;
+  height: 180px; /*20px씩 줄임*/
   border-radius: 20px;
   background-color: rgb(30, 42, 62);
   border: 1px solid rgba(235, 237, 240, 0.18);
@@ -65,14 +65,15 @@
   background-color: rgba(30, 42, 62, 0.9);
   padding: 20px;
   display: flex;
-  justify-content: space-between;
+  /*justify-content: space-between;*/
   align-items: center;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
   z-index: 999;
 }
 
 .music-controller .music-info {
-  text-align: left;
+  text-align: center;
+  margin-left: 5%;
   flex: 1;
 }
 
