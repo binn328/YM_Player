@@ -15,8 +15,8 @@
 
 .music-card {
   position: relative;
-  width: 180px;
-  height: 200px;
+  width: 160px;
+  height: 180px; /*20px씩 줄임*/
   border-radius: 20px;
   background-color: rgb(30, 42, 62);
   border: 1px solid rgba(235, 237, 240, 0.18);
@@ -65,14 +65,15 @@
   background-color: rgba(30, 42, 62, 0.9);
   padding: 20px;
   display: flex;
-  justify-content: space-between;
+  /*justify-content: space-between;*/
   align-items: center;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
   z-index: 999;
 }
 
 .music-controller .music-info {
-  text-align: left;
+  text-align: center;
+  margin-left: 5%;
   flex: 1;
 }
 
@@ -147,6 +148,33 @@
   transform: scale(1.2);
   background: #f53192;
   color: #fff;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+}
+
+.menu {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 1;
+}
+
+.menu p {
+  margin: 0;
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.menu p:hover {
+  background-color: #f0f0f0;
 }
 
 @media screen and (max-width: 768px) {
