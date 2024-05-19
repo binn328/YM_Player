@@ -1,5 +1,5 @@
-//음악 재생 테스트10
-import React, { useState, useEffect } from 'react';
+//음악 재생 테스트11
+import React, { useState, useEffect, useRef } from 'react';
 import './library.css';
 import { FaHeart } from "react-icons/fa";
 import { AiOutlineStepBackward, AiOutlineStepForward } from "react-icons/ai";
@@ -12,6 +12,8 @@ function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedMusic, setSelectedMusic] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const audioRef = useRef(null);
 
   useEffect(() => {
     fetchMusicData();
@@ -38,24 +40,26 @@ function MusicPlayer() {
     setSelectedMusic(music.id);
     setCurrentIndex(index);
     setIsPlaying(true);
+    if (audioRef.current) {
+      audioRef.current.src = `http://localhost:8080/api/music/item/${music.id}`;
+      audioRef.current.play();
+    }
   };
 
   const stopMusic = () => {
-    const audio = document.querySelector('audio');
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
     }
     setIsPlaying(false);
     setSelectedMusic(null);
   };
 
   const togglePlay = () => {
-    const audio = document.querySelector('audio');
     if (isPlaying) {
-      audio.pause();
+      audioRef.current.pause();
     } else {
-      audio.play();
+      audioRef.current.play();
     }
     setIsPlaying(!isPlaying);
   };
@@ -144,18 +148,19 @@ function MusicPlayer() {
           togglePlay={togglePlay}
           playPrevious={playPrevious}
           playNext={playNext}
+          audioRef={audioRef}
         />
       )}
     </div>
   );
 }
 
-const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playPrevious, playNext }) => {
+const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playPrevious, playNext, audioRef }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
   useEffect(() => {
-    const audio = document.querySelector('audio');
+    const audio = audioRef.current;
 
     const updateTime = () => {
       setCurrentTime(audio.currentTime);
@@ -179,7 +184,7 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
   };
 
   const handleRangeChange = (event) => {
-    const audio = document.querySelector('audio');
+    const audio = audioRef.current;
     audio.currentTime = event.target.value;
     setCurrentTime(event.target.value);
   };
@@ -197,18 +202,18 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
         <p className="artist">{currentTrack.artist}</p>
       </div>
       <div className="player-controls">
-        <audio controls onTimeUpdate={handleTimeUpdate}>
+        <audio ref={audioRef} controls onTimeUpdate={handleTimeUpdate}>
           <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
         </audio>
         <div className="range-controls">
           <div className="time-range-container">
             <span className="current-time">{formatTime(currentTime)}</span>
-            <input 
-              type='range' 
-              value={currentTime} 
-              id='progress' 
-              max={duration} 
-              onChange={handleRangeChange} 
+            <input
+              type='range'
+              value={currentTime}
+              id='progress'
+              max={duration}
+              onChange={handleRangeChange}
             />
             <span className="duration-time">{formatTime(duration)}</span>
           </div>
