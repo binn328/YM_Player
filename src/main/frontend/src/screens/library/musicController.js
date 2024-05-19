@@ -77,8 +77,8 @@ const MusicController = ({ currentTrack, isPlaying, stopMusic, togglePlay, playP
             </button>
             <button onClick={handleRepeatToggle}>
               {repeatMode === 'none' && <LuRepeat color="gray" />}
-              {repeatMode === 'all' && <LuRepeat color="white" />}
-              {repeatMode === 'one' && <LuRepeat1 color="white" />}
+              {repeatMode === 'all' && <LuRepeat color="#f53192" />}
+              {repeatMode === 'one' && <LuRepeat1 color="#f53192" />}
             </button>
           </div>
         </div>

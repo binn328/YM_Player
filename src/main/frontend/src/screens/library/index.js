@@ -1,10 +1,11 @@
-//음악 반복 재생
+// 음악 삭제
 import React, { useState, useEffect, useRef } from 'react';
 import './library.css';
 import { FaHeart } from "react-icons/fa";
 import { AiOutlineStepBackward, AiOutlineStepForward } from "react-icons/ai";
 import { FaPause, FaPlay } from "react-icons/fa6";
 import { LuRepeat, LuRepeat1 } from "react-icons/lu";
+import { CiMenuKebab } from "react-icons/ci";
 import MusicController from './musicController';
 
 function MusicPlayer() {
@@ -15,6 +16,7 @@ function MusicPlayer() {
   const [selectedMusic, setSelectedMusic] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [repeatMode, setRepeatMode] = useState('none'); // 'none', 'all', 'one'
+  const [showMenu, setShowMenu] = useState({}); // 어떤 메뉴가 보여지는지 추적
 
   const audioRef = useRef(null);
 
@@ -145,6 +147,25 @@ function MusicPlayer() {
     }
   };
 
+  const deleteMusic = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/music/delete/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error('Failed to delete music');
+      }
+
+      // Filter out the deleted music from the list
+      const updatedMusicList = musicData.filter(music => music.id !== id);
+      setMusicData(updatedMusicList);
+    } catch (error) {
+      console.error('Error deleting music:', error);
+    }
+  };
+
   const handleRepeatToggle = () => {
     if (repeatMode === 'none') {
       setRepeatMode('all');
@@ -153,6 +174,13 @@ function MusicPlayer() {
     } else {
       setRepeatMode('none');
     }
+  };
+
+  const toggleMenu = (index) => {
+    setShowMenu(prevState => ({
+      ...prevState,
+      [index]: !prevState[index]
+    }));
   };
 
   if (error) {
@@ -176,6 +204,15 @@ function MusicPlayer() {
                 </p>
                 <p className="artist">by {music.artist}</p>
                 <p className="group">({music.group})</p>
+                <button className='menu-button' onClick={(e) => { e.stopPropagation(); toggleMenu(index); }}>
+                  <CiMenuKebab />
+                </button>
+                {showMenu[index] && (
+                  <div className="menu">
+                    <p onClick={() => console.log('Info Edit')}>정보수정</p>
+                    <p onClick={() => deleteMusic(music.id)}>삭제</p>
+                  </div>
+                )}
               </div>
             </div>
           ))}
