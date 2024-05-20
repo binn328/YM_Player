@@ -10,14 +10,19 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DownloadService {
-    private static final String ytdlpPath = "";
+    private final String ytdlpPath = "";
     private final StorageService storageService;
 
     public DownloadService(StorageService storageService) {
         this.storageService = storageService;
     }
 
-    public boolean download(String url, String id) {
+    /**
+     * 해당 링크를 작업 큐에 추가하는 함수
+     * @param url 작업에 추가될 url
+     * @return
+     */
+    public boolean addQueue(String url) {
 
         return true;
     }

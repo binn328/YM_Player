@@ -37,7 +37,7 @@ public class DownloadAPIController {
         Music musicToDownload = form.toEntity();
         Music savedMusic = musicRepository.save(musicToDownload);
 
-        if(downloadService.download(url, savedMusic.getId())) {
+        if(downloadService.addQueue(url)) {
             return ResponseEntity.ok(savedMusic);
         } else {
             return ResponseEntity.notFound().build();
