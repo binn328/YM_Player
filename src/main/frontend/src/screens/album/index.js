@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import "./album.css";
 
@@ -11,6 +11,25 @@ export default function Album() {
   const [editMode, setEditMode] = useState(false);
   const [editAlbumName, setEditAlbumName] = useState("");
   const [editAlbumCover, setEditAlbumCover] = useState("");
+
+  useEffect(() => {
+    // 초기 앨범 목록 불러오기 (예를 들어 페이지가 로드될 때)
+    fetchAlbums();
+  }, []);
+
+  const fetchAlbums = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/albums");
+      if (response.ok) {
+        const data = await response.json();
+        setAlbums(data);
+      } else {
+        console.error("Failed to fetch albums");
+      }
+    } catch (error) {
+      console.error("Error fetching albums:", error);
+    }
+  };
 
   const handleAlbumNameChange = (e) => {
     setAlbumName(e.target.value);
@@ -27,18 +46,27 @@ export default function Album() {
     }
   };
 
-  const handleAlbumCreate = () => {
-    if (albumName && albumCover) {
-      const newAlbum = {
-        name: albumName,
-        cover: albumCover,
-        songs: [],
-      };
-      setAlbums([...albums, newAlbum]);
-      setAlbumName("");
-      setAlbumCover("");
-    } else {
-      alert("Please provide album name and cover image.");
+  const createAlbum = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("name", albumName);
+      formData.append("cover", albumCover);
+
+      const response = await fetch("http://localhost:8080/api/album", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const newAlbum = await response.json();
+        setAlbums([...albums, newAlbum]);
+        setAlbumName("");
+        setAlbumCover("");
+      } else {
+        console.error("Failed to create album");
+      }
+    } catch (error) {
+      console.error("Error creating album:", error);
     }
   };
 
@@ -145,11 +173,12 @@ export default function Album() {
             accept="image/*"
             onChange={handleAlbumCoverChange}
           />
-          <button id="create-album" onClick={handleAlbumCreate}>
+          <button id="create-album" onClick={createAlbum}>
             Create Album
           </button>
         </div>
-        <div id="select-music">Select music file
+        <div id="select-music">
+          Select music file
           <input
             id="audio-input"
             type="file"

@@ -53,7 +53,7 @@ public class PlaylistAPIController {
      * @return DB에 입력된 재생목록의 정보
      */
     @PostMapping()
-    public ResponseEntity<Playlist> createPlaylist(Playlist playlist) {
+    public ResponseEntity<Playlist> createPlaylist(@RequestBody Playlist playlist) {
         log.info(playlist.toString());
         if (playlist.getName() != null) {
             Playlist savedPlaylist = playlistRepository.save(playlist);
