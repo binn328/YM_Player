@@ -1,4 +1,4 @@
-// 음악 삭제
+//음악 삭제
 import React, { useState, useEffect, useRef } from 'react';
 import './library.css';
 import { FaHeart } from "react-icons/fa";
@@ -150,7 +150,7 @@ function MusicPlayer() {
   const deleteMusic = async (id) => {
     try {
       const response = await fetch(`http://localhost:8080/api/music/delete/${id}`, {
-        method: 'DELETE',
+        method: 'POST',
       });
 
       if (!response.ok) {
@@ -193,7 +193,7 @@ function MusicPlayer() {
       <div className='playlist-list'>
         <div className="library-body">
           {musicData.map((music, index) => (
-            <div key={music.id} className="music-card" onClick={() => playMusic(music, index)}>
+            <div key={music.id} className="music-card">
               <div className="music-info">
                 <p className="music-title">
                   {music.title}
@@ -209,8 +209,8 @@ function MusicPlayer() {
                 </button>
                 {showMenu[index] && (
                   <div className="menu">
-                    <p onClick={() => console.log('Info Edit')}>정보수정</p>
-                    <p onClick={() => deleteMusic(music.id)}>삭제</p>
+                    <p onClick={(e) => { e.stopPropagation(); console.log('Info Edit'); }}>정보수정</p>
+                    <p onClick={(e) => { e.stopPropagation(); deleteMusic(music.id); }}>삭제</p>
                   </div>
                 )}
               </div>
