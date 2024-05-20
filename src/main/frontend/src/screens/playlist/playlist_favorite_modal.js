@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './favorite.css'; // favorite.css 파일 import
+import './favorite.css'; 
 
 const PlaylistFavoriteModal = ({ isOpen, toggleModal }) => {
   const [favoriteSongs, setFavoriteSongs] = useState([]);

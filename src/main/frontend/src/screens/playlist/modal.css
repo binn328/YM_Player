@@ -11,7 +11,7 @@
   text-align:center;
 }
 
-.modal {
+.modal-overlay .modal {
   background-color: #fff;
   padding: 40px;
   border-radius: 10px;
@@ -21,7 +21,7 @@
   
 }
 
-.modal h2 {
+.modal-overlay .modal h2 {
   font-size: 30px;
   margin-bottom: 30px;
   

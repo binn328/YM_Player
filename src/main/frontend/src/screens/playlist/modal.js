@@ -25,6 +25,11 @@ const isPlaylistNameEmpty = playlistName.trim() === '';
 
 export default Modal;
 */
+
+
+/*
+import './modal.css';
+
 const Modal = ({ isOpen, toggleModal, playlistName, handlePlaylistSubmit, handlePlaylistNameChange }) => {
   return (
     isOpen && (
@@ -34,8 +39,36 @@ const Modal = ({ isOpen, toggleModal, playlistName, handlePlaylistSubmit, handle
           <input
             type="text"
             placeholder="플레이리스트 이름"
-            value={playlistName ? playlistName : ''} // playlistName이 정의되어 있는지 확인 후 사용
+            value={playlistName ? playlistName : ''} 
             onChange={handlePlaylistNameChange}
+          />
+          <button onClick={handlePlaylistSubmit}>확인</button>
+          <button onClick={toggleModal}>취소</button>
+        </div>
+      </div>
+    )
+  );
+};
+
+export default Modal;
+
+*/
+import React from 'react';
+import './modal.css';
+
+const Modal = ({ isOpen, toggleModal, playlistName, handlePlaylistSubmit, handlePlaylistNameChange }) => {
+  return (
+    isOpen && (
+      <div className="modal-overlay">
+        <div className="modal">
+          <h2>플레이리스트 추가</h2>
+          <input
+            type="text"
+            placeholder="플레이리스트 이름"
+            value={playlistName}
+            onChange={handlePlaylistNameChange}
+            id="playlistName" // id 추가
+            name="playlistName" // name 추가
           />
           <button onClick={handlePlaylistSubmit}>확인</button>
           <button onClick={toggleModal}>취소</button>

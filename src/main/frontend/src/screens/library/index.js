@@ -1,15 +1,40 @@
-import React, { useState, useEffect } from 'react';
+// 음악 삭제
+import React, { useState, useEffect, useRef } from 'react';
 import './library.css';
+import { FaHeart } from "react-icons/fa";
+import { AiOutlineStepBackward, AiOutlineStepForward } from "react-icons/ai";
+import { FaPause, FaPlay } from "react-icons/fa6";
+import { LuRepeat, LuRepeat1 } from "react-icons/lu";
+import { CiMenuKebab } from "react-icons/ci";
+import MusicController from './musicController';
 
 function MusicPlayer() {
   const [musicData, setMusicData] = useState([]);
   const [error, setError] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedMusic, setSelectedMusic] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [repeatMode, setRepeatMode] = useState('none'); // 'none', 'all', 'one'
+  const [showMenu, setShowMenu] = useState({}); // 어떤 메뉴가 보여지는지 추적
+
+  const audioRef = useRef(null);
 
   useEffect(() => {
     fetchMusicData();
   }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.addEventListener('ended', handleTrackEnd);
+    }
+    return () => {
+      if (audio) {
+        audio.removeEventListener('ended', handleTrackEnd);
+      }
+    };
+  }, [currentTrack, repeatMode]);
 
   const fetchMusicData = async () => {
     try {
@@ -24,14 +49,138 @@ function MusicPlayer() {
     }
   };
 
-  const playMusic = (music) => {
-    // 만약 현재 음악이 이미 재생 중이라면 정지시킵니다.
-    if (currentTrack && currentTrack.id === music.id) {
-      setIsPlaying(!isPlaying);
-    } else {
-      setCurrentTrack(music);
-      setIsPlaying(true);
+  const playMusic = (music, index) => {
+    if (currentTrack && isPlaying) {
+      stopMusic();
     }
+    setCurrentTrack(music);
+    setSelectedMusic(music.id);
+    setCurrentIndex(index);
+    setIsPlaying(true);
+    if (audioRef.current) {
+      audioRef.current.src = `http://localhost:8080/api/music/item/${music.id}`;
+      audioRef.current.play();
+    }
+  };
+
+  const stopMusic = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsPlaying(false);
+    setSelectedMusic(null);
+  };
+
+  const togglePlay = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const playPrevious = () => {
+    const previousIndex = currentIndex === 0 ? musicData.length - 1 : currentIndex - 1;
+    const previousMusic = musicData[previousIndex];
+    setCurrentIndex(previousIndex);
+    playMusic(previousMusic, previousIndex);
+  };
+
+  const playNext = () => {
+    if (repeatMode === 'one') {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      const nextIndex = (currentIndex + 1) % musicData.length;
+      const nextMusic = musicData[nextIndex];
+      setCurrentIndex(nextIndex);
+      playMusic(nextMusic, nextIndex);
+    }
+  };
+
+  const handleTrackEnd = () => {
+    if (repeatMode === 'one') {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else if (repeatMode === 'all') {
+      playNext();
+    } else {
+      setIsPlaying(false);
+    }
+  };
+
+  const toggleFavorite = async (music) => {
+    try {
+      const formData = new FormData();
+      formData.append('id', music.id);
+      formData.append('title', music.title);
+      formData.append('artist', music.artist);
+      formData.append('group', music.group);
+      formData.append('favorite', !music.favorite);
+      if (music.chapters) {
+        formData.append('chapters', JSON.stringify(music.chapters));
+      }
+
+      const response = await fetch(`http://localhost:8080/api/music/update/${music.id}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error('Failed to update favorite status');
+      }
+
+      const updatedMusicData = await response.json();
+
+      const updatedMusicList = musicData.map(item => {
+        if (item.id === music.id) {
+          return updatedMusicData;
+        }
+        return item;
+      });
+      setMusicData(updatedMusicList);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
+
+  const deleteMusic = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/music/delete/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error('Failed to delete music');
+      }
+
+      // Filter out the deleted music from the list
+      const updatedMusicList = musicData.filter(music => music.id !== id);
+      setMusicData(updatedMusicList);
+    } catch (error) {
+      console.error('Error deleting music:', error);
+    }
+  };
+
+  const handleRepeatToggle = () => {
+    if (repeatMode === 'none') {
+      setRepeatMode('all');
+    } else if (repeatMode === 'all') {
+      setRepeatMode('one');
+    } else {
+      setRepeatMode('none');
+    }
+  };
+
+  const toggleMenu = (index) => {
+    setShowMenu(prevState => ({
+      ...prevState,
+      [index]: !prevState[index]
+    }));
   };
 
   if (error) {
@@ -43,25 +192,45 @@ function MusicPlayer() {
       <h1>My Playlist</h1>
       <div className='playlist-list'>
         <div className="library-body">
-          {musicData.map((music) => (
-            <div key={music.id} className="music-card" onClick={() => playMusic(music)}>
+          {musicData.map((music, index) => (
+            <div key={music.id} className="music-card" onClick={() => playMusic(music, index)}>
               <div className="music-info">
-                <p className="music-title">{music.title}</p>
-                <p>by {music.artist}</p>
-                <p>({music.group})</p>
-                {music.favorite && <p>Favorite</p>}
+                <p className="music-title">
+                  {music.title}
+                  <button className='heart-button' onClick={(e) => {
+                    e.stopPropagation(); toggleFavorite(music); }}>
+                    <FaHeart color={music.favorite ? 'red' : 'gray'} />
+                  </button>
+                </p>
+                <p className="artist">by {music.artist}</p>
+                <p className="group">({music.group})</p>
+                <button className='menu-button' onClick={(e) => { e.stopPropagation(); toggleMenu(index); }}>
+                  <CiMenuKebab />
+                </button>
+                {showMenu[index] && (
+                  <div className="menu">
+                    <p onClick={() => console.log('Info Edit')}>정보수정</p>
+                    <p onClick={() => deleteMusic(music.id)}>삭제</p>
+                  </div>
+                )}
               </div>
-              {currentTrack && currentTrack.id === music.id && (
-                <div className="music-controller">
-                  <audio controls autoPlay={isPlaying}>
-                    <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
-                  </audio>
-                </div>
-              )}
             </div>
           ))}
         </div>
       </div>
+      {selectedMusic && (
+        <MusicController
+          currentTrack={currentTrack}
+          isPlaying={isPlaying}
+          stopMusic={stopMusic}
+          togglePlay={togglePlay}
+          playPrevious={playPrevious}
+          playNext={playNext}
+          audioRef={audioRef}
+          repeatMode={repeatMode}
+          handleRepeatToggle={handleRepeatToggle}
+        />
+      )}
     </div>
   );
 }
