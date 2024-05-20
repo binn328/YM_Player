@@ -29,6 +29,10 @@ public class TaskProcessor {
         }
     }
 
+    /**
+     * https://github.com/Mister-Ritom/youtube-downloader
+     * https://github.com/sapher/youtubedl-java
+     */
     public void processTasks() {
         while (true) {
             try {
@@ -39,9 +43,10 @@ public class TaskProcessor {
                         "--extract-audio",
                         "--audio-format", "mp3",
                         "--audio-quality", "0",
-                        "--output", ""
-                )
-            }
+                        "--output", "",
+                        url
+                );
+            } catch
         }
     }
 }
