@@ -1,6 +1,7 @@
 package com.binn328.ym_player.Controller;
 
 import com.binn328.ym_player.DTO.MusicForm;
+import com.binn328.ym_player.Model.DownloadRequest;
 import com.binn328.ym_player.Model.Music;
 import com.binn328.ym_player.Repository.MusicRepository;
 import com.binn328.ym_player.Service.DownloadService;
@@ -21,23 +22,19 @@ public class DownloadAPIController {
 
     /**
      * 해당 url의 음악을 다운로드 큐에 추가한다.
-     * TODO 옵션을 받도록 수정
-     * @param url
-     * @return
+     * @param request 링크와 옵션이 담긴 요청
+     * @return 올바른 요청이 아니면 badRequest를 반환
      */
-    @PostMapping("/{url}")
-    public ResponseEntity<Music> download(MusicForm form, @PathVariable String url) {
+    @PostMapping("/")
+    public ResponseEntity<String> download(@RequestBody DownloadRequest request) {
         // TODO yt-dlp는 다운로드 시에 mp3에 메타데이터를 삽입하는 것 같다.
         // TODO 해당 메타 데이터를 가져와서 데이터베이스에 삽입하도록 하면 편할 것 같다.
         // https://blog.groupdocs.com/metadata/read-mp3-tags-in-java/
         // https://www.google.com/search?q=yt%20dlp%20mp3%20tag
-        Music musicToDownload = form.toEntity();
-        Music savedMusic = musicRepository.save(musicToDownload);
-
-        if(downloadService.addQueue(url)) {
-            return ResponseEntity.ok(savedMusic);
+        if (downloadService.addQueue(request)) {
+            return ResponseEntity.ok("Download Started");
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
