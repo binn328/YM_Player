@@ -25,10 +25,8 @@ public class DownloadAPIController {
      * @param request 링크와 옵션이 담긴 요청
      * @return 올바른 요청이 아니면 badRequest를 반환
      */
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<String> download(@RequestBody DownloadRequest request) {
-        // TODO yt-dlp는 다운로드 시에 mp3에 메타데이터를 삽입하는 것 같다.
-        // TODO 해당 메타 데이터를 가져와서 데이터베이스에 삽입하도록 하면 편할 것 같다.
         // https://blog.groupdocs.com/metadata/read-mp3-tags-in-java/
         // https://www.google.com/search?q=yt%20dlp%20mp3%20tag
         if (downloadService.addQueue(request)) {

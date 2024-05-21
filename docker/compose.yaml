@@ -9,7 +9,9 @@ services:
         ports:
             - 8080:8080
         volumes:
-            - ./ym-data:/data
+            - ./ym-data/music:/data/music
+            - ./ym-data/art:/data/art
+            - ./ym-data/tmp:/data/tmp
         environment:
             - MONGO_USERNAME=admin
             - MONGO_PASSWORD=1234
