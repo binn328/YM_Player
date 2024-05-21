@@ -3,13 +3,15 @@ services:
     ym-player:
         # image 뒤의 태그를 개발 중인 브랜치의 이름으로 설정해주세요.
         # 예시: binn328/ym-player:add-album
-        image: binn328/ym-player:album-backend
+        image: binn328/ym-player:yt-dlp-download
         #restart: always
         user: root
         ports:
             - 8080:8080
         volumes:
-            - ./ym-data:/data
+            - ./ym-data/music:/data/music
+            - ./ym-data/art:/data/art
+            - ./ym-data/tmp:/data/tmp
         environment:
             - MONGO_USERNAME=admin
             - MONGO_PASSWORD=1234
