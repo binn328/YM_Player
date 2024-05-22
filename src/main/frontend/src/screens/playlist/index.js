@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect } from 'react';//수정35
 import { BsMusicPlayer } from 'react-icons/bs';
 import { TbMusicHeart, TbMusicExclamation } from 'react-icons/tb';
+import PlaylistModal from './playlistModal';
 import PlaylistRecentModal from './playlist_recent_modal';
 import PlaylistFavoriteModal from './playlist_favorite_modal';
 import Modal from './modal';
@@ -15,6 +17,8 @@ const Playlist = () => {
   const [recentModalOpen, setRecentModalOpen] = useState(false);
   const [favoriteModalOpen, setFavoriteModalOpen] = useState(false);
   const [recentlyAddedCount, setRecentlyAddedCount] = useState(0);
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
+  const [editingPlaylistId, setEditingPlaylistId] = useState(null);
 
   const serverURL = 'http://localhost:8080/api/music';
   const playlistURL = 'http://localhost:8080/api/playlist';
@@ -92,6 +96,34 @@ const Playlist = () => {
     setContextMenu({ ...contextMenu, show: false });
   };
 
+  const editPlaylistName = async (index) => {
+    const playlistId = playlists[index].id;
+    const newName = prompt('새 플레이리스트 이름을 입력하세요:', playlists[index].name);
+    if (newName) {
+      try {
+        const response = await fetch(`${playlistURL}/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ ...playlists[index], name: newName })
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const updatedPlaylist = await response.json();
+        const updatedPlaylists = playlists.map((playlist, i) =>
+          i === index ? updatedPlaylist : playlist
+        );
+        setPlaylists(updatedPlaylists);
+      } catch (error) {
+        console.error('플레이리스트 이름 수정 오류:', error);
+      }
+    }
+  };
+
   useEffect(() => {
     fetch(serverURL)
         .then((response) => response.json())
@@ -137,6 +169,7 @@ const Playlist = () => {
                   key={playlist.id}
                   className="playlist-item"
                   onContextMenu={(e) => showContextMenu(index, e)}
+                  onClick={() => setSelectedPlaylistId(playlist.id)}
               >
                 {playlist.image ? (
                     <img src={playlist.image} alt="playlist" className="playlist-image" />
@@ -153,8 +186,9 @@ const Playlist = () => {
                 className="context-menu"
                 style={{ top: contextMenu.y, left: contextMenu.x }}
             >
+              <div>재생</div>
               <div onClick={() => deletePlaylist(contextMenu.index)}>삭제</div>
-              <div>재생 목록</div>
+              <div onClick={() => editPlaylistName(contextMenu.index)}>정보 수정</div>
             </div>
         )}
 
@@ -168,8 +202,17 @@ const Playlist = () => {
             handlePlaylistSubmit={handlePlaylistSubmit}
             handlePlaylistNameChange={handlePlaylistNameChange}
         />
+
+        <PlaylistModal
+            isOpen={selectedPlaylistId !== null}
+            toggleModal={() => setSelectedPlaylistId(null)}
+            playlistId={selectedPlaylistId}
+            playlistURL={playlistURL}
+            serverURL={serverURL}
+        />
       </div>
   );
 };
 
 export default Playlist;
+
