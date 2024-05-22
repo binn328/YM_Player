@@ -1,3 +1,124 @@
 .playlist-modal{
     color:white;
+    display:flex;
+    margin-left:50px;
 }
+.music-list{
+    margin-left:200px;
+}
+
+
+.music-list ul::-webkit-scrollbar, .current-playlist ul::-webkit-scrollbar, .playlist-modal::-webkit-scrollbar {
+    display: none; 
+  }
+
+.playlist-modal button{
+    margin-left:40px;
+    padding:30px;
+    font-size:50px;
+    background:transparent;
+    color:white;
+    cursor: pointer;
+    border:none;
+    align-self:flex-start;
+    
+}
+.current-playlist ul{
+    cursor:pointer;
+    overflow-y: auto;
+    max-height: 20vh;
+   
+}
+
+.current-playlist h2, .music-list h2{
+    font-size: 40px;
+}
+
+.current-playlist li{
+    padding-bottom:15px;
+    font-size:25px;
+}
+
+.music-list ul{
+    cursor: pointer;
+    overflow-y: auto;
+    max-height: 20vh;
+    
+}
+
+.music-list li{
+    padding-bottom: 15px;
+    font-size:25px;
+}
+
+.context-menu{
+  color:black;
+}
+
+
+@media (max-width: 480px) {
+    .playlist-modal {
+      width: 80%;
+      padding: 10px;
+    }
+  
+    .current-playlist, .music-list {
+      margin-bottom: 10px;
+    }
+  
+    .current-playlist li, .music-list li {
+      padding: 8px;
+    }
+  
+    button {
+      width: 25px;
+      height: 25px;
+      top: 5px;
+      right: 5px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .playlist-modal {
+      width: 90%;
+      padding: 10px;
+    }
+  
+    .current-playlist, .music-list {
+      margin-bottom: 10px;
+    }
+  
+    .current-playlist li, .music-list li {
+      padding: 8px;
+    }
+  
+    button {
+      width: 25px;
+      height: 25px;
+      top: 5px;
+      right: 5px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .playlist-modal {
+      width: 90%;
+      padding: 5px;
+    }
+  
+    .current-playlist, .music-list {
+      margin-bottom: 5px;
+    }
+  
+    .current-playlist li, .music-list li {
+      padding: 5px;
+      font-size: 14px;
+    }
+  
+    button {
+      width: 20px;
+      height: 20px;
+      top: 2px;
+      right: 2px;
+    }
+  }

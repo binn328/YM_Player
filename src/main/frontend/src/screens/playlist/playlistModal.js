@@ -1,6 +1,6 @@
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import './playlistModal.css';
@@ -174,7 +174,7 @@ const PlaylistModal = ({ isOpen, toggleModal, playlistId, playlistURL, serverURL
     updatedMusics.splice(index, 1);
     updatedMusics.splice(toIndex, 0, music);
     setPlaylist({ ...playlist, musics: updatedMusics });
-    saveOrderToDB(updatedMusics);  // Update the database with new order
+    saveOrderToDB(updatedMusics);  
   };
 
   const saveOrderToDB = async (updatedMusics) => {
@@ -225,26 +225,28 @@ const PlaylistModal = ({ isOpen, toggleModal, playlistId, playlistURL, serverURL
     isOpen && playlist && (
       <DndProvider backend={HTML5Backend}>
         <div className="playlist-modal" onClick={hideContextMenu}>
-          <h2>{playlist.name}</h2>
-          <p>곡 목록:</p>
-          <ul>
-            {playlist.musics.map((music, index) => {
-              const musicInfo = musicList.find((item) => item.id === music.id);
-              return (
-                <MusicItem
-                  key={music.id}
-                  index={index}
-                  onContextMenu={showContextMenu}
-                  music={{ ...music, title: musicInfo ? musicInfo.title : '음악 이름 없음' }}
-                  moveMusic={moveMusic}
-                  findMusic={findMusic}
-                />
-              );
-            })}
-          </ul>
-          <button onClick={toggleModal}>닫기</button>
+          <div className='current-playlist'>
+            <h2>{playlist.name}</h2>
+            <p title="현재 플레이리스트" >곡 목록</p>
+            <ul>
+              {playlist.musics.map((music, index) => {
+                const musicInfo = musicList.find((item) => item.id === music.id);
+                return (
+                  <MusicItem
+                    key={music.id}
+                    index={index}
+                    onContextMenu={showContextMenu}
+                    music={{ ...music, title: musicInfo ? musicInfo.title : '음악 이름 없음' }}
+                    moveMusic={moveMusic}
+                    findMusic={findMusic}
+                  />
+                );
+              })}
+            </ul>
+            
+          </div>
           <div className="music-list">
-            <h3>음악 목록</h3>
+            <h2 title="음악을 클릭하면 현재 플레이리스트에 노래를 추가할 수 있습니다." >전체 음악 목록</h2>
             <ul>
               {musicList.map((music) => (
                 <li key={music.id} onClick={() => handleAddMusicToPlaylist(music.id)}>
@@ -258,9 +260,16 @@ const PlaylistModal = ({ isOpen, toggleModal, playlistId, playlistURL, serverURL
               className="context-menu"
               style={{ top: contextMenu.y, left: contextMenu.x }}
             >
-              <div onClick={() => handleRemoveMusicFromPlaylist(contextMenu.musicId)}>삭제</div>
+              <div 
+                onClick={() => handleRemoveMusicFromPlaylist(contextMenu.musicId)}>삭제</div>
             </div>
           )}
+
+          <button 
+            onClick={toggleModal}
+            title="닫기">
+              X
+          </button>
         </div>
       </DndProvider>
     )
