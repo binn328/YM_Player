@@ -1,6 +1,5 @@
 package com.binn328.ym_player.Model;
 
-import com.binn328.ym_player.Service.SequenceGeneratorService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
