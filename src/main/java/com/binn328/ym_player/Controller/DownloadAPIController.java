@@ -2,12 +2,15 @@ package com.binn328.ym_player.Controller;
 
 import com.binn328.ym_player.DTO.MusicForm;
 import com.binn328.ym_player.Model.DownloadRequest;
+import com.binn328.ym_player.Model.DownloadStatus;
 import com.binn328.ym_player.Model.Music;
 import com.binn328.ym_player.Repository.MusicRepository;
 import com.binn328.ym_player.Service.DownloadService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Log4j2
@@ -41,7 +44,8 @@ public class DownloadAPIController {
      * @return 현재 다운로드 현황
      */
     @GetMapping()
-    public ResponseEntity<Music> progress() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<DownloadStatus>> progress() {
+        List<DownloadStatus> downloadProgress = downloadService.getDownloadProgress();
+        return ResponseEntity.ok(downloadProgress);
     }
 }
