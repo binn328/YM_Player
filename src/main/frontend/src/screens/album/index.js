@@ -1,157 +1,69 @@
 import React, { useState, useEffect } from "react";
-import ReactPlayer from "react-player";
 import "./album.css";
+
+const defaultAlbumCover = "https://i.ibb.co/hfBLJ5S/default-album-cover.jpg";
 
 export default function Album() {
   const [albums, setAlbums] = useState([]);
   const [albumName, setAlbumName] = useState("");
   const [albumCover, setAlbumCover] = useState("");
   const [selectedAlbum, setSelectedAlbum] = useState(null);
-  const [selectedSong, setSelectedSong] = useState(null);
-  const [editMode, setEditMode] = useState(false);
-  const [editAlbumName, setEditAlbumName] = useState("");
-  const [editAlbumCover, setEditAlbumCover] = useState("");
+  const [selectedSongs, setSelectedSongs] = useState(null); // 초기에 null로 설정
 
   useEffect(() => {
-    // 초기 앨범 목록 불러오기 (예를 들어 페이지가 로드될 때)
+    const fetchAlbums = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/album');
+        const data = await response.json();
+        setAlbums(data);
+      } catch (error) {
+        console.error('Error fetching albums:', error);
+      }
+    };
+
     fetchAlbums();
   }, []);
 
-  const fetchAlbums = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/api/albums");
-      if (response.ok) {
-        const data = await response.json();
-        setAlbums(data);
-      } else {
-        console.error("Failed to fetch albums");
-      }
-    } catch (error) {
-      console.error("Error fetching albums:", error);
-    }
-  };
-
-  const handleAlbumNameChange = (e) => {
-    setAlbumName(e.target.value);
-  };
-
-  const handleAlbumCoverChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setAlbumCover(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const createAlbum = async () => {
+  const handleAlbumCreate = async () => {
     try {
       const formData = new FormData();
-      formData.append("name", albumName);
-      formData.append("cover", albumCover);
+      formData.append('name', albumName);
+      formData.append('favorite', false);
+      formData.append('cover', albumCover || defaultAlbumCover);
+      formData.append('musics', JSON.stringify([]));
 
-      const response = await fetch("http://localhost:8080/api/album", {
-        method: "POST",
+      const response = await fetch('http://localhost:8080/api/album', {
+        method: 'POST',
         body: formData,
       });
 
-      if (response.ok) {
-        const newAlbum = await response.json();
-        setAlbums([...albums, newAlbum]);
-        setAlbumName("");
-        setAlbumCover("");
-      } else {
-        console.error("Failed to create album");
+      if (!response.ok) {
+        throw new Error('Failed to create album');
       }
+
+      const data = await response.json();
+      setAlbums([...albums, data]);
+      setAlbumName("");
+      setAlbumCover("");
     } catch (error) {
-      console.error("Error creating album:", error);
+      console.error('Error creating album:', error);
     }
   };
 
-  const handleAlbumClick = (album) => {
+
+  const handleAlbumClick = async (album) => {
     setSelectedAlbum(album);
-    setEditMode(false);
-  };
 
-  const handleAlbumNameEdit = (e) => {
-    setEditAlbumName(e.target.value);
-  };
-
-  const handleAlbumCoverEdit = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setEditAlbumCover(e.target.result);
-      };
-      reader.readAsDataURL(file);
+    try {
+      const response = await fetch(`http://localhost:8080/api/album/${album.id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch album details');
+      }
+      const albumData = await response.json();
+      setSelectedSongs(albumData.musics);
+    } catch (error) {
+      console.error('Error fetching album details:', error);
     }
-  };
-
-  const handleSaveAlbumName = (album) => {
-    const updatedAlbums = albums.map((a) =>
-      a === album ? { ...a, name: editAlbumName } : a
-    );
-    setAlbums(updatedAlbums);
-    setEditMode(false);
-  };
-
-  const handleSaveAlbumCover = (album) => {
-    const updatedAlbums = albums.map((a) =>
-      a === album ? { ...a, cover: editAlbumCover } : a
-    );
-    setAlbums(updatedAlbums);
-    setEditMode(false);
-  };
-
-  const handleSongSelect = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedSong(file);
-    }
-  };
-
-  const handleSongAdd = (album) => {
-    if (selectedSong) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const songUrl = e.target.result;
-        const songName = selectedSong.name;
-        const updatedAlbums = albums.map((a) =>
-          a === album ? { ...a, songs: [...a.songs, { name: songName, url: songUrl }] } : a
-        );
-        setAlbums(updatedAlbums);
-        setSelectedSong(null);
-      };
-      reader.readAsDataURL(selectedSong);
-    } else {
-      alert("Please select a song to add.");
-    }
-  };
-
-  const handleAlbumDelete = (albumToDelete) => {
-    const updatedAlbums = albums.filter((album) => album !== albumToDelete);
-    setAlbums(updatedAlbums);
-    if (selectedAlbum === albumToDelete) {
-      setSelectedAlbum(null);
-    }
-  };
-
-  const handleAlbumDrag = (dragIndex, hoverIndex) => {
-    const updatedAlbums = [...albums];
-    const draggedAlbum = updatedAlbums[dragIndex];
-    updatedAlbums.splice(dragIndex, 1);
-    updatedAlbums.splice(hoverIndex, 0, draggedAlbum);
-    setAlbums(updatedAlbums);
-  };
-
-  const handleSongDelete = (album, songIndex) => {
-    const updatedAlbums = albums.map((a) =>
-      a === album ? { ...a, songs: a.songs.filter((_, index) => index !== songIndex) } : a
-    );
-    setAlbums(updatedAlbums);
   };
 
   return (
@@ -162,7 +74,7 @@ export default function Album() {
             type="text"
             placeholder="Album Name"
             value={albumName}
-            onChange={handleAlbumNameChange}
+            onChange={(e) => setAlbumName(e.target.value)}
           />
           <label htmlFor="album-cover-input" className="text-color">
             Select image
@@ -171,95 +83,40 @@ export default function Album() {
             id="album-cover-input"
             type="file"
             accept="image/*"
-            onChange={handleAlbumCoverChange}
+            onChange={(e) => setAlbumCover(e.target.files[0])}
           />
-          <button id="create-album" onClick={createAlbum}>
+          <button id="create-abum" onClick={handleAlbumCreate}>
             Create Album
           </button>
         </div>
-        <div id="select-music">
-          Select music file
-          <input
-            id="audio-input"
-            type="file"
-            accept="audio/*"
-            onChange={handleSongSelect}
-            className="audio-input"
-          />
-        </div>
 
-        {albums.map((album, index) => (
+        {albums.map((album) => (
           <div
-            key={album.name}
+            key={album.id}
             className="album-card"
-            draggable
-            onDragStart={(e) => {
-              e.dataTransfer.setData("text/plain", index);
-            }}
-            onDragOver={(e) => {
-              e.preventDefault();
-            }}
-            onDrop={(e) => {
-              const dragIndex = parseInt(e.dataTransfer.getData("text/plain"), 10);
-              handleAlbumDrag(dragIndex, index);
-            }}
+            onClick={() => handleAlbumClick(album)}
           >
             <h3>{album.name}</h3>
             <img
               src={album.cover}
               alt={album.name}
               className="album-cover"
-              onClick={() => handleAlbumClick(album)}
             />
-            {selectedAlbum === album ? (
-              <div className="song-list">
-                <h4>Songs in {album.name}</h4>
-                <ul>
-                  {album.songs.map((song, songIndex) => (
-                    <li key={songIndex}>
-                      {song.name} -{" "}
-                      <ReactPlayer
-                        url={song.url}
-                        controls
-                        width="200px"
-                        height="20px"
-                        style={{ marginTop: "5px" }}
-                      />
-                      <button onClick={() => handleSongDelete(album, songIndex)}>Delete</button>
-                    </li>
-                  ))}
-                </ul>
-                <button id="add-song" onClick={() => handleSongAdd(album)}>Add Song</button>
-              </div>
-            ) : null}
-            {selectedAlbum === album ? (
+
+            {selectedAlbum === album && (
               <div>
-                {editMode ? (
-                  <div className="edit-album-details">
-                    <input
-                      type="text"
-                      value={editAlbumName}
-                      onChange={handleAlbumNameEdit}
-                      placeholder="New Album Name"
-                    />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAlbumCoverEdit}
-                    />
-                    {editAlbumCover && (
-                      <button id="save-cover" onClick={() => handleSaveAlbumCover(album)}>Save Cover</button>
-                    )}
-                    <button id="save-name" onClick={() => handleSaveAlbumName(album)}>Save Name</button>
-                  </div>
+                <h4>Songs</h4>
+                {selectedSongs !== null && selectedSongs.length > 0 ? (
+                  <ul>
+                    {selectedSongs.map((song, index) => (
+                      <li key={index}>{song.name}</li>
+                    ))}
+                  </ul>
                 ) : (
-                  <div>
-                    <button id="edit" onClick={() => setEditMode(true)}>Edit</button>
-                    <button id="delete" onClick={() => handleAlbumDelete(album)}>Delete</button>
-                  </div>
+                  <p>No songs available</p>
                 )}
               </div>
-            ) : null}
+            )}
           </div>
         ))}
       </div>

@@ -1,0 +1,45 @@
+.playlist-menu {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.playlist-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.playlist-item.selected {
+  background-color: #333;
+  color: #fff;
+}
+
+.playlist-menu h2 {
+  margin-top: 0;
+}
+
+.playlist-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.playlist-menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.playlist-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+.playlist-menu button {
+  margin: 10px 0;
+  padding: 10px;
+  cursor: pointer;
+}

@@ -1,4 +1,4 @@
-//음악 삭제
+//라이브러리 인덱스 앨범,플리추가
 import React, { useState, useEffect, useRef } from 'react';
 import './library.css';
 import { FaHeart } from "react-icons/fa";
@@ -7,6 +7,8 @@ import { FaPause, FaPlay } from "react-icons/fa6";
 import { LuRepeat, LuRepeat1 } from "react-icons/lu";
 import { CiMenuKebab } from "react-icons/ci";
 import MusicController from './musicController';
+import PlaylistMenu from './playlistMenu';
+import AlbumMenu from './albumMenu';
 
 function MusicPlayer() {
   const [musicData, setMusicData] = useState([]);
@@ -15,13 +17,20 @@ function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedMusic, setSelectedMusic] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [repeatMode, setRepeatMode] = useState('none'); // 'none', 'all', 'one'
-  const [showMenu, setShowMenu] = useState({}); // 어떤 메뉴가 보여지는지 추적
+  const [repeatMode, setRepeatMode] = useState('none');
+  const [showMenu, setShowMenu] = useState({});
+  const [playlists, setPlaylists] = useState([]);
+  const [albums, setAlbums] = useState([]);
+  const [showPlaylistMenu, setShowPlaylistMenu] = useState(false);
+  const [showAlbumMenu, setShowAlbumMenu] = useState(false);
+  const [musicToAdd, setMusicToAdd] = useState(null);
 
   const audioRef = useRef(null);
 
   useEffect(() => {
     fetchMusicData();
+    fetchPlaylists();
+    fetchAlbums();
   }, []);
 
   useEffect(() => {
@@ -44,6 +53,32 @@ function MusicPlayer() {
       }
       const data = await response.json();
       setMusicData(data);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const fetchPlaylists = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/playlist');
+      if (!response.ok) {
+        throw new Error('Failed to fetch playlists');
+      }
+      const data = await response.json();
+      setPlaylists(data);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const fetchAlbums = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/album');
+      if (!response.ok) {
+        throw new Error('Failed to fetch albums');
+      }
+      const data = await response.json();
+      setAlbums(data);
     } catch (error) {
       setError(error.message);
     }
@@ -176,11 +211,85 @@ function MusicPlayer() {
     }
   };
 
+  const addMusicToPlaylist = async (playlistId, music) => {
+    try {
+      const playlist = playlists.find(p => p.id === playlistId);
+      if (!playlist) return;
+
+      const updatedMusics = [...playlist.musics, { id: music.id }];
+      const updatedPlaylist = { ...playlist, musics: updatedMusics };
+
+      const response = await fetch(`http://localhost:8080/api/playlist/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedPlaylist)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update playlist');
+      }
+
+      const updatedPlaylistData = await response.json();
+      setPlaylists(playlists.map(p => p.id === playlistId ? updatedPlaylistData : p));
+    } catch (error) {
+      console.error('Error adding music to playlist:', error);
+    }
+  };
+
+  const addMusicToAlbum = async (albumId, music) => {
+    try {
+      const album = albums.find(a => a.id === albumId);
+      if (!album) return;
+
+      const updatedMusics = [...album.musics, { id: music.id }];
+      const updatedAlbum = { ...album, musics: updatedMusics };
+
+      const response = await fetch(`http://localhost:8080/api/album/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedAlbum)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update album');
+      }
+
+      const updatedAlbumData = await response.json();
+      setAlbums(albums.map(a => a.id === albumId ? updatedAlbumData : a));
+    } catch (error) {
+      console.error('Error adding music to album:', error);
+    }
+  };
+
   const toggleMenu = (index) => {
     setShowMenu(prevState => ({
       ...prevState,
       [index]: !prevState[index]
     }));
+  };
+
+  const openPlaylistMenu = (music) => {
+    setMusicToAdd(music);
+    setShowPlaylistMenu(true);
+  };
+
+  const closePlaylistMenu = () => {
+    setShowPlaylistMenu(false);
+    setMusicToAdd(null);
+  };
+
+  const openAlbumMenu = (music) => {
+    setMusicToAdd(music);
+    setShowAlbumMenu(true);
+  };
+
+  const closeAlbumMenu = () => {
+    setShowAlbumMenu(false);
+    setMusicToAdd(null);
   };
 
   if (error) {
@@ -193,7 +302,7 @@ function MusicPlayer() {
       <div className='playlist-list'>
         <div className="library-body">
           {musicData.map((music, index) => (
-            <div key={music.id} className="music-card">
+            <div key={music.id} className="music-card" onClick={() => playMusic(music, index)}>
               <div className="music-info">
                 <p className="music-title">
                   {music.title}
@@ -209,7 +318,8 @@ function MusicPlayer() {
                 </button>
                 {showMenu[index] && (
                   <div className="menu">
-                    <p onClick={(e) => { e.stopPropagation(); console.log('Info Edit'); }}>정보수정</p>
+                    <p onClick={(e) => { e.stopPropagation(); openPlaylistMenu(music); }}>플레이리스트에 추가</p>
+                    <p onClick={(e) => { e.stopPropagation(); openAlbumMenu(music); }}>앨범에 추가</p>
                     <p onClick={(e) => { e.stopPropagation(); deleteMusic(music.id); }}>삭제</p>
                   </div>
                 )}
@@ -218,6 +328,22 @@ function MusicPlayer() {
           ))}
         </div>
       </div>
+      {showPlaylistMenu && (
+        <PlaylistMenu
+          music={musicToAdd}
+          playlists={playlists}
+          addMusicToPlaylist={addMusicToPlaylist}
+          onClose={closePlaylistMenu}
+        />
+      )}
+      {showAlbumMenu && (
+        <AlbumMenu
+          music={musicToAdd}
+          albums={albums}
+          addMusicToAlbum={addMusicToAlbum}
+          onClose={closeAlbumMenu}
+        />
+      )}
       {selectedMusic && (
         <MusicController
           currentTrack={currentTrack}
