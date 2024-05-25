@@ -38,6 +38,11 @@ function MusicForm() {
         formData.append('artist', artist);
         formData.append('group', group);
         formData.append('file', file);
+        formData.append('favorite', 'false');
+
+        for (const pair of formData.entries()) {
+          console.log(`${pair[0]}: ${pair[1]}`);
+        }
 
         const response = await fetch('http://localhost:8080/api/music', {
           method: 'POST',
@@ -45,7 +50,8 @@ function MusicForm() {
         });
 
         if (!response.ok) {
-          throw new Error('음악 업로드에 실패했습니다.');
+          const errorText = await response.text();
+          throw new Error(`음악 업로드에 실패했습니다: ${errorText}`);
         }
 
         console.log('음악 업로드 성공');

@@ -236,3 +236,12 @@
   margin-top: 10px;
   border-top: 1px solid #ddd;
 }
+
+.library-body{
+  overflow: scroll;
+  height:95%;
+}
+
+.library-body::-webkit-scrollbar{
+  display: none;
+}
