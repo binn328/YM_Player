@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { CiMenuKebab } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
+import { FaRegCirclePlay } from "react-icons/fa6";
 import "./album.css";
 
 const defaultAlbumCover = "https://i.ibb.co/hfBLJ5S/default-album-cover.jpg";
+const SERVER_URL = "http://localhost:8080";
 
 export default function Album() {
     const [albums, setAlbums] = useState([]);
@@ -33,10 +35,10 @@ export default function Album() {
                 const albumResponse = await fetch('http://localhost:8080/api/album');
                 const albumsData = await albumResponse.json();
                 const existingAlbumNames = albumsData.map((album) => album.name);
-
+    
                 const musicResponse = await fetch('http://localhost:8080/api/music');
                 const musicData = await musicResponse.json();
-
+    
                 const groupedMusic = {};
                 musicData.forEach((music) => {
                     if (!groupedMusic[music.group]) {
@@ -44,46 +46,61 @@ export default function Album() {
                     }
                     groupedMusic[music.group].push(music);
                 });
-
-                const newAlbums = [];
-
-                Object.entries(groupedMusic).forEach(([group, musicList]) => {
-                    if (!existingAlbumNames.includes(group)) {
-                        newAlbums.push({
+    
+                for (const [group, musicList] of Object.entries(groupedMusic)) {
+                    const existingAlbum = albumsData.find((album) => album.name === group);
+                    if (existingAlbum) {
+                        const existingMusicIds = new Set(existingAlbum.musics.map(music => music.id));
+                        const newMusicIds = musicList.map(({ id }) => id).filter(id => !existingMusicIds.has(id));
+                        const updatedMusics = [...existingAlbum.musics, ...newMusicIds];
+                        const updatedAlbumData = { ...existingAlbum, musics: updatedMusics };
+    
+                        const updateResponse = await fetch(`http://localhost:8080/api/album/update`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(updatedAlbumData)
+                        });
+    
+                        if (!updateResponse.ok) {
+                            throw new Error('앨범 음악 목록 업데이트 실패');
+                        }
+    
+                        const updatedAlbum = await updateResponse.json();
+                        setAlbums((prevAlbums) =>
+                            prevAlbums.map((album) => (album.id === updatedAlbum.id ? updatedAlbum : album))
+                        );
+                    } else {
+                        const newAlbum = {
                             name: group,
                             cover: defaultAlbumCover,
                             musics: musicList.map(({ id }) => id),
-                        });
-                    }
-                });
-
-                for (const album of newAlbums) {
-                    try {
+                        };
+    
                         const formData = new FormData();
-                        formData.append('name', album.name);
+                        formData.append('name', newAlbum.name);
                         formData.append('favorite', 'false');
-                        formData.append('cover', album.cover);
-                        album.musics.forEach((id, index) => {
+                        formData.append('cover', newAlbum.cover);
+                        newAlbum.musics.forEach((id, index) => {
                             formData.append(`musics[${index}]`, id);
                         });
-
+    
                         const response = await fetch('http://localhost:8080/api/album', {
                             method: 'POST',
-                            body: formData
+                            body: formData,
                         });
-
+    
                         if (!response.ok) {
-                            throw new Error('Network response was not ok');
+                            throw new Error('네트워크 응답 실패');
                         }
-
+    
                         const data = await response.json();
                         setAlbums((prevAlbums) => [...prevAlbums, data]);
-                    } catch (error) {
-                        console.error('Error creating album:', error);
                     }
                 }
             } catch (error) {
-                console.error('Error creating albums from music:', error);
+                console.error('음악으로부터 앨범 생성 중 오류 발생:', error);
             }
         };
 
@@ -189,11 +206,11 @@ export default function Album() {
             const response = await fetch(`http://localhost:8080/api/album/update`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json' // JSON 형식의 데이터 전송을 위한 헤더 추가
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     id: album.id,
-                    favorite: !album.favorite // 현재 favorite 값을 토글하여 업데이트
+                    favorite: !album.favorite
                 })
             });
 
@@ -294,6 +311,61 @@ export default function Album() {
         }
     };
 
+    const handleCreatePlaylist = async (album) => {
+        try {
+            const response = await fetch(`${SERVER_URL}/api/playlist`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: album.name
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create playlist');
+            }
+
+            const playlist = await response.json();
+            console.log('Playlist created:', playlist);
+
+            // Playlist가 생성된 후 음악 추가
+            await handleAddMusicsToPlaylist(playlist.id, album.musics);
+        } catch (error) {
+            console.error('Error creating playlist:', error);
+        }
+    };
+
+    const handleAddMusicsToPlaylist = async (playlistId, musics) => {
+        try {
+            const formattedMusics = musics.map((musicId, index) => ({
+                id: musicId.id || musicId,
+                order: index + 1
+            }));
+
+            const response = await fetch(`${SERVER_URL}/api/playlist/update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: playlistId,
+                    musics: formattedMusics
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add music to playlist');
+            }
+
+            const data = await response.json();
+            console.log('Music added to playlist:', data);
+        } catch (error) {
+            console.error('Error adding music to playlist:', error);
+        }
+    };
+
     return (
         <div className="screen-container">
             <div className="library-body">
@@ -326,6 +398,7 @@ export default function Album() {
                                 e.stopPropagation(); toggleFavorite(album); }}>
                                 <FaHeart color={album.favorite ? 'red' : 'gray'} />
                             </button>
+                            <FaRegCirclePlay className='play-button' onClick={() => handleCreatePlaylist(album)} />
                             </h3>
                             <img
                                 src={album.cover}
