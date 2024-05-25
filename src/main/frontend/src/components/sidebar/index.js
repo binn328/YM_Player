@@ -2,14 +2,11 @@
 import React, { useState } from 'react';
 import './sidebar.css';
 import SidebarButton from './sidebarButton';
-import { MdFavorite } from "react-icons/md";
 import { FaGripfire, FaPlay } from "react-icons/fa";
 import { FaSignOutAlt } from "react-icons/fa";
 import { IoLibrary } from "react-icons/io5";
 import { PiQueueBold } from "react-icons/pi";
 import { FaList } from "react-icons/fa";
-
-import { FaMusic } from "react-icons/fa6";
 import { AiFillFolderAdd } from "react-icons/ai";
 import Modal from './modal'; // 모달 컴포넌트 import
 import profile from '../../blank-profile.png';
@@ -33,11 +30,9 @@ export default function Sidebar() {
             />
             <div>
                 {/* 사이드바 버튼들 */}
-                <SidebarButton title="Music" to="/music" icon={<FaMusic />} />
                 <SidebarButton title="Trending" to="/trending" icon={<FaGripfire />} />
                 <SidebarButton title="Player" to="/player" icon={<FaPlay />} />
                 <SidebarButton title="playlist" to="/playlist" icon={<FaList />} />
-                <SidebarButton title="Favorites" to="/favorites" icon={<MdFavorite />} />
                 <SidebarButton title="Library" to="/library" icon={<IoLibrary />} />
                 <SidebarButton title="Album" to="/album" icon= {<PiQueueBold />} />
                 <SidebarButton title="Musicupload" to="/musicupload" icon={<AiFillFolderAdd />} />

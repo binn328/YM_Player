@@ -24,6 +24,8 @@ function MusicPlayer() {
   const [showPlaylistMenu, setShowPlaylistMenu] = useState(false);
   const [showAlbumMenu, setShowAlbumMenu] = useState(false);
   const [musicToAdd, setMusicToAdd] = useState(null);
+  const [editingMusic, setEditingMusic] = useState(null);
+  const [openedMenuIndex, setOpenedMenuIndex] = useState(null);
 
   const audioRef = useRef(null);
 
@@ -266,10 +268,17 @@ function MusicPlayer() {
   };
 
   const toggleMenu = (index) => {
+    if (openedMenuIndex !== null && openedMenuIndex !== index) {
+      setShowMenu(prevState => ({
+        ...prevState,
+        [openedMenuIndex]: false
+      }));
+    }
     setShowMenu(prevState => ({
       ...prevState,
       [index]: !prevState[index]
     }));
+    setOpenedMenuIndex(prevState => (prevState === index ? null : index));
   };
 
   const openPlaylistMenu = (music) => {
@@ -290,6 +299,60 @@ function MusicPlayer() {
   const closeAlbumMenu = () => {
     setShowAlbumMenu(false);
     setMusicToAdd(null);
+  };
+
+  const openEditMenu = (music) => {
+    setEditingMusic(music);
+  };
+
+  const closeEditMenu = () => {
+    setEditingMusic(null);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditingMusic(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('id', editingMusic.id);
+      formData.append('title', editingMusic.title);
+      formData.append('artist', editingMusic.artist);
+      formData.append('group', editingMusic.group);
+      formData.append('favorite', editingMusic.favorite);
+      if (editingMusic.chapters) {
+        formData.append('chapters', JSON.stringify(editingMusic.chapters));
+      }
+
+      const response = await fetch(`http://localhost:8080/api/music/update/${editingMusic.id}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error('Failed to update music info');
+      }
+
+      const updatedMusicData = await response.json();
+      const updatedMusicList = musicData.map(item => {
+        if (item.id === editingMusic.id) {
+          return updatedMusicData;
+        }
+        return item;
+      });
+
+      setMusicData(updatedMusicList);
+      closeEditMenu();
+    } catch (error) {
+      console.error('Error updating music info:', error);
+    }
   };
 
   if (error) {
@@ -320,6 +383,7 @@ function MusicPlayer() {
                   <div className="menu">
                     <p onClick={(e) => { e.stopPropagation(); openPlaylistMenu(music); }}>플레이리스트에 추가</p>
                     <p onClick={(e) => { e.stopPropagation(); openAlbumMenu(music); }}>앨범에 추가</p>
+                    <p onClick={(e) => { e.stopPropagation(); openEditMenu(music); toggleMenu(index);}}>정보 수정</p>
                     <p onClick={(e) => { e.stopPropagation(); deleteMusic(music.id); }}>삭제</p>
                   </div>
                 )}
@@ -356,6 +420,45 @@ function MusicPlayer() {
           repeatMode={repeatMode}
           handleRepeatToggle={handleRepeatToggle}
         />
+      )}
+      {editingMusic && (
+        <div className="edit-menu">
+          <form onSubmit={handleEditSubmit}>
+            <div className='edit-label'>
+              <label>
+                제목:
+                <input
+                  type="text"
+                  name="title"
+                  value={editingMusic.title}
+                  onChange={handleEditChange}
+                />
+              </label>
+              <label>
+                아티스트:
+                <input
+                  type="text"
+                  name="artist"
+                  value={editingMusic.artist}
+                  onChange={handleEditChange}
+                />
+              </label>
+              <label>
+                그룹:
+                <input
+                  type="text"
+                  name="group"
+                  value={editingMusic.group}
+                  onChange={handleEditChange}
+                />
+              </label>
+            </div>
+            <div className='edit-btn'>
+              <button type="submit">수정</button>
+              <button type="button" onClick={closeEditMenu}>취소</button>
+            </div>
+          </form>
+        </div>
       )}
     </div>
   );

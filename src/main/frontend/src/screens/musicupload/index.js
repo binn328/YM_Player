@@ -1,4 +1,3 @@
-//업로드 인덱스
 import React, { useState } from 'react';
 import './musicupload.css';
 
@@ -12,20 +11,19 @@ function MusicForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if ((!title || !artist || !group || !file) && !link) {
+    if (!link && (!title || !artist || !group || !file)) {
       alert('제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요.');
       return;
     }
 
     try {
-      const formData = new FormData();
       if (link) {
-        const dlResponse = await fetch(`http://localhost:8080/api/dl`, {
+        const dlResponse = await fetch('http://localhost:8080/api/dl', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ link })
+          body: JSON.stringify({ url: link }) // 링크를 URL로 전달합니다
         });
 
         if (!dlResponse.ok) {
@@ -33,29 +31,25 @@ function MusicForm() {
           throw new Error(`링크를 통해 파일을 변환하는데 실패했습니다: ${errorDetails}`);
         }
 
-        const dlData = await dlResponse.json();
-        // Assuming the API returns a URL or file content
-        const fileResponse = await fetch(dlData.fileUrl); // Adjust based on actual response
-        const blob = await fileResponse.blob();
-        formData.append('file', blob, 'downloaded_music.mp3');
+        console.log('링크 변환 요청 성공');
       } else {
+        const formData = new FormData();
         formData.append('title', title);
         formData.append('artist', artist);
         formData.append('group', group);
         formData.append('file', file);
+
+        const response = await fetch('http://localhost:8080/api/music', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error('음악 업로드에 실패했습니다.');
+        }
+
+        console.log('음악 업로드 성공');
       }
-      formData.append('favorite', 'false');
-
-      const response = await fetch('http://localhost:8080/api/music', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error('음악 업로드에 실패했습니다.');
-      }
-
-      console.log('음악 업로드 성공');
 
       // Reset
       setTitle('');
@@ -92,7 +86,7 @@ function MusicForm() {
             </div>
             <div className="form-group">
               <label>링크</label>
-              <input type="url" value={link} onChange={(e) => setLink(e.target.value)} required={!(title && artist && group && file)} />
+              <input type="url" value={link} onChange={(e) => setLink(e.target.value)} required={!title && !artist && !group && !file} />
             </div>
             <br />
             <input type="hidden" name="favorite" value="false" />
