@@ -1,371 +1,92 @@
 /*import React, { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "./audioPlayer.css";
 import Controls from "./controls";
 import ProgressCircle from "./progressCircle";
 import WaveAnimation from "./waveAnimation";
 
-export default function AudioPlayer({
-  currentTrack,
-  currentIndex,
-  setCurrentIndex,
-  total,
-}) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [trackProgress, setTrackProgress] = useState(0);
-  // 노트북에 있는 음악 파일 경로
-  const audioSrc = "/path/to/your/audio/file.mp3";
+const AudioPlayer = () => {
+  const location = useLocation();
+  const { playlistMusicDetails } = location.state || {};
 
-  const audioRef = useRef(new Audio(audioSrc));
-
-  const intervalRef = useRef();
-
-  const isReady = useRef(false);
-
-  const { duration } = audioRef.current;
-
-  const currentPercentage = duration ? (trackProgress / duration) * 100 : 0;
-
-  const startTimer = () => {
-    clearInterval(intervalRef.current);
-
-    intervalRef.current = setInterval(() => {
-      if (audioRef.current.ended) {
-        handleNext();
-      } else {
-        setTrackProgress(audioRef.current.currentTime);
-      }
-    }, [1000]);
-  };
-
-  useEffect(() => {
-    if (audioRef.current.src) {
-      if (isPlaying) {
-        audioRef.current.play();
-        startTimer();
-      } else {
-        clearInterval(intervalRef.current);
-        audioRef.current.pause();
-      }
-    } else {
-      if (isPlaying) {
-        audioRef.current = new Audio(audioSrc);
-        audioRef.current.play();
-        startTimer();
-      } else {
-        clearInterval(intervalRef.current);
-        audioRef.current.pause();
-      }
-    }
-  }, [isPlaying]);
-
-  useEffect(() => {
-    audioRef.current.pause();
-    audioRef.current = new Audio(audioSrc);
-
-    setTrackProgress(audioRef.current.currentTime);
-
-    if (isReady.current) {
-      audioRef.current.play();
-      setIsPlaying(true);
-      startTimer();
-    } else {
-      isReady.current = true;
-    }
-  }, [currentIndex]);
-
-  useEffect(() => {
-    return () => {
-      audioRef.current.pause();
-      clearInterval(intervalRef.current);
-    };
-  }, []);
-
-  const handleNext = () => {
-    if (currentIndex < total.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else setCurrentIndex(0);
-  };
-
-  const handlePrev = () => {
-    if (currentIndex - 1 < 0) setCurrentIndex(total.length - 1);
-    else setCurrentIndex(currentIndex - 1);
-  };
-
-  const addZero = (n) => {
-    return n > 9 ? "" + n : "0" + n;
-  };
-  const artists = [];
-  currentTrack?.album?.artists.forEach((artist) => {
-    artists.push(artist.name);
-  });
-
-  // 초기값 설정
-  const [songTitle, setSongTitle] = useState("hello");
-  const [songArtist, setSongArtist] = useState("hello");
-
-  useEffect(() => {
-    // 서버에서 음악 정보를 가져오는 함수
-    async function fetchMusicInfo() {
-      try {
-        const response = await fetch("http://localhost:8080/api/music");
-        const musicData = await response.json();
-        // 첫 번째 음악 정보를 가져와서 제목과 아티스트를 설정
-        const firstMusic = musicData[0];
-        setSongTitle(firstMusic.title);
-        setSongArtist(firstMusic.artist);
-      } catch (error) {
-        console.error("Error fetching music information:", error);
-      }
-    }
-
-    fetchMusicInfo();
-  }, []);
-
-  return (
-    <div className="player-body flex">
-      <div className="player-left-body">
-        <ProgressCircle
-          percentage={currentPercentage}
-          isPlaying={true}
-          image={currentTrack?.album?.images[0]?.url}
-          size={300}
-          color="#C96850"
-        />
-      </div>
-      <div className="player-right-body flex">
-        
-        <p className="song-title">{songTitle}</p>
-        <p className="song-artist">{songArtist}</p>
-        <div className="player-right-bottom flex">
-          <div className="song-duration flex">
-            <p className="duration">0:{addZero(Math.round(trackProgress))}</p>
-            <WaveAnimation isPlaying={isPlaying} />
-            <p className="duration">0:30</p>
-          </div>
-          <Controls
-            isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
-            handleNext={handleNext}
-            handlePrev={handlePrev}
-            total={total}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}*/
-
-/*
-
-import React, { useState, useRef, useEffect } from "react";
-import "./audioPlayer.css";
-import Controls from "./controls";
-import ProgressCircle from "./progressCircle";
-import WaveAnimation from "./waveAnimation";
-
-export default function AudioPlayer({
-  currentTrack,
-  currentIndex,
-  setCurrentIndex,
-  total,
-}) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [trackProgress, setTrackProgress] = useState(0);
-  // 노트북에 있는 음악 파일 경로
-  const audioSrc = "/path/to/your/audio/file.mp3";
-
-  const audioRef = useRef(new Audio(audioSrc));
-
-  const intervalRef = useRef();
-
-  const isReady = useRef(false);
-
-  const { duration } = audioRef.current;
-
-  const currentPercentage = duration ? (trackProgress / duration) * 100 : 0;
-
-  const startTimer = () => {
-    clearInterval(intervalRef.current);
-
-    intervalRef.current = setInterval(() => {
-      if (audioRef.current.ended) {
-        handleNext();
-      } else {
-        setTrackProgress(audioRef.current.currentTime);
-      }
-    }, [1000]);
-  };
-
-  useEffect(() => {
-    if (audioRef.current.src) {
-      if (isPlaying) {
-        audioRef.current.play();
-        startTimer();
-      } else {
-        clearInterval(intervalRef.current);
-        audioRef.current.pause();
-      }
-    } else {
-      if (isPlaying) {
-        audioRef.current = new Audio(audioSrc);
-        audioRef.current.play();
-        startTimer();
-      } else {
-        clearInterval(intervalRef.current);
-        audioRef.current.pause();
-      }
-    }
-  }, [isPlaying]);
-
-  useEffect(() => {
-    audioRef.current.pause();
-    audioRef.current = new Audio(audioSrc);
-
-    setTrackProgress(audioRef.current.currentTime);
-
-    if (isReady.current) {
-      audioRef.current.play();
-      setIsPlaying(true);
-      startTimer();
-    } else {
-      isReady.current = true;
-    }
-  }, [currentIndex]);
-
-  useEffect(() => {
-    return () => {
-      audioRef.current.pause();
-      clearInterval(intervalRef.current);
-    };
-  }, []);
-
-  const handleNext = () => {
-    if (currentIndex < total.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else setCurrentIndex(0);
-  };
-
-  const handlePrev = () => {
-    if (currentIndex - 1 < 0) setCurrentIndex(total.length - 1);
-    else setCurrentIndex(currentIndex - 1);
-  };
-
-  const addZero = (n) => {
-    return n > 9 ? "" + n : "0" + n;
-  };
-  const artists = [];
-  currentTrack?.album?.artists.forEach((artist) => {
-    artists.push(artist.name);
-  });
-
-  // 초기값 설정
-  const [songTitle, setSongTitle] = useState("title");
-  const [songArtist, setSongArtist] = useState("artist");
-
-  useEffect(() => {
-    setSongTitle("title");
-    setSongArtist("artist");
-  }, []);
-
-  return (
-    <div className="player-body flex">
-      <div className="player-left-body">
-        <ProgressCircle
-          percentage={currentPercentage}
-          isPlaying={true}
-          image={currentTrack?.album?.images[0]?.url}
-          size={300}
-          color="#C96850"
-        />
-      </div>
-      <div className="player-right-body flex">
-        
-        <p className="song-title">{songTitle}</p>
-        <p className="song-artist">{songArtist}</p>
-        <div className="player-right-bottom flex">
-          <div className="song-duration flex">
-            <p className="duration">0:{addZero(Math.round(trackProgress))}</p>
-            <WaveAnimation isPlaying={isPlaying} />
-            <p className="duration">0:30</p>
-          </div>
-          <Controls
-            isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
-            handleNext={handleNext}
-            handlePrev={handlePrev}
-            total={total}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}*/
-
-import React, { useState, useRef, useEffect } from "react";
-import "./audioPlayer.css";
-import Controls from "./controls";
-import ProgressCircle from "./progressCircle";
-import WaveAnimation from "./waveAnimation";
-
-export default function AudioPlayer({
-  currentTrack,
-  currentIndex,
-  setCurrentIndex,
-  total,
-}) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [trackProgress, setTrackProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [songTitle, setSongTitle] = useState("");
+  const [songArtist, setSongArtist] = useState("");
+  const [audioSrc, setAudioSrc] = useState("");
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [currentPosition, setCurrentPosition] = useState(0);
 
-  const audioSrc = "/path/to/your/audio/file.mp3";
-  const audioRef = useRef(new Audio(audioSrc));
+  const audioRef = useRef(null);
   const intervalRef = useRef();
-  const isReady = useRef(false);
 
   const currentPercentage = duration ? (trackProgress / duration) * 100 : 0;
 
   const startTimer = () => {
     clearInterval(intervalRef.current);
-
     intervalRef.current = setInterval(() => {
       if (audioRef.current.ended) {
         handleNext();
       } else {
         setTrackProgress(audioRef.current.currentTime);
       }
-    }, [1000]);
+    }, 1000);
   };
 
   useEffect(() => {
-    if (audioRef.current.src) {
-      if (isPlaying) {
-        audioRef.current.play();
-        startTimer();
-      } else {
-        clearInterval(intervalRef.current);
-        audioRef.current.pause();
-      }
+    console.log("playlistMusicDetails:", playlistMusicDetails);
+    if (!isInitialized && playlistMusicDetails && playlistMusicDetails.length > 0) {
+      setCurrentSongIndex(0);
+      setIsInitialized(true);
+    }
+  }, [playlistMusicDetails, isInitialized]);
+
+  useEffect(() => {
+    if (playlistMusicDetails && playlistMusicDetails.length > 0) {
+      const currentSong = playlistMusicDetails[currentSongIndex];
+      setSongTitle(currentSong.title);
+      setSongArtist(currentSong.artist);
+      setAudioSrc(`http://localhost:8080/api/music/item/${currentSong.id}`);
+      setTrackProgress(0);
+      setIsInitialized(true);
+    }
+  }, [currentSongIndex, playlistMusicDetails, isInitialized]);
+
+  useEffect(() => {
+    if (!audioSrc) return;
+
+    audioRef.current = new Audio(audioSrc);
+
+    audioRef.current.addEventListener("timeupdate", updateTime);
+    audioRef.current.addEventListener("durationchange", updateDuration);
+
+    if (isPlaying) {
+      audioRef.current.play();
+      startTimer();
     } else {
-      if (isPlaying) {
-        audioRef.current = new Audio(audioSrc);
-        audioRef.current.play();
-        startTimer();
-      } else {
-        clearInterval(intervalRef.current);
-        audioRef.current.pause();
-      }
+      audioRef.current.pause();
     }
 
-    audioRef.current.addEventListener('timeupdate', updateTime);
-    audioRef.current.addEventListener('durationchange', updateDuration);
-
     return () => {
-      audioRef.current.pause();
-      clearInterval(intervalRef.current);
-      audioRef.current.removeEventListener('timeupdate', updateTime);
-      audioRef.current.removeEventListener('durationchange', updateDuration);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.removeEventListener("timeupdate", updateTime);
+        audioRef.current.removeEventListener("durationchange", updateDuration);
+        clearInterval(intervalRef.current);
+      }
     };
-  }, [isPlaying]);
+  }, [audioSrc, isPlaying]);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [playlistMusicDetails]);
 
   const updateTime = () => {
     setTrackProgress(audioRef.current.currentTime);
@@ -376,40 +97,233 @@ export default function AudioPlayer({
   };
 
   const handleNext = () => {
-    if (currentIndex < total.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else setCurrentIndex(0);
+    if (playlistMusicDetails && currentSongIndex < playlistMusicDetails.length - 1) {
+      setCurrentSongIndex(currentSongIndex + 1);
+    } else {
+      setCurrentSongIndex(0);
+    }
   };
 
   const handlePrev = () => {
-    if (currentIndex - 1 < 0) setCurrentIndex(total.length - 1);
-    else setCurrentIndex(currentIndex - 1);
+    if (playlistMusicDetails && currentSongIndex > 0) {
+      setCurrentSongIndex(currentSongIndex - 1);
+    } else {
+      setCurrentSongIndex(playlistMusicDetails.length - 1);
+    }
+  };
+
+  const togglePlay = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.currentTime = trackProgress;
+      audioRef.current.play()
+          .then(() => {
+            startTimer();
+          })
+          .catch(error => {
+            console.error('Error occurred while playing audio:', error);
+          });
+    }
+    setIsPlaying(!isPlaying);
   };
 
   const addZero = (n) => {
     return n > 9 ? "" + n : "0" + n;
   };
 
-  const artists = [];
-  currentTrack?.album?.artists.forEach((artist) => {
-    artists.push(artist.name);
-  });
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${addZero(secs)}`;
+  };
 
-  const [songTitle, setSongTitle] = useState("title");
-  const [songArtist, setSongArtist] = useState("artist");
+  return (
+      <div className="player-body flex">
+        <div className="player-left-body">
+          <ProgressCircle
+              percentage={currentPercentage}
+              isPlaying={isPlaying}
+              image={playlistMusicDetails && playlistMusicDetails[currentSongIndex] ? playlistMusicDetails[currentSongIndex].album?.images[0]?.url : null}
+              size={300}
+              color="#C96850"
+          />
+        </div>
+        <div className="player-right-body flex">
+          <p className="song-title">{songTitle}</p>
+          <p className="song-artist">{songArtist}</p>
+          <div className="player-right-bottom flex">
+            <div className="song-duration flex">
+              <p className="duration">{formatTime(trackProgress)}</p>
+              <WaveAnimation isPlaying={isPlaying} />
+              <p className="duration">{formatTime(duration)}</p>
+            </div>
+            <Controls
+                isPlaying={isPlaying}
+                setIsPlaying={togglePlay}
+                handleNext={handleNext}
+                handlePrev={handlePrev}
+                audioRef={audioRef}
+            />
+          </div>
+        </div>
+      </div>
+  );
+}
+
+export default AudioPlayer;
+
+*/
+
+import React, { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import "./audioPlayer.css";
+import Controls from "./controls";
+import ProgressCircle from "./progressCircle";
+import WaveAnimation from "./waveAnimation";
+
+const AudioPlayer = () => {
+  const location = useLocation();
+  const { playlistMusicDetails } = location.state || {};
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [trackProgress, setTrackProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [songTitle, setSongTitle] = useState("");
+  const [songArtist, setSongArtist] = useState("");
+  const [audioSrc, setAudioSrc] = useState("");
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  const audioRef = useRef(new Audio());
+  const intervalRef = useRef();
+
+  const currentPercentage = duration ? (trackProgress / duration) * 100 : 0;
+
+  const startTimer = () => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      if (audioRef.current.ended) {
+        handleNext();
+      } else {
+        setTrackProgress(audioRef.current.currentTime);
+      }
+    }, 1000);
+  };
 
   useEffect(() => {
-    setSongTitle("title");
-    setSongArtist("artist");
-  }, []);
+    if (!isInitialized && playlistMusicDetails && playlistMusicDetails.length > 0) {
+      setCurrentSongIndex(0);
+      setIsInitialized(true);
+    }
+  }, [playlistMusicDetails, isInitialized]);
+
+  useEffect(() => {
+    if (playlistMusicDetails && playlistMusicDetails.length > 0) {
+      const currentSong = playlistMusicDetails[currentSongIndex];
+      setSongTitle(currentSong.title);
+      setSongArtist(currentSong.artist);
+      setAudioSrc(`http://localhost:8080/api/music/item/${currentSong.id}`);
+      setTrackProgress(0);
+    }
+  }, [currentSongIndex, playlistMusicDetails]);
+
+  useEffect(() => {
+    if (!audioSrc) return;
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = audioSrc;
+      audioRef.current.load();
+    } else {
+      audioRef.current = new Audio(audioSrc);
+    }
+
+    audioRef.current.addEventListener("timeupdate", updateTime);
+    audioRef.current.addEventListener("durationchange", updateDuration);
+
+    if (isPlaying) {
+      audioRef.current.play()
+        .then(() => startTimer())
+        .catch(error => {
+          console.error('Error occurred while playing audio:', error);
+        });
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.removeEventListener("timeupdate", updateTime);
+        audioRef.current.removeEventListener("durationchange", updateDuration);
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [audioSrc]);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [playlistMusicDetails]);
+
+  const updateTime = () => {
+    setTrackProgress(audioRef.current.currentTime);
+  };
+
+  const updateDuration = () => {
+    setDuration(audioRef.current.duration);
+  };
+
+  const handleNext = () => {
+    if (playlistMusicDetails && currentSongIndex < playlistMusicDetails.length - 1) {
+      setCurrentSongIndex(currentSongIndex + 1);
+    } else {
+      setCurrentSongIndex(0);
+    }
+  };
+
+  const handlePrev = () => {
+    if (playlistMusicDetails && currentSongIndex > 0) {
+      setCurrentSongIndex(currentSongIndex - 1);
+    } else {
+      setCurrentSongIndex(playlistMusicDetails.length - 1);
+    }
+  };
+
+  const togglePlay = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.currentTime = trackProgress;
+      audioRef.current.play()
+        .then(() => startTimer())
+        .catch(error => {
+          console.error('Error occurred while playing audio:', error);
+        });
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const addZero = (n) => {
+    return n > 9 ? "" + n : "0" + n;
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${addZero(secs)}`;
+  };
 
   return (
     <div className="player-body flex">
       <div className="player-left-body">
         <ProgressCircle
           percentage={currentPercentage}
-          isPlaying={true}
-          image={currentTrack?.album?.images[0]?.url}
+          isPlaying={isPlaying}
+          image={playlistMusicDetails && playlistMusicDetails[currentSongIndex] ? playlistMusicDetails[currentSongIndex].album?.images[0]?.url : null}
           size={300}
           color="#C96850"
         />
@@ -419,19 +333,21 @@ export default function AudioPlayer({
         <p className="song-artist">{songArtist}</p>
         <div className="player-right-bottom flex">
           <div className="song-duration flex">
-            <p className="duration">0:{addZero(Math.round(trackProgress))}</p>
+            <p className="duration">{formatTime(trackProgress)}</p>
             <WaveAnimation isPlaying={isPlaying} />
-            <p className="duration">0:{addZero(Math.round(duration))}</p>
+            <p className="duration">{formatTime(duration)}</p>
           </div>
           <Controls
             isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
+            setIsPlaying={togglePlay}
             handleNext={handleNext}
             handlePrev={handlePrev}
-            total={total}
+            audioRef={audioRef}
           />
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default AudioPlayer;

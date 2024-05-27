@@ -70,7 +70,7 @@
       padding: 8px;
     }
   
-    button {
+    .playlist-modal button {
       width: 25px;
       height: 25px;
       top: 5px;
@@ -92,14 +92,14 @@
       padding: 8px;
     }
   
-    button {
+    .playlist-modal button {
       width: 25px;
       height: 25px;
       top: 5px;
       right: 5px;
     }
   }
-  
+  /*
   @media (max-width: 768px) {
     .playlist-modal {
       width: 90%;
@@ -115,10 +115,10 @@
       font-size: 14px;
     }
   
-    button {
+    .playlist-modal button {
       width: 20px;
       height: 20px;
       top: 2px;
       right: 2px;
     }
-  }
+  }*/

@@ -1,5 +1,5 @@
-
-import React, { useState, useEffect } from 'react'; //수정41
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // useNavigate를 가져옵니다.
 import { BsMusicPlayer } from 'react-icons/bs';
 import { TbMusicHeart, TbMusicExclamation } from 'react-icons/tb';
 import { FaHeart } from 'react-icons/fa';
@@ -19,6 +19,8 @@ const Playlist = () => {
   const [favoriteModalOpen, setFavoriteModalOpen] = useState(false);
   const [recentlyAddedCount, setRecentlyAddedCount] = useState(0);
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
+
+  const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
 
   const serverURL = 'http://localhost:8080/api/music';
   const playlistURL = 'http://localhost:8080/api/playlist';
@@ -115,7 +117,7 @@ const Playlist = () => {
 
         const updatedPlaylist = await response.json();
         const updatedPlaylists = playlists.map((playlist, i) =>
-          i === index ? updatedPlaylist : playlist
+            i === index ? updatedPlaylist : playlist
         );
         setPlaylists(updatedPlaylists);
       } catch (error) {
@@ -142,7 +144,7 @@ const Playlist = () => {
 
       const updatedPlaylist = await response.json();
       const updatedPlaylists = playlists.map((p, i) =>
-        i === index ? updatedPlaylist : p
+          i === index ? updatedPlaylist : p
       );
       setPlaylists(updatedPlaylists);
     } catch (error) {
@@ -150,101 +152,149 @@ const Playlist = () => {
     }
   };
 
+  const fetchMusicDetails = async (musicIds) => {
+    const musicDetails = await Promise.all(
+        musicIds.map(async (id) => {
+          try {
+            const response = await fetch(`${serverURL}/${id}`);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          } catch (error) {
+            console.error('음악 상세 정보 가져오기 오류:', error);
+            return null; // 에러 발생 시 null 반환 또는 다른 처리 가능
+          }
+        })
+    );
+    return musicDetails.filter(detail => detail !== null); // 에러가 발생하지 않은 음악 정보만 필터링하여 반환
+  };
+
+  const handlePlayPlaylist = async (index) => {
+    const playlist = playlists[index];
+    const musicIds = playlist.musics.map(music => music.id); // 올바른 형식으로 음악 ID를 가져옴
+
+    try {
+      const musicDetails = await fetchMusicDetails(musicIds);
+      console.log('플레이리스트 음악 상세 정보:', musicDetails);
+      // 오디오 플레이어 페이지로 이동하며, 음악 상세 정보를 전달합니다.
+      navigate('../player', { state: { playlistMusicDetails: musicDetails } });
+    } catch (error) {
+      console.error('플레이리스트 재생 오류:', error);
+    }
+  };
+
   useEffect(() => {
     fetch(serverURL)
-      .then((response) => response.json())
-      .then((data) => {
-        setRecentlyAddedCount(data.length);
-        setLikedSongsCount(data.filter((song) => song.favorite).length);
-      })
-      .catch((error) => console.error('데이터 가져오기 오류:', error));
+        .then((response) => response.json())
+        .then((data) => {
+          setRecentlyAddedCount(data.length);
+          setLikedSongsCount(data.filter((song) => song.favorite).length);
+        })
+        .catch((error) => console.error('데이터 가져오기 오류:', error));
 
     fetch(playlistURL)
-      .then((response) => response.json())
-      .then((data) => {
-        setPlaylists(data);
-      })
-      .catch((error) => console.error('플레이리스트 가져오기 오류:', error));
+        .then((response) => response.json())
+        .then((data) => {
+          setPlaylists(data);
+        })
+        .catch((error) => console.error('플레이리스트 가져오기 오류:', error));
   }, []);
 
   return (
-    <div className="playlist-container screen-container" onClick={hideContextMenu}>
-      <div className="playlist-header">
-        <h2>Play List</h2>
-      </div>
-      <div className="song">
-        <div className="recently-added">
-          <h3>최근에 추가한 곡({recentlyAddedCount})</h3>
-          <div className="song-icons" onClick={toggleRecentModal}>
-            <TbMusicExclamation />
+      <div className="playlist-container screen-container" onClick={hideContextMenu}>
+        <div className="playlist-header">
+          <h2>Play List</h2>
+        </div>
+        <div className="song">
+          <div className="recently-added">
+            <h3>최근에 추가한 곡({recentlyAddedCount})</h3>
+            <div className="song-icons" onClick={toggleRecentModal}>
+              <TbMusicExclamation />
+            </div>
+          </div>
+          <div className="liked-songs">
+            <h3>좋아요 한 곡 ({likedSongsCount})</h3>
+            <div className="song-icons" onClick={toggleFavoriteModal}>
+              <TbMusicHeart />
+            </div>
           </div>
         </div>
-        <div className="liked-songs">
-          <h3>좋아요 한 곡 ({likedSongsCount})</h3>
-          <div className="song-icons" onClick={toggleFavoriteModal}>
-            <TbMusicHeart />
-          </div>
+        <div className="add-playlist">
+          <button onClick={toggleModal}>+</button>
         </div>
-      </div>
-      <div className="add-playlist">
-        <button onClick={toggleModal}>+</button>
-      </div>
-      <div className="playlists">
-        {playlists.map((playlist, index) => (
-          <div
-            key={playlist.id}
-            className="playlist-item"
-            onContextMenu={(e) => showContextMenu(index, e)}
-            onClick={() => setSelectedPlaylistId(playlist.id)}
-          >
-            {playlist.image ? (
-              <img src={playlist.image} alt="playlist" className="playlist-image" />
-            ) : (
-              <BsMusicPlayer className="playlist-icon" />
-            )}
-            <p>{playlist.name}</p>
-            <FaHeart
-              className="favorite-icon"
-              style={{ color: playlist.favorite ? 'red' : 'gray' }}
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent triggering playlist selection
-                toggleFavorite(index);
-              }}
-            />
-          </div>
-        ))}
-      </div>
+        <div className="playlists">
+          {playlists.map((playlist, index) => (
+              <div
+                  key={playlist.id}
+                  className="playlist-item"
+                  onContextMenu={(e) => showContextMenu(index, e)}
+                  onClick={() => setSelectedPlaylistId(playlist.id)}
+              >
 
-      {contextMenu.show && (
-        <div
-          className="context-menu"
-          style={{ top: contextMenu.y, left: contextMenu.x }}
-        >
-          <div>재생</div>
-          <div onClick={() => deletePlaylist(contextMenu.index)}>삭제</div>
-          <div onClick={() => editPlaylistName(contextMenu.index)}>정보 수정</div>
+                <div className='playlist-itme-left'>
+                  {playlist.image ? (
+                      <img src={playlist.image} alt="playlist" className="playlist-image" />
+                  ) : (
+                      <BsMusicPlayer className="playlist-icon" />
+                  )}
+                  <p>{playlist.name}</p>
+                </div>
+                <FaHeart
+                    className="favorite-icon"
+                    style={{ color: playlist.favorite ? 'red' : 'gray' }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering playlist selection
+                      toggleFavorite(index);
+                    }}
+                />
+              </div>
+          ))}
         </div>
-      )}
+        <Modal isOpen={modalOpen} onClose={toggleModal}>
+          <h2>플레이리스트 생성</h2>
+          <input
+              type="text"
+              placeholder="플레이리스트 이름"
+              value={playlistName}
+              onChange={handlePlaylistNameChange}
+          />
+          <button onClick={handlePlaylistSubmit}>생성</button>
+        </Modal>
+        {recentModalOpen && <PlaylistRecentModal onClose={toggleRecentModal} />}
+        {favoriteModalOpen && <PlaylistFavoriteModal onClose={toggleFavoriteModal} />}
+        {contextMenu.show && (
+            <div
+                className="context-menu"
+                style={{ top: contextMenu.y, left: contextMenu.x }}
+            >
 
-      <PlaylistRecentModal isOpen={recentModalOpen} toggleModal={toggleRecentModal} />
-      <PlaylistFavoriteModal isOpen={favoriteModalOpen} toggleModal={toggleFavoriteModal} />
+              <div onClick={() => handlePlayPlaylist(contextMenu.index)}>재생</div>
+              <div onClick={() => editPlaylistName(contextMenu.index)}>이름 수정</div>
+              <div onClick={() => deletePlaylist(contextMenu.index)}>삭제</div>
 
-      <Modal
-        isOpen={modalOpen}
-        toggleModal={toggleModal}
-        playlistName={playlistName}
-        handlePlaylistSubmit={handlePlaylistSubmit}
-        handlePlaylistNameChange={handlePlaylistNameChange}
-      />
+            </div>
+        )}
 
-      <PlaylistModal
-        isOpen={selectedPlaylistId !== null}
-        toggleModal={() => setSelectedPlaylistId(null)}
-        playlistId={selectedPlaylistId}
-        playlistURL={playlistURL}
-        serverURL={serverURL}
-      />
-    </div>
+        <PlaylistRecentModal isOpen={recentModalOpen} toggleModal={toggleRecentModal} />
+        <PlaylistFavoriteModal isOpen={favoriteModalOpen} toggleModal={toggleFavoriteModal} />
+
+        <Modal
+            isOpen={modalOpen}
+            toggleModal={toggleModal}
+            playlistName={playlistName}
+            handlePlaylistSubmit={handlePlaylistSubmit}
+            handlePlaylistNameChange={handlePlaylistNameChange}
+        />
+
+        <PlaylistModal
+            isOpen={selectedPlaylistId !== null}
+            toggleModal={() => setSelectedPlaylistId(null)}
+            playlistId={selectedPlaylistId}
+            playlistURL={playlistURL}
+            serverURL={serverURL}
+        />
+      </div>
   );
 };
 

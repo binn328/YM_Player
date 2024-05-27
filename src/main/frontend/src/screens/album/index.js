@@ -4,10 +4,11 @@ import { FaHeart } from "react-icons/fa";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import "./album.css";
 
-const defaultAlbumCover = "https://i.ibb.co/hfBLJ5S/default-album-cover.jpg";
+const defaultAlbumCover = "https://ibb.co/pLzFy1z";
 const SERVER_URL = "http://localhost:8080";
 
 export default function Album() {
+
     const [albums, setAlbums] = useState([]);
     const [albumName, setAlbumName] = useState("");
     const [albumCover, setAlbumCover] = useState("");
@@ -18,6 +19,7 @@ export default function Album() {
     const [editAlbumName, setEditAlbumName] = useState("");
     const [newMusicId, setNewMusicId] = useState("");
     const [musicList, setMusicList] = useState([]);
+    const [albumArtUrl, setAlbumArtUrl] = useState("");
 
     useEffect(() => {
         const fetchAlbums = async () => {
@@ -35,10 +37,10 @@ export default function Album() {
                 const albumResponse = await fetch('http://localhost:8080/api/album');
                 const albumsData = await albumResponse.json();
                 const existingAlbumNames = albumsData.map((album) => album.name);
-    
+
                 const musicResponse = await fetch('http://localhost:8080/api/music');
                 const musicData = await musicResponse.json();
-    
+
                 const groupedMusic = {};
                 musicData.forEach((music) => {
                     if (!groupedMusic[music.group]) {
@@ -46,7 +48,7 @@ export default function Album() {
                     }
                     groupedMusic[music.group].push(music);
                 });
-    
+
                 for (const [group, musicList] of Object.entries(groupedMusic)) {
                     const existingAlbum = albumsData.find((album) => album.name === group);
                     if (existingAlbum) {
@@ -54,7 +56,7 @@ export default function Album() {
                         const newMusicIds = musicList.map(({ id }) => id).filter(id => !existingMusicIds.has(id));
                         const updatedMusics = [...existingAlbum.musics, ...newMusicIds];
                         const updatedAlbumData = { ...existingAlbum, musics: updatedMusics };
-    
+
                         const updateResponse = await fetch(`http://localhost:8080/api/album/update`, {
                             method: 'POST',
                             headers: {
@@ -62,11 +64,11 @@ export default function Album() {
                             },
                             body: JSON.stringify(updatedAlbumData)
                         });
-    
+
                         if (!updateResponse.ok) {
                             throw new Error('앨범 음악 목록 업데이트 실패');
                         }
-    
+
                         const updatedAlbum = await updateResponse.json();
                         setAlbums((prevAlbums) =>
                             prevAlbums.map((album) => (album.id === updatedAlbum.id ? updatedAlbum : album))
@@ -77,7 +79,7 @@ export default function Album() {
                             cover: defaultAlbumCover,
                             musics: musicList.map(({ id }) => id),
                         };
-    
+
                         const formData = new FormData();
                         formData.append('name', newAlbum.name);
                         formData.append('favorite', 'false');
@@ -85,18 +87,21 @@ export default function Album() {
                         newAlbum.musics.forEach((id, index) => {
                             formData.append(`musics[${index}]`, id);
                         });
-    
+
                         const response = await fetch('http://localhost:8080/api/album', {
                             method: 'POST',
                             body: formData,
                         });
-    
+
                         if (!response.ok) {
                             throw new Error('네트워크 응답 실패');
                         }
-    
+
                         const data = await response.json();
                         setAlbums((prevAlbums) => [...prevAlbums, data]);
+
+                        // 이미지 다운로드 및 업로드
+                        await fetchAndUploadAlbumCover(data.id);
                     }
                 }
             } catch (error) {
@@ -122,6 +127,33 @@ export default function Album() {
 
         fetchMusic();
     }, []);
+
+    const fetchAndUploadAlbumCover = async (albumId) => {
+        try {
+            const response = await fetch(defaultAlbumCover);
+            const blob = await response.blob();
+
+            const formData = new FormData();
+            formData.append('file', blob);
+
+            const uploadResponse = await fetch(`http://localhost:8080/api/album/art/${albumId}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!uploadResponse.ok) {
+                throw new Error('Failed to upload album cover');
+            }
+
+            const uploadedAlbumCover = await uploadResponse.json();
+
+            setAlbums(prevAlbums =>
+                prevAlbums.map(album => album.id === albumId ? {...album, cover: uploadedAlbumCover.cover} : album)
+            );
+        } catch (error) {
+            console.error('Error uploading album cover:', error);
+        }
+    };
 
     const handleAlbumCreate = async () => {
         try {
@@ -244,40 +276,40 @@ export default function Album() {
     };
 
     const handleDeleteMusic = async (albumId, musicId) => {
-      try {
-        const response = await fetch(`http://localhost:8080/api/album/${albumId}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch album details');
+        try {
+            const response = await fetch(`http://localhost:8080/api/album/${albumId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch album details');
+            }
+            const albumData = await response.json();
+            console.log('앨범 정보:', albumData);
+
+            const updatedMusics = albumData.musics.filter(music => music.id !== musicId.id);
+            console.log('새로운 음악 목록:', updatedMusics);
+
+            const updatedAlbumData = { ...albumData, musics: updatedMusics };
+            console.log('새로운 앨범 데이터:', updatedAlbumData);
+            const updateResponse = await fetch(`http://localhost:8080/api/album/update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedAlbumData)
+            });
+
+            if (!updateResponse.ok) {
+                throw new Error('Failed to update album music list');
+            }
+
+            const updatedAlbum = await updateResponse.json();
+            console.log('업데이트된 앨범 정보:', updatedAlbum);
+
+            setSelectedMusics(updatedAlbum.musics);
+
+            setAlbums(prevAlbums => prevAlbums.map(album => album.id === albumId ? updatedAlbum : album));
+        } catch (error) {
+            console.error('Error deleting music from album:', error);
         }
-        const albumData = await response.json();
-        console.log('앨범 정보:', albumData);
-
-        const updatedMusics = albumData.musics.filter(music => music.id !== musicId.id);
-        console.log('새로운 음악 목록:', updatedMusics);
-
-        const updatedAlbumData = { ...albumData, musics: updatedMusics };
-        console.log('새로운 앨범 데이터:', updatedAlbumData);
-        const updateResponse = await fetch(`http://localhost:8080/api/album/update`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(updatedAlbumData)
-        });
-
-        if (!updateResponse.ok) {
-          throw new Error('Failed to update album music list');
-        }
-
-        const updatedAlbum = await updateResponse.json();
-        console.log('업데이트된 앨범 정보:', updatedAlbum);
-
-        setSelectedMusics(updatedAlbum.musics);
-
-        setAlbums(prevAlbums => prevAlbums.map(album => album.id === albumId ? updatedAlbum : album));
-      } catch (error) {
-        console.error('Error deleting music from album:', error);
-      }
     };
 
     const handleAddMusicToAlbum = async (albumId, musicId) => {
@@ -366,6 +398,37 @@ export default function Album() {
         }
     };
 
+    const handleAlbumArtUpload = async (albumId, file) => {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch(`http://localhost:8080/api/album/art/${albumId}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to upload album art');
+            }
+
+            const updatedAlbum = await response.json();
+
+            // Update album data with new cover URL
+            setAlbums(prevAlbums =>
+                prevAlbums.map(album => album.id === albumId ? {...album, cover: updatedAlbum.cover} : album)
+            );
+
+            // Immediately update the album art URL for the selected album
+            if (selectedAlbum === albumId) {
+                setAlbumArtUrl(updatedAlbum.cover); // Update album art URL directly
+            }
+        } catch (error) {
+            console.error('Error uploading album art:', error);
+        }
+    };
+
+
     return (
         <div className="screen-container">
             <div className="library-body">
@@ -394,17 +457,18 @@ export default function Album() {
                     <div key={album.id} className="album-card-container">
                         <div className="album-card">
                             <h3 onClick={() => handleAlbumClick(album)}>{album.name}
-                            <button className='heart-button' onClick={(e) => {
-                                e.stopPropagation(); toggleFavorite(album); }}>
-                                <FaHeart color={album.favorite ? 'red' : 'gray'} />
-                            </button>
-                            <FaRegCirclePlay className='play-button' onClick={() => handleCreatePlaylist(album)} />
+                                <button className='heart-button' onClick={(e) => {
+                                    e.stopPropagation(); toggleFavorite(album); }}>
+                                    <FaHeart color={album.favorite ? 'red' : 'gray'} />
+                                </button>
+                                <FaRegCirclePlay className='play-button' onClick={() => handleCreatePlaylist(album)} />
                             </h3>
                             <img
-                                src={album.cover}
+                                src={`http://localhost:8080/api/album/art/${album.id}`}
                                 alt={album.name}
                                 className="album-cover"
                                 onClick={() => handleAlbumClick(album)}
+
                             />
                             <div className="album-menu">
                                 <CiMenuKebab onClick={() => setShowMenu(album.id)} />
@@ -425,6 +489,13 @@ export default function Album() {
                                     onChange={(e) => setEditAlbumName(e.target.value)}
                                 />
                                 <button onClick={() => handleUpdateAlbumName(album.id)}>Update</button>
+                                {/* 앨범 아트 업데이트 양식 추가 */}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleAlbumArtUpload(album.id, e.target.files[0])}
+                                />
+
                             </div>
                         )}
                         {selectedAlbum === album.id && (

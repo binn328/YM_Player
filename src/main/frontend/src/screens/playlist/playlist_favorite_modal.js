@@ -24,7 +24,7 @@ const PlaylistFavoriteModal = ({ isOpen, toggleModal }) => {
   return (
     isOpen && (
       <div className="favorite-modal">
-        <div className="modal">
+        <div className="Fmodal">
           <h2>좋아요 한 곡</h2>
           <ul className="favorite-list">
             {favoriteSongs.map((song, index) => (

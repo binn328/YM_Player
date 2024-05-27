@@ -1,63 +1,30 @@
-/*.recently-added-modal {
-    position: fixed;
-    width:70%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-20%, -80%);
-    border-radius: 8px;
-  }
-  
-  .recently-added-modal h2 {
-    margin-top: 0;
-  }
-  
-  .recently-added-list {
-    cursor: pointer;
-    list-style: none;
-    padding: 0;
-
-  }
-  
-  .recently-added-list li {
-    margin-bottom: 5px;
-    border-bottom: 1px solid #ccc; 
-    padding-bottom: 5px;
-  }
-  
-  .recentil-added-list li:last-child{
-    border-bottom: none;
-  }
-  
-  .recently-added-modal button {
-    background-color: #201658;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .recently-added-modal button:hover {
-    background-color: #0f0b24;
-  }
-  
-
-  .song-info-modal{
-    margin-top: 20px;
-  }*/
 
   .recently-added-modal {
+    width:35%;
     position: fixed;
-    width: 40%; 
     top: 50%;
-    left: 50%;
-    transform: translate(-60%, -50%); 
+    transform: translate(50%, -50%); 
     border-radius: 8px;
     z-index: 9999; 
     background-color: rgba(255, 255, 255, 0.9); 
     padding: 20px; 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+}
+
+.Rmodal{
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+}
+
+.Smodal{
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
 }
 
 .recently-added-modal h2 {
@@ -88,18 +55,23 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
-}
+    font-size:25px;
+  }
 
 .recently-added-modal button:hover {
     background-color: #0f0b24;
 }
 
+.recently-added-modal li:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 .song-info-modal {
     position: fixed;
-    width: 40%; 
+    width: 50%; 
     top: 50%;
     left: 60%; 
-    transform: translate(-50%, -50%);
+    transform: translate(80%, -50%);
     border-radius: 8px;
     z-index: 9999; 
     background-color: rgba(255, 255, 255, 0.9); 

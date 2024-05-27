@@ -1,14 +1,18 @@
 .favorite-modal {
     position: fixed;
-    width:70%;
+    width:30%;
     top: 50%;
     left: 50%;
-    transform: translate(-20%, -80%);
+    transform: translate(-20%, -50%);
     border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.9); 
+    padding: 20px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+    z-index: 9999; 
   }
   
   .favorite-modal h2 {
-    /*font-size: 20px;*/
+   
     margin-top: 10px;
   }
   
@@ -17,6 +21,14 @@
     padding: 0;
   }
   
+  .Fmodal{
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    font-size:30px;
+    text-align:center;
+  }
+
   .favorite-modal li {
     margin-bottom: 10px;
   }
@@ -29,6 +41,7 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size:25px;
   }
   
   .favorite-modal button:hover {
@@ -44,6 +57,7 @@
     margin-bottom: 10px;
     border-bottom: 1px solid #ccc; 
     padding-bottom: 5px;
+    cursor: pointer;
   }
   
   .favorite-list li:last-child {
