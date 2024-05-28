@@ -21,12 +21,17 @@
       repeating-linear-gradient(#1e2a3e55, #1e2a3e);
   }*/
 
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap');
+
+
   .screen-container {
     width: calc(100% - 100px);
     height: 100%;
     background: linear-gradient(45deg, #19133a,#0089a9);
     border-radius: 30px;
     opacity: 1;
+    font-family: 'Orbitron',"IBM Plex Sans KR", sans-serif; 
   }
 
   .flex {

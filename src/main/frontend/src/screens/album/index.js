@@ -3,15 +3,15 @@ import { CiMenuKebab } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import "./album.css";
+import defaultAlbumCover from './icon-image.png';
 
-const defaultAlbumCover = "https://ibb.co/pLzFy1z";
 const SERVER_URL = "http://localhost:8080";
 
 export default function Album() {
 
     const [albums, setAlbums] = useState([]);
     const [albumName, setAlbumName] = useState("");
-    const [albumCover, setAlbumCover] = useState("");
+    const [albumCover, setAlbumCover] = useState(null); // Changed to null
     const [selectedAlbum, setSelectedAlbum] = useState(null);
     const [selectedMusics, setSelectedMusics] = useState([]);
     const [showMenu, setShowMenu] = useState(null);
@@ -53,9 +53,9 @@ export default function Album() {
                     const existingAlbum = albumsData.find((album) => album.name === group);
                     if (existingAlbum) {
                         const existingMusicIds = new Set(existingAlbum.musics.map(music => music.id));
-                        const newMusicIds = musicList.map(({ id }) => id).filter(id => !existingMusicIds.has(id));
+                        const newMusicIds = musicList.map(({id}) => id).filter(id => !existingMusicIds.has(id));
                         const updatedMusics = [...existingAlbum.musics, ...newMusicIds];
-                        const updatedAlbumData = { ...existingAlbum, musics: updatedMusics };
+                        const updatedAlbumData = {...existingAlbum, musics: updatedMusics};
 
                         const updateResponse = await fetch(`http://localhost:8080/api/album/update`, {
                             method: 'POST',
@@ -77,13 +77,13 @@ export default function Album() {
                         const newAlbum = {
                             name: group,
                             cover: defaultAlbumCover,
-                            musics: musicList.map(({ id }) => id),
+                            musics: musicList.map(({id}) => id),
                         };
 
                         const formData = new FormData();
                         formData.append('name', newAlbum.name);
                         formData.append('favorite', 'false');
-                        formData.append('cover', newAlbum.cover);
+                        formData.append('cover', defaultAlbumCover); // Using defaultAlbumCover here
                         newAlbum.musics.forEach((id, index) => {
                             formData.append(`musics[${index}]`, id);
                         });
@@ -160,7 +160,7 @@ export default function Album() {
             const formData = new FormData();
             formData.append('name', albumName);
             formData.append('favorite', 'false');
-            formData.append('cover', albumCover || defaultAlbumCover);
+            formData.append('cover', albumCover || defaultAlbumCover); // Using defaultAlbumCover here
             formData.append('musics', []);
 
             const response = await fetch('http://localhost:8080/api/album', {
@@ -175,7 +175,7 @@ export default function Album() {
             const data = await response.json();
             setAlbums([...albums, data]);
             setAlbumName("");
-            setAlbumCover("");
+            setAlbumCover(null); // Reset album cover after creation
         } catch (error) {
             console.error('Error creating album:', error);
         }
@@ -287,7 +287,7 @@ export default function Album() {
             const updatedMusics = albumData.musics.filter(music => music.id !== musicId.id);
             console.log('새로운 음악 목록:', updatedMusics);
 
-            const updatedAlbumData = { ...albumData, musics: updatedMusics };
+            const updatedAlbumData = {...albumData, musics: updatedMusics};
             console.log('새로운 앨범 데이터:', updatedAlbumData);
             const updateResponse = await fetch(`http://localhost:8080/api/album/update`, {
                 method: 'POST',
@@ -322,7 +322,7 @@ export default function Album() {
 
             const updatedMusics = [...albumData.musics, musicId];
 
-            const updatedAlbumData = { ...albumData, musics: updatedMusics };
+            const updatedAlbumData = {...albumData, musics: updatedMusics};
             const updateResponse = await fetch(`http://localhost:8080/api/album/update`, {
                 method: 'POST',
                 headers: {
@@ -412,16 +412,16 @@ export default function Album() {
                 throw new Error('Failed to upload album art');
             }
 
-            const updatedAlbum = await response.json();
+            // 이미지 업로드가 성공하면 응답이 필요하지 않으므로 처리하지 않음
 
             // Update album data with new cover URL
             setAlbums(prevAlbums =>
-                prevAlbums.map(album => album.id === albumId ? {...album, cover: updatedAlbum.cover} : album)
+                prevAlbums.map(album => album.id === albumId ? {...album, cover: URL.createObjectURL(file)} : album)
             );
 
             // Immediately update the album art URL for the selected album
             if (selectedAlbum === albumId) {
-                setAlbumArtUrl(updatedAlbum.cover); // Update album art URL directly
+                setAlbumArtUrl(URL.createObjectURL(file)); // Update album art URL directly
             }
         } catch (error) {
             console.error('Error uploading album art:', error);
@@ -429,11 +429,12 @@ export default function Album() {
     };
 
 
+
     return (
         <div className="screen-container">
             <div className="library-body">
                 <div className="album-header">
-                    <h2>Album</h2>
+                    <h2 id="album-title">Album</h2>
                 </div>
                 <div className="create-album">
                     <input
@@ -466,13 +467,13 @@ export default function Album() {
                                 <FaRegCirclePlay className='play-button' onClick={() => handleCreatePlaylist(album)}/>
                             </h3>
                             <img
-                                src={`http://localhost:8080/api/album/art/${album.id}`}
+                                src={album.cover || defaultAlbumCover} // Using defaultAlbumCover as fallback
                                 alt={album.name}
                                 className="album-cover"
                                 onClick={() => handleAlbumClick(album)}
 
                             />
-                            <div className="album-menu">
+                            <div className="album-menu2">
                                 <CiMenuKebab onClick={() => setShowMenu(album.id)}/>
                                 {showMenu === album.id && (
                                     <div className="menu-options">
@@ -503,14 +504,18 @@ export default function Album() {
                         )}
                         {selectedAlbum === album.id && (
                             <div className="album-songs">
-                                <h4>Songs</h4>
+                                <h4 id="Songs">Songs</h4>
                                 {selectedMusics.length > 0 ? (
                                     <ul>
                                         {selectedMusics.map((musicId, index) => {
                                             const music = musicList.find((item) => item.id === musicId.id);
                                             return (
                                                 <li key={index}>
-                                                    {music ? music.title : 'No title available'}
+                                                    {music ? (
+                                                        music.title
+                                                    ) : (
+                                                        <span className="no-title">No title available</span>
+                                                    )}
                                                     <button
                                                         className="delete-music-button"
                                                         onClick={() => handleDeleteMusic(album.id, musicId)}
@@ -518,11 +523,12 @@ export default function Album() {
                                                         삭제
                                                     </button>
                                                 </li>
+
                                             );
                                         })}
                                     </ul>
                                 ) : (
-                                    <p>No musics available</p>
+                                    <p id="no-music">No musics available</p>
                                 )}
                                 <div>
                                     <input
