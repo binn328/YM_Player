@@ -453,99 +453,101 @@ export default function Album() {
                         Create Album
                     </button>
                 </div>
+                <div className="card-body">
+                    {albums.map((album) => (
+                        <div key={album.id} className="album-card-container">
+                            <div className="album-card">
+                                <h3 onClick={() => handleAlbumClick(album)}>{album.name}
+                                    <button className='heart-button' onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleFavorite(album);
+                                    }}>
+                                        <FaHeart color={album.favorite ? 'red' : 'gray'}/>
+                                    </button>
+                                    <FaRegCirclePlay className='play-button' onClick={() => handleCreatePlaylist(album)}/>
+                                </h3>
+                                <img
+                                    src={album.cover || defaultAlbumCover} // Using defaultAlbumCover as fallback
+                                    alt={album.name}
+                                    className="album-cover"
+                                    onClick={() => handleAlbumClick(album)}
 
-                {albums.map((album) => (
-                    <div key={album.id} className="album-card-container">
-                        <div className="album-card">
-                            <h3 onClick={() => handleAlbumClick(album)}>{album.name}
-                                <button className='heart-button' onClick={(e) => {
-                                    e.stopPropagation();
-                                    toggleFavorite(album);
-                                }}>
-                                    <FaHeart color={album.favorite ? 'red' : 'gray'}/>
-                                </button>
-                                <FaRegCirclePlay className='play-button' onClick={() => handleCreatePlaylist(album)}/>
-                            </h3>
-                            <img
-                                src={album.cover || defaultAlbumCover} // Using defaultAlbumCover as fallback
-                                alt={album.name}
-                                className="album-cover"
-                                onClick={() => handleAlbumClick(album)}
-
-                            />
-                            <div className="album-menu2">
-                                <CiMenuKebab onClick={() => setShowMenu(album.id)}/>
-                                {showMenu === album.id && (
-                                    <div className="menu-options">
-                                        <p onClick={() => setEditAlbumId(album.id)}>정보 수정</p>
-                                        <p onClick={() => handleDeleteAlbum(album.id)}>앨범 삭제</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        {editAlbumId === album.id && (
-                            <div>
-                                <input
-                                    type="text"
-                                    placeholder="New Album Name"
-                                    value={editAlbumName}
-                                    onChange={(e) => setEditAlbumName(e.target.value)}
                                 />
-                                <button onClick={() => handleUpdateAlbumName(album.id)}>Update</button>
-                                {/* 앨범 아트 업데이트 양식 추가 */}
-                                <div>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={(e) => handleAlbumArtUpload(album.id, e.target.files[0])}
-                                    />
+                                <div className="album-menu2">
+                                    <CiMenuKebab onClick={() => setShowMenu(album.id)}/>
+                                    {showMenu === album.id && (
+                                        <div className="menu-options">
+                                            <p onClick={() => setEditAlbumId(album.id)}>정보 수정</p>
+                                            <p onClick={() => handleDeleteAlbum(album.id)}>앨범 삭제</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        )}
-                        {selectedAlbum === album.id && (
-                            <div className="album-songs">
-                                <h4 id="Songs">Songs</h4>
-                                {selectedMusics.length > 0 ? (
-                                    <ul>
-                                        {selectedMusics.map((musicId, index) => {
-                                            const music = musicList.find((item) => item.id === musicId.id);
-                                            return (
-                                                <li key={index}>
-                                                    {music ? (
-                                                        music.title
-                                                    ) : (
-                                                        <span className="no-title">No title available</span>
-                                                    )}
-                                                    <button
-                                                        className="delete-music-button"
-                                                        onClick={() => handleDeleteMusic(album.id, musicId)}
-                                                    >
-                                                        삭제
-                                                    </button>
-                                                </li>
-
-                                            );
-                                        })}
-                                    </ul>
-                                ) : (
-                                    <p id="no-music">No musics available</p>
-                                )}
+                            {editAlbumId === album.id && (
                                 <div>
                                     <input
                                         type="text"
-                                        placeholder="New Music ID"
-                                        value={newMusicId}
-                                        onChange={(e) => setNewMusicId(e.target.value)}
+                                        placeholder="New Album Name"
+                                        value={editAlbumName}
+                                        onChange={(e) => setEditAlbumName(e.target.value)}
                                     />
-                                    <button onClick={() => handleAddMusicToAlbum(album.id, newMusicId)}>
-                                        Add Music
-                                    </button>
+                                    <button onClick={() => handleUpdateAlbumName(album.id)}>Update</button>
+                                    {/* 앨범 아트 업데이트 양식 추가 */}
+                                    <div>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => handleAlbumArtUpload(album.id, e.target.files[0])}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
-                ))}
+                            )}
+                            {selectedAlbum === album.id && (
+                                <div className="album-songs">
+                                    <h4 id="Songs">Songs</h4>
+                                    {selectedMusics.length > 0 ? (
+                                        <ul>
+                                            {selectedMusics.map((musicId, index) => {
+                                                const music = musicList.find((item) => item.id === musicId.id);
+                                                return (
+                                                    <li key={index}>
+                                                        {music ? (
+                                                            music.title
+                                                        ) : (
+                                                            <span className="no-title">No title available</span>
+                                                        )}
+                                                        <button
+                                                            className="delete-music-button"
+                                                            onClick={() => handleDeleteMusic(album.id, musicId)}
+                                                        >
+                                                            삭제
+                                                        </button>
+                                                    </li>
+
+                                                );
+                                            })}
+                                        </ul>
+                                    ) : (
+                                        <p id="no-music">No musics available</p>
+                                    )}
+                                    <div>
+                                        <input
+                                            type="text"
+                                            placeholder="New Music ID"
+                                            value={newMusicId}
+                                            onChange={(e) => setNewMusicId(e.target.value)}
+                                        />
+                                        <button onClick={() => handleAddMusicToAlbum(album.id, newMusicId)}>
+                                            Add Music
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+
             </div>
         </div>
     );
-}
