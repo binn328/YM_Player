@@ -432,6 +432,9 @@ export default function Album() {
     return (
         <div className="screen-container">
             <div className="library-body">
+                <div className="album-header">
+                    <h2>Album</h2>
+                </div>
                 <div className="create-album">
                     <input
                         type="text"
@@ -439,9 +442,6 @@ export default function Album() {
                         value={albumName}
                         onChange={(e) => setAlbumName(e.target.value)}
                     />
-                    <label htmlFor="album-cover-input" className="text-color">
-                        Select image
-                    </label>
                     <input
                         id="album-cover-input"
                         type="file"
@@ -458,10 +458,12 @@ export default function Album() {
                         <div className="album-card">
                             <h3 onClick={() => handleAlbumClick(album)}>{album.name}
                                 <button className='heart-button' onClick={(e) => {
-                                    e.stopPropagation(); toggleFavorite(album); }}>
-                                    <FaHeart color={album.favorite ? 'red' : 'gray'} />
+                                    e.stopPropagation();
+                                    toggleFavorite(album);
+                                }}>
+                                    <FaHeart color={album.favorite ? 'red' : 'gray'}/>
                                 </button>
-                                <FaRegCirclePlay className='play-button' onClick={() => handleCreatePlaylist(album)} />
+                                <FaRegCirclePlay className='play-button' onClick={() => handleCreatePlaylist(album)}/>
                             </h3>
                             <img
                                 src={`http://localhost:8080/api/album/art/${album.id}`}
@@ -471,7 +473,7 @@ export default function Album() {
 
                             />
                             <div className="album-menu">
-                                <CiMenuKebab onClick={() => setShowMenu(album.id)} />
+                                <CiMenuKebab onClick={() => setShowMenu(album.id)}/>
                                 {showMenu === album.id && (
                                     <div className="menu-options">
                                         <p onClick={() => setEditAlbumId(album.id)}>정보 수정</p>
@@ -490,12 +492,13 @@ export default function Album() {
                                 />
                                 <button onClick={() => handleUpdateAlbumName(album.id)}>Update</button>
                                 {/* 앨범 아트 업데이트 양식 추가 */}
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => handleAlbumArtUpload(album.id, e.target.files[0])}
-                                />
-
+                                <div>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleAlbumArtUpload(album.id, e.target.files[0])}
+                                    />
+                                </div>
                             </div>
                         )}
                         {selectedAlbum === album.id && (
@@ -510,7 +513,7 @@ export default function Album() {
                                                     {music ? music.title : 'No title available'}
                                                     <button
                                                         className="delete-music-button"
-                                                        onClick={() => handleDeleteMusic(album.id,musicId)}
+                                                        onClick={() => handleDeleteMusic(album.id, musicId)}
                                                     >
                                                         삭제
                                                     </button>

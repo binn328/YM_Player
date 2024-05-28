@@ -361,7 +361,7 @@ function MusicPlayer() {
 
   return (
     <div className="screen-container">
-      <h1>My Playlist</h1>
+      <h1 className='library-h1'>My Playlist</h1>
       <div className='playlist-list'>
         <div className="library-body">
           {musicData.map((music, index) => (

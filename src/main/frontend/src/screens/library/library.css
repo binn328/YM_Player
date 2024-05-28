@@ -15,7 +15,7 @@
   overflow: visible; /* 메뉴가 카드 밖에서도 보이도록 설정 */
 }
 
-.screen-container h1 {
+.screen-container .library-h1 {
   color: white;
   margin-top: 20px;
   margin-left: 5%;
