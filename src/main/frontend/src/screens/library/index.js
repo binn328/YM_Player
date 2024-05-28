@@ -361,9 +361,9 @@ function MusicPlayer() {
 
   return (
     <div className="screen-container">
-      <h1 className='library-h1'>My Playlist</h1>
       <div className='playlist-list'>
-        <div className="library-body">
+        <h1 className='library-h1'>My Playlist</h1>
+        <div className="library-card">
           {musicData.map((music, index) => (
             <div key={music.id} className="music-card" onClick={() => playMusic(music, index)}>
               <div className="music-info">
@@ -423,42 +423,53 @@ function MusicPlayer() {
       )}
       {editingMusic && (
         <div className="edit-menu">
-          <form onSubmit={handleEditSubmit}>
-            <div className='edit-label'>
-              <label>
-                제목:
-                <input
-                  type="text"
-                  name="title"
-                  value={editingMusic.title}
-                  onChange={handleEditChange}
-                />
-              </label>
-              <label>
-                아티스트:
-                <input
-                  type="text"
-                  name="artist"
-                  value={editingMusic.artist}
-                  onChange={handleEditChange}
-                />
-              </label>
-              <label>
-                그룹:
-                <input
-                  type="text"
-                  name="group"
-                  value={editingMusic.group}
-                  onChange={handleEditChange}
-                />
-              </label>
-            </div>
-            <div className='edit-btn'>
-              <button type="submit">수정</button>
-              <button type="button" onClick={closeEditMenu}>취소</button>
-            </div>
-          </form>
-        </div>
+        <form onSubmit={handleEditSubmit}>
+          <table className="edit-table">
+            <tbody>
+              <tr>
+                <td><label htmlFor="title">제목:</label></td>
+                <td>
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value={editingMusic.title}
+                    onChange={handleEditChange}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td><label htmlFor="artist">아티스트:</label></td>
+                <td>
+                  <input
+                    type="text"
+                    id="artist"
+                    name="artist"
+                    value={editingMusic.artist}
+                    onChange={handleEditChange}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td><label htmlFor="group">그룹:</label></td>
+                <td>
+                  <input
+                    type="text"
+                    id="group"
+                    name="group"
+                    value={editingMusic.group}
+                    onChange={handleEditChange}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div className='edit-btn'>
+            <button type="submit">수정</button>
+            <button type="button" onClick={closeEditMenu}>취소</button>
+          </div>
+        </form>
+      </div>      
       )}
     </div>
   );

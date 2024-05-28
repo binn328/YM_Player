@@ -27,6 +27,7 @@
   text-align: center;
 }
 
+
 .recently-added-modal h2 {
     margin-top: 0;
 }
@@ -41,6 +42,7 @@
     margin-bottom: 5px;
     border-bottom: 1px solid #ccc;
     padding-bottom: 5px;
+    overflow: scroll;
 }
 
 .recently-added-list li:last-child {
@@ -68,13 +70,25 @@
 
 .song-info-modal {
     position: fixed;
-    width: 50%; 
+    width: 70%; 
     top: 50%;
     left: 60%; 
-    transform: translate(80%, -50%);
+    transform: translate(60%, -50%);
     border-radius: 8px;
     z-index: 9999; 
     background-color: rgba(255, 255, 255, 0.9); 
     padding: 20px; 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+}
+
+.song-info-modal h2{
+  overflow: scroll;
+}
+
+.song-info-modal h2::-webkit-scrollbar{
+  display:none;
+}
+
+.recently-added-list li::-webkit-scrollbar{
+  display:none;
 }

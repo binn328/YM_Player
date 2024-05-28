@@ -58,11 +58,14 @@
     border-bottom: 1px solid #ccc; 
     padding-bottom: 5px;
     cursor: pointer;
+    overflow: scroll;
   }
   
   .favorite-list li:last-child {
     border-bottom: none; 
   }
   
-  
+  .favorite-list li::-webkit-scrollbar{
+    display: none;
+  }
   
