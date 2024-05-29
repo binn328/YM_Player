@@ -32,11 +32,21 @@
   .right-player-body::-webkit-scrollbar{
     display:none;
   }
+
+
   
   .right-player-body ul{
+    word-wrap: break-word;
     text-align: center;
     font-size: 25px;
     padding-bottom: 15px;
+    overflow: scroll;
+    height:80%;
+    width:90%;
+  }
+
+  .right-player-body li{
+    width:95%;
   }
 
   .right-player-body .current-playlist{
@@ -46,6 +56,11 @@
 
   .right-player-body .current-playlist:hover{
     background-color: rgba(0,0,0,0.2);
+    transition: 0.2s ease-in-out;
+  }
+
+  .right-player-body ul::-webkit-scrollbar{
+    display:none;
   }
 
 
@@ -69,3 +84,30 @@
     background-color: #f1f1f1;
   }
   
+
+  .current-playlist-add-btn{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 84%;
+    height: 14%;
+    border-radius: 30px;
+    background: linear-gradient(
+      180deg,
+      rgba(54, 69, 98, 0) 10%,
+      rgba(54, 69, 98, 1) 100%
+    );
+    opacity: 0;
+    transition: 0.5s ease-in-out;
+    animation: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 8%;
+    cursor: pointer;
+  }
+
+  .current-playlist-add-btn:hover{
+    opacity: 1;
+    transform:scale(1.1,1.1);
+  }
