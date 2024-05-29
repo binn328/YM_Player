@@ -1,7 +1,7 @@
 .add-song-container{
-    width: 80%;
+    width: 90%;
     background: linear-gradient(100deg, #1e2a3e, #3645621a);
-    padding: 10px;
+    
     cursor: pointer;
     z-index: 999;
     border-radius: 10px;

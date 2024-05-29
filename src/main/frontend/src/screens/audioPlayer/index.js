@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import "./audioPlayer.css";
 import Controls from "./controls";
@@ -14,9 +15,11 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
   const [audioSrc, setAudioSrc] = useState("");
   const [isInitialized, setIsInitialized] = useState(false);
   const [isShuffleOn, setIsShuffleOn] = useState(false);
+  const [repeatMode, setRepeatMode] = useState("none");
 
   const audioRef = useRef(new Audio());
   const intervalRef = useRef();
+  const isReady = useRef(false);
 
   const currentPercentage = duration ? (trackProgress / duration) * 100 : 0;
 
@@ -29,6 +32,21 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
         setTrackProgress(audioRef.current.currentTime);
       }
     }, 1000);
+  };
+
+  const handleNext = () => {
+    if (repeatMode === "one") {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      if (playlistMusicDetails && playlistMusicDetails.length > 0) {
+        setCurrentSongIndex((prevIndex) =>
+          isShuffleOn
+            ? Math.floor(Math.random() * playlistMusicDetails.length)
+            : (prevIndex + 1) % playlistMusicDetails.length
+        );
+      }
+    }
   };
 
   useEffect(() => {
@@ -62,98 +80,106 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
   useEffect(() => {
     if (!audioSrc) return;
 
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.src = audioSrc;
-      audioRef.current.load();
+    const audio = audioRef.current;
+    audio.pause();
+    audio.src = audioSrc;
+    audio.load();
+
+    const updateTime = () => setTrackProgress(audio.currentTime);
+    const updateDuration = () => setDuration(audio.duration);
+
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("durationchange", updateDuration);
+
+    if (isReady.current) {
+      audio.play().then(startTimer).catch(console.error);
     } else {
-      audioRef.current = new Audio(audioSrc);
-    }
-
-    audioRef.current.addEventListener("timeupdate", updateTime);
-    audioRef.current.addEventListener("durationchange", updateDuration);
-
-    if (isPlaying) {
-      audioRef.current.play()
-        .then(() => startTimer())
-        .catch(error => {
-          console.error('Error occurred while playing audio:', error);
-        });
+      isReady.current = true;
     }
 
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.removeEventListener("timeupdate", updateTime);
-        audioRef.current.removeEventListener("durationchange", updateDuration);
-        clearInterval(intervalRef.current);
-      }
+      audio.pause();
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("durationchange", updateDuration);
+      clearInterval(intervalRef.current);
     };
   }, [audioSrc]);
 
   useEffect(() => {
+    const handleEnd = () => handleNext();
+    const audio = audioRef.current;
+
+    audio.removeEventListener("ended", handleEnd);
+    audio.addEventListener("ended", handleEnd);
+
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        clearInterval(intervalRef.current);
-      }
+      audio.removeEventListener("ended", handleEnd);
     };
-  }, [playlistMusicDetails]);
+  }, [repeatMode]);
 
   useEffect(() => {
-    // 셔플 상태가 바뀔 때마다 플레이리스트 랜덤 섞기
+    return () => {
+      const audio = audioRef.current;
+      audio.pause();
+      clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (isShuffleOn) {
       const shuffledPlaylist = [...playlistMusicDetails].sort(() => Math.random() - 0.5);
       setPlaylistMusicDetails(shuffledPlaylist);
     }
   }, [isShuffleOn]);
 
-  const updateTime = () => {
-    setTrackProgress(audioRef.current.currentTime);
-  };
-
-  const updateDuration = () => {
-    setDuration(audioRef.current.duration);
-  };
-
-  const handleNext = () => {
+  useEffect(() => {
     if (playlistMusicDetails && playlistMusicDetails.length > 0) {
-      if (isShuffleOn) { // 셔플 상태이면 랜덤으로 다음 노래 재생
-        const randomIndex = Math.floor(Math.random() * playlistMusicDetails.length);
-        setCurrentSongIndex(randomIndex);
-      } else { // 그렇지 않으면 순서대로 다음 노래 재생
-        setCurrentSongIndex(currentSongIndex === playlistMusicDetails.length - 1 ? 0 : currentSongIndex + 1);
+      const currentSong = playlistMusicDetails[currentSongIndex];
+      setSongTitle(currentSong.title);
+      setSongArtist(currentSong.artist);
+      setAudioSrc(`http://localhost:8080/api/music/item/${currentSong.id}`);
+      if (isPlaying) {
+        audioRef.current.play().catch(console.error);
       }
     }
-  };
+  }, [playlistMusicDetails]);
 
   const handlePrev = () => {
     if (playlistMusicDetails && playlistMusicDetails.length > 0) {
-      if (isShuffleOn) { // 셔플 상태이면 랜덤으로 이전 노래 재생
-        const randomIndex = Math.floor(Math.random() * playlistMusicDetails.length);
-        setCurrentSongIndex(randomIndex);
-      } else { // 그렇지 않으면 순서대로 이전 노래 재생
-        setCurrentSongIndex(currentSongIndex === 0 ? playlistMusicDetails.length - 1 : currentSongIndex - 1);
-      }
+      setCurrentSongIndex((prevIndex) =>
+        isShuffleOn
+          ? Math.floor(Math.random() * playlistMusicDetails.length)
+          : prevIndex === 0
+          ? playlistMusicDetails.length - 1
+          : prevIndex - 1
+      );
     }
   };
 
   const togglePlay = () => {
+    const audio = audioRef.current;
     if (isPlaying) {
-      audioRef.current.pause();
+      audio.pause();
+      clearInterval(intervalRef.current);
+      setIsPlaying(false);
     } else {
-      audioRef.current.currentTime = trackProgress;
-      audioRef.current.play()
-        .then(() => startTimer())
-        .catch(error => {
-          console.error('Error occurred while playing audio:', error);
+      audio.play()
+        .then(() => {
+          startTimer();
+          setIsPlaying(true);
+        })
+        .catch((error) => {
+          console.error("Error occurred while playing audio:", error);
         });
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleShuffle = () => {
     setIsShuffleOn(!isShuffleOn);
+  };
+
+  const handleRepeatToggle = () => {
+    setRepeatMode(repeatMode === "none" ? "one" : "none");
   };
 
   const addZero = (n) => {
@@ -168,50 +194,55 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
 
   return (
     <div className="player-body flex">
-    <div className="player-left-body">
-    <ProgressCircle
-    percentage={currentPercentage}
-    isPlaying={isPlaying}
-    image={playlistMusicDetails && playlistMusicDetails[currentSongIndex] ? playlistMusicDetails[currentSongIndex].album?.images[0]?.url : null}
-    size={300}
-    color="#C96850"
-    />
-    </div>
-    <div className="player-right-body flex">
-    <p className="song-title">{songTitle}</p>
-    <p className="song-artist">{songArtist}</p>
-    <div className="player-right-bottom flex">
-    <div className="song-duration flex">
-    <p className="duration">{formatTime(trackProgress)}</p>
-    <WaveAnimation isPlaying={isPlaying} />
-    <p className="duration">{formatTime(duration)}</p>
-    </div>
-    <div className="playbar flex">
-      <input
-          type="range"
-          value={trackProgress}
-          step="1"
-          min="0"
-          max={duration ? duration : `${duration}`}
-          onChange={(e) => {
-            setTrackProgress(Number(e.target.value));
-            audioRef.current.currentTime = Number(e.target.value);
-          }}
-      />
+      <div className="player-left-body">
+        <ProgressCircle
+          percentage={currentPercentage}
+          isPlaying={isPlaying}
+          image={
+            playlistMusicDetails && playlistMusicDetails[currentSongIndex]
+              ? playlistMusicDetails[currentSongIndex].album?.images[0]?.url
+              : null
+          }
+          size={300}
+          color="#C96850"
+        />
       </div>
-
-    <Controls
+      <div className="player-right-body flex">
+        <p className="song-title">{songTitle}</p>
+        <p className="song-artist">{songArtist}</p>
+        <div className="player-right-bottom flex">
+          <div className="song-duration flex">
+            <p className="duration">{formatTime(trackProgress)}</p>
+            <WaveAnimation isPlaying={isPlaying} />
+            <p className="duration">{formatTime(duration)}</p>
+          </div>
+          <div className="playbar flex">
+            <input
+              type="range"
+              value={trackProgress}
+              step="1"
+              min="0"
+              max={duration ? duration : `${duration}`}
+              onChange={(e) => {
+                setTrackProgress(Number(e.target.value));
+                audioRef.current.currentTime = Number(e.target.value);
+              }}
+            />
+          </div>
+          <Controls
             isPlaying={isPlaying}
             setIsPlaying={togglePlay}
             handleNext={handleNext}
             handlePrev={handlePrev}
             handleShuffle={handleShuffle}
             isShuffleOn={isShuffleOn}
+            repeatMode={repeatMode}
+            handleRepeatToggle={handleRepeatToggle}
           />
+        </div>
+      </div>
     </div>
-    </div>
-    </div>
-    );
+  );
 };
 
 export default AudioPlayer;

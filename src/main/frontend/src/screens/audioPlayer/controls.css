@@ -57,3 +57,27 @@
 .shuffle-icon:hover{
   transform: scale(1.1);
 }
+
+.play-repeat-one.active{
+  filter: invert(46%) sepia(74%) saturate(400%) hue-rotate(323deg) brightness(119%) contrast(101%) opacity(0.8);
+}
+
+.play-repeat-one:hover{
+  cursor: pointer;
+  transform: scale(1.1,1.1);
+}
+
+.play-repeat{
+  align-items: center;
+  border-radius: 20px;
+  cursor: pointer;
+  height: 50px;
+  justify-content: center;
+  transition: all .2s ease-in-out;
+  width: 50px;
+  cursor: pointer;
+}
+
+.play-repeat:hover{
+  transform: scale(1.1,1.1);
+}

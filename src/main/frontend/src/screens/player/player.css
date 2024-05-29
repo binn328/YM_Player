@@ -41,7 +41,7 @@
     font-size: 25px;
     padding-bottom: 15px;
     overflow: scroll;
-    height:80%;
+    height:78%;
     width:90%;
   }
 
@@ -51,6 +51,7 @@
 
   .right-player-body .current-playlist{
     cursor:pointer;
+    padding-right: 20px;
     
   }
 
@@ -90,7 +91,7 @@
     right: 0;
     bottom: 0;
     width: 84%;
-    height: 14%;
+    height: 11%;
     border-radius: 30px;
     background: linear-gradient(
       180deg,
