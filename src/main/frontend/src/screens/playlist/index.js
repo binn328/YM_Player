@@ -244,7 +244,7 @@ const Playlist = () => {
                     className="favorite-icon"
                     style={{ color: playlist.favorite ? 'red' : 'gray' }}
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering playlist selection
+                      e.stopPropagation(); 
                       toggleFavorite(index);
                     }}
                 />

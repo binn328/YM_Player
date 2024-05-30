@@ -9,6 +9,7 @@
     padding: 20px; 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
     z-index: 9999; 
+    height:70%;
   }
   
   .favorite-modal h2 {
@@ -27,6 +28,8 @@
     padding: 20px;
     font-size:30px;
     text-align:center;
+    height:93%;
+    overflow:scroll;
   }
 
   .favorite-modal li {
@@ -68,4 +71,6 @@
   .favorite-list li::-webkit-scrollbar{
     display: none;
   }
-  
+  .Fmodal::-webkit-scrollbar{
+    display: none;
+  }

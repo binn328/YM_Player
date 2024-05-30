@@ -47,7 +47,8 @@ const MusicItem = ({ music, index, moveMusic, findMusic, onContextMenu }) => {
 
   return (
     <li ref={(node) => drag(drop(node))} style={{ opacity }} onContextMenu={(e) => onContextMenu(music.id, e)}>
-      {music.title} - 순서: {index + 1}
+      {/*{music.title} - 순서: {index + 1}*/}
+      {music.title}
     </li>
   );
 };
@@ -225,9 +226,9 @@ const PlaylistModal = ({ isOpen, toggleModal, playlistId, playlistURL, serverURL
     isOpen && playlist && (
       <DndProvider backend={HTML5Backend}>
         <div className="playlist-modal" onClick={hideContextMenu}>
-          <div className='current-playlist'>
-            <h2>{playlist.name}</h2>
-            <p title="현재 플레이리스트" >곡 목록</p>
+          <div className='current-playlist' >
+            <h2 title="현재 플레이리스트">{playlist.name}</h2>
+            <p >곡 목록</p>
             <ul>
               {playlist.musics.map((music, index) => {
                 const musicInfo = musicList.find((item) => item.id === music.id);
