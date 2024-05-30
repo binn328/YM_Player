@@ -309,3 +309,7 @@ input{
   display: flex;
   flex-wrap: wrap;
 }
+
+svg.play-button:hover{
+  transform: scale(2); /* 이미지 확대 효과 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 효과 */}

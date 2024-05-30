@@ -84,6 +84,7 @@ export default function Album() {
                         formData.append('name', newAlbum.name);
                         formData.append('favorite', 'false');
                         formData.append('cover', defaultAlbumCover); // Using defaultAlbumCover here
+
                         newAlbum.musics.forEach((id, index) => {
                             formData.append(`musics[${index}]`, id);
                         });
@@ -97,11 +98,6 @@ export default function Album() {
                             throw new Error('네트워크 응답 실패');
                         }
 
-                        const data = await response.json();
-                        setAlbums((prevAlbums) => [...prevAlbums, data]);
-
-                        // 이미지 다운로드 및 업로드
-                        await fetchAndUploadAlbumCover(data.id);
                     }
                 }
             } catch (error) {
@@ -467,8 +463,7 @@ export default function Album() {
                                     <FaRegCirclePlay className='play-button' onClick={() => handleCreatePlaylist(album)}/>
                                 </h3>
                                 <img
-                                    src={album.cover || defaultAlbumCover} // Using defaultAlbumCover as fallback
-                                    alt={album.name}
+                                    src={`http://localhost:8080/api/album/art/${album.id}` ? `http://localhost:8080/api/album/art/${album.id}` : defaultAlbumCover} // Using defaultAlbumCover as fallback
                                     className="album-cover"
                                     onClick={() => handleAlbumClick(album)}
 
