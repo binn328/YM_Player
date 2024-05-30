@@ -87,7 +87,7 @@ export default function Modal({ onClose, setCurrentImage }) {
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-box" onClick={onClose}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
                 <h2>프로필 변경
                     <button className="close-btn" onClick={onClose}>X</button>
