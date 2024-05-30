@@ -1,3 +1,4 @@
+/*라이브러리css*/
 .screen-container {
   position: relative;
   height: 100vh; /* 화면 높이에 맞추어 크기 고정 */
@@ -20,7 +21,6 @@
 }
 
 .music-card {
-  position: relative; /* position: relative를 유지 */
   width: 155px;
   height: 180px;
   border-radius: 20px;
@@ -28,12 +28,13 @@
   border: 1px solid rgba(235, 237, 240, 0.18);
   margin-right: 20px;
   margin-bottom: 20px;
-  overflow: visible;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /*position: relative; /* menu 위치를 위해 추가 */
 }
 
 .music-card:hover {
   transform: translateY(-5px);
+  overflow: visible; /* hover 시 전체 정보가 나오도록 설정 */
 }
 
 .music-info {
@@ -45,38 +46,61 @@
   font-size: 16px;
   margin-bottom: 5px;
   color: white;
+  white-space: nowrap; /* 텍스트가 한 줄로 표시되도록 설정 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트는 말줄임표(...)로 표시 */
 }
 
 .artist {
   font-size: 14px;
   color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .group {
   font-size: 12px;
   color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.heart-button {
+.music-card .heart-button {
   background-color: transparent;
   border: none;
 }
 
+.toggle-visibility-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  position: fixed;
+  bottom: 180px; /* Adjust based on the height of the music controller */
+  right: 20px;
+  z-index: 10;
+  cursor: pointer;
+}
+
 .music-controller {
   bottom: 0;
-  width: 80%;
   background-color: rgba(30, 42, 62, 0.9);
   padding: 20px;
-  padding-right: 100%;
   display: flex;
   align-items: center;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  width: calc(100% - 100px);
+  height: 170px;
 }
 
 .music-controller .music-info {
   text-align: center;
-  margin-left: 5%;
+  /*margin-left: 5%;*/
   flex: 1;
+  padding: 20px 80px;
 }
 
 .music-controller .player-controls {
@@ -84,6 +108,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-right: 80px;
+  padding-top: 30px;
 }
 
 .range-controls {
@@ -153,9 +179,9 @@
 }
 
 .menu-button {
-  position: absolute;
+  /*position: absolute;
   top: 10px;
-  right: 10px;
+  right: 10px;*/
   background: none;
   border: none;
   cursor: pointer;
@@ -169,16 +195,18 @@
 }
 
 .menu {
-  position: absolute; /* 메뉴가 다른 카드와 겹칠 때 위에 표시되도록 설정 */
+  /*position: absolute;*/
   background: white;
   border: 1px solid #ccc;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 100; /* 메뉴의 z-index를 높여서 다른 카드 위에 표시되도록 설정 */
+  /*z-index: 100;*/
+  z-index: 2;
+  position: relative;
 }
 
 .music-card .menu {
   display: block;
-  z-index: 2;
+  /*z-index: 2;*/
 }
 
 .menu p {
@@ -189,7 +217,7 @@
 
 .menu p:hover {
   background-color: #f0f0f0;
-  z-index: 10;
+  z-index: 2;
 }
 
 @media screen and (max-width: 768px) {

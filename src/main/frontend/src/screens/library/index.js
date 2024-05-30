@@ -1,4 +1,4 @@
-//라이브러리 인덱스 앨범,플리추가
+//라이브러리 js
 import React, { useState, useEffect, useRef } from 'react';
 import './library.css';
 import { FaHeart } from "react-icons/fa";
@@ -6,6 +6,7 @@ import { AiOutlineStepBackward, AiOutlineStepForward } from "react-icons/ai";
 import { FaPause, FaPlay } from "react-icons/fa6";
 import { LuRepeat, LuRepeat1 } from "react-icons/lu";
 import { CiMenuKebab } from "react-icons/ci";
+import { AiFillCaretDown } from "react-icons/ai";
 import MusicController from './musicController';
 import PlaylistMenu from './playlistMenu';
 import AlbumMenu from './albumMenu';
@@ -26,6 +27,7 @@ function MusicPlayer() {
   const [musicToAdd, setMusicToAdd] = useState(null);
   const [editingMusic, setEditingMusic] = useState(null);
   const [openedMenuIndex, setOpenedMenuIndex] = useState(null);
+  const [showMusicController, setShowMusicController] = useState(false);
 
   const audioRef = useRef(null);
 
@@ -98,6 +100,7 @@ function MusicPlayer() {
       audioRef.current.src = `http://localhost:8080/api/music/item/${music.id}`;
       audioRef.current.play();
     }
+    setShowMusicController(true); // 음악을 재생할 때 MusicController를 열도록 설정
   };
 
   const stopMusic = () => {
