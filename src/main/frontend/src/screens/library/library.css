@@ -42,12 +42,6 @@
   padding: 20px 10px;
 }
 
-.music-title-container {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
 .music-title {
   font-size: 16px;
   margin-bottom: 5px;
@@ -55,10 +49,6 @@
   white-space: nowrap; /* 텍스트가 한 줄로 표시되도록 설정 */
   overflow: hidden; /* 넘치는 텍스트 숨김 */
   text-overflow: ellipsis; /* 넘치는 텍스트는 말줄임표(...)로 표시 */
-  /*display: inline-block; /* 인라인 요소로 설정하여 다른 요소와 함께 표시되도록 함 */
-  max-width: calc(100% - 30px); /* 최대 너비를 설정하여 하트 버튼의 너비만큼 공간을 확보 */
-  flex-grow: 1;
-  margin-left: 5px;
 }
 
 .artist {
@@ -80,8 +70,6 @@
 .music-card .heart-button {
   background-color: transparent;
   border: none;
-  /*margin-left: 5px;*/
-  flex-shrink: 0;
 }
 
 .toggle-visibility-button {

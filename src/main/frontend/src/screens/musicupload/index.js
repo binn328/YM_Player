@@ -23,7 +23,7 @@ function MusicForm() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ url: link })
+          body: JSON.stringify({ url: link }) // 링크를 URL로 전달합니다
         });
 
         if (!dlResponse.ok) {
@@ -70,58 +70,29 @@ function MusicForm() {
 
   return (
     <div className="screen-container">
-      <div className="container">
-        <div className="form-box">
+      <div className='container'>
+        <div className='form-box'>
           <h1>음악 업로드</h1>
           <form onSubmit={handleSubmit} encType="multipart/form-data" className="music-form">
             <div className="form-group">
               <label>제목</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요."
-                required={!link}
-              />
+              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required={!link} />
             </div>
             <div className="form-group">
               <label>가수</label>
-              <input
-                type="text"
-                value={artist}
-                onChange={(e) => setArtist(e.target.value)}
-                placeholder="제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요."
-                required={!link}
-              />
+              <input type="text" value={artist} onChange={(e) => setArtist(e.target.value)} required={!link} />
             </div>
             <div className="form-group">
               <label>그룹</label>
-              <input
-                type="text"
-                value={group}
-                onChange={(e) => setGroup(e.target.value)}
-                placeholder="제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요."
-                required={!link}
-              />
+              <input type="text" value={group} onChange={(e) => setGroup(e.target.value)} required={!link} />
             </div>
             <div className="form-group">
               <label>파일</label>
-              <input
-                type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-                title="제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요."
-                required={!link}
-              />
+              <input type="file" onChange={(e) => setFile(e.target.files[0])} required={!link} />
             </div>
             <div className="form-group">
               <label>링크</label>
-              <input
-                type="url"
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
-                placeholder="제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요."
-                required={!title && !artist && !group && !file}
-              />
+              <input type="url" value={link} onChange={(e) => setLink(e.target.value)} required={!title && !artist && !group && !file} />
             </div>
             <br />
             <input type="hidden" name="favorite" value="false" />
