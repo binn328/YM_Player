@@ -12,13 +12,22 @@
 }
 
 .modal-overlay .modal {
-  background-color: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  max-width: 400px; 
-  max-height:300px;
-  width: 80%; 
+  background-color: #ffffffe6;
+    
+    max-height: 300px;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #0000004d;
   
+}
+
+.modal-overlay .modal-component{
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  
+  width: 80%; 
 }
 
 .modal-overlay .modal h2 {
@@ -46,6 +55,10 @@
   background-color: #201658;
   color: white;
   text-align: center;
+}
+.modal button:hover{
+ 
+  background-color: #0f0b24;
 }
 
 .modal button:last-child {

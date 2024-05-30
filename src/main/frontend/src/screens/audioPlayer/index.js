@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import "./audioPlayer.css";
 import Controls from "./controls";
@@ -47,6 +46,24 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
         );
       }
     }
+    if (isPlaying) {
+      audioRef.current.play().catch(console.error);
+    }
+  };
+
+  const handlePrev = () => {
+    if (playlistMusicDetails && playlistMusicDetails.length > 0) {
+      setCurrentSongIndex((prevIndex) =>
+        isShuffleOn
+          ? Math.floor(Math.random() * playlistMusicDetails.length)
+          : prevIndex === 0
+          ? playlistMusicDetails.length - 1
+          : prevIndex - 1
+      );
+    }
+    if (isPlaying) {
+      audioRef.current.play().catch(console.error);
+    }
   };
 
   useEffect(() => {
@@ -92,7 +109,9 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
     audio.addEventListener("durationchange", updateDuration);
 
     if (isReady.current) {
-      audio.play().then(startTimer).catch(console.error);
+      if (isPlaying) {
+        audio.play().then(startTimer).catch(console.error);
+      }
     } else {
       isReady.current = true;
     }
@@ -144,18 +163,6 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
     }
   }, [playlistMusicDetails]);
 
-  const handlePrev = () => {
-    if (playlistMusicDetails && playlistMusicDetails.length > 0) {
-      setCurrentSongIndex((prevIndex) =>
-        isShuffleOn
-          ? Math.floor(Math.random() * playlistMusicDetails.length)
-          : prevIndex === 0
-          ? playlistMusicDetails.length - 1
-          : prevIndex - 1
-      );
-    }
-  };
-
   const togglePlay = () => {
     const audio = audioRef.current;
     if (isPlaying) {
@@ -176,6 +183,10 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
 
   const handleShuffle = () => {
     setIsShuffleOn(!isShuffleOn);
+    if (!isPlaying) {
+      const shuffledPlaylist = [...playlistMusicDetails].sort(() => Math.random() - 0.5);
+      setPlaylistMusicDetails(shuffledPlaylist);
+    }
   };
 
   const handleRepeatToggle = () => {

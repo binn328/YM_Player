@@ -8,12 +8,14 @@
   height: 97vh;
   padding: 10px;
   background-color: #f0f0f0;
-  overflow: hidden;
+  overflow: scroll;
   
 
   
 }
-
+.playlist-container::-webkit-scrollbar{
+  display:none;
+}
 
 
 .playlist-header {
@@ -135,14 +137,31 @@
 
 }
 
+.favorite-icon {
+  transition: color 0.5s ease; 
+}
+
 @media (max-width: 768px) {
   .playlist-container {
     padding: 10px;
+    
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
   }
 
   .song {
-    flex-direction: column;
-    align-items: flex-start;
+   
+    height: 15%;
+    
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+  }
+  .song-icon{
+    font-size:50px;
   }
 
   .recently-added, .liked-songs {
@@ -150,17 +169,23 @@
   }
 
   .playlists {
-    justify-content: center;
+    justify-content: flex-start;
+        
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-wrap: nowrap;
   }
 
   .playlist-item {
     margin: 5px;
+    font-size:20px;
   }
 
-  .playlist-image, .playlist-icon {
+  /*.playlist-image, .playlist-icon {
     width: 80px;
     height: 80px;
-  }
+  }*/
 
   .favorite-icon {
     top: 2px;
@@ -171,6 +196,14 @@
 @media (max-width: 480px) {
   .playlist-container {
     padding: 5px;
+    
+  }
+
+  .song {
+    
+    
+    height: 30%;
+    font-size: 18px;
   }
 
   .playlists {
@@ -180,11 +213,11 @@
 
   .playlist-item {
     margin: 5px 0;
+    font-size:0px;
   }
 
   .playlist-image, .playlist-icon {
-    width: 60px;
-    height: 60px;
+    font-size: 20px;
   }
 
   .favorite-icon {

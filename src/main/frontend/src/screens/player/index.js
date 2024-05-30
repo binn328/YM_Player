@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react"; 
+import React, { useEffect, useState, useRef } from "react";
 import "./player.css";
 import AudioPlayer from "../../screens/audioPlayer";
 import Widgets from "../../screens/widgets";
@@ -79,31 +79,41 @@ export default function Player() {
     const newPlaylist = localPlaylistMusicDetails.filter((_, i) => i !== index);
 
     if (index === currentIndex) {
-      if (index === localPlaylistMusicDetails.length) {
-        setCurrentIndex(0); 
+      if (index === localPlaylistMusicDetails.length - 1) {
+        setCurrentIndex(0);
       } else {
-        setCurrentIndex(currentIndex); 
+        setCurrentIndex(currentIndex);
       }
-    } else if (index < currentIndex) {  
-      setCurrentIndex(currentIndex - 1); 
+    } else if (index < currentIndex) {
+      setCurrentIndex(currentIndex - 1);
     }
-    
+
     setLocalPlaylistMusicDetails(newPlaylist);
+
+    if (index === currentIndex) {
+      if (newPlaylist.length === 0) {
+        setCurrentTrack({});
+        audioRef.current.pause();
+      } else {
+        const nextIndex = index === localPlaylistMusicDetails.length - 1 ? 0 : currentIndex;
+        setCurrentIndex(nextIndex);
+        setCurrentTrack(newPlaylist[nextIndex]);
+      }
+    }
   };
 
   const prioritizeSong = (index) => {
     const prioritizedSong = localPlaylistMusicDetails[index];
     const newPlaylist = [...localPlaylistMusicDetails];
-    
+
     if (index !== currentIndex) {
-      newPlaylist.splice(index, 1); 
-      newPlaylist.unshift(prioritizedSong); 
-      setCurrentIndex(0); 
-      setLocalPlaylistMusicDetails(newPlaylist); 
+      newPlaylist.splice(index, 1);
+      newPlaylist.unshift(prioritizedSong);
+      setCurrentIndex(0);
+      setLocalPlaylistMusicDetails(newPlaylist);
       setCurrentTrack(prioritizedSong);
     }
   };
-
 
   const addToPlaylist = (selectedSong) => {
     setLocalPlaylistMusicDetails(prevPlaylist => [...prevPlaylist, selectedSong]);
@@ -117,7 +127,6 @@ export default function Player() {
     setShowAddSong(true);
   };
 
-
   return (
     <div className="screen-container flex" onClick={handleContainerClick}>
       <div className="left-player-body">
@@ -126,11 +135,11 @@ export default function Player() {
           total={tracks}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
-          playlistMusicDetails={localPlaylistMusicDetails} 
-          audioRef={audioRef} 
+          playlistMusicDetails={localPlaylistMusicDetails}
+          audioRef={audioRef}
           setPlaylistMusicDetails={setLocalPlaylistMusicDetails}
         />
-        <Widgets artistID={currentTrack?.artist?.id} /> 
+        <Widgets artistID={currentTrack?.artist?.id} />
       </div>
 
       <div className="right-player-body">
@@ -143,9 +152,9 @@ export default function Player() {
                   {localPlaylistMusicDetails.map((music, index) => (
                     <Draggable key={music.id} draggableId={music.id} index={index}>
                       {(provided) => (
-                        <div 
-                          ref={provided.innerRef} 
-                          {...provided.draggableProps} 
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           onContextMenu={(e) => showContextMenu(index, e)}
                         >
@@ -166,7 +175,7 @@ export default function Player() {
         <div className="current-playlist-add-btn" onClick={handleOpenAddSong}>
           <FaPlus />
         </div>
-        
+
         {contextMenu.show && (
           <div
             className="context-menu"
@@ -176,10 +185,10 @@ export default function Player() {
             <div onClick={() => deleteSong(contextMenu.index)}>삭제</div>
           </div>
         )}
-        
+
         {showAddSong && (
-          <Addsong 
-            addToPlaylist={addToPlaylist} 
+          <Addsong
+            addToPlaylist={addToPlaylist}
             onClose={handleCloseAddSong}
             currentPlaylist={localPlaylistMusicDetails}
           />

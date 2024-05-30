@@ -41,7 +41,7 @@
     font-size: 25px;
     padding-bottom: 15px;
     overflow: scroll;
-    height:78%;
+    height:75%;
     width:90%;
   }
 
@@ -91,7 +91,7 @@
     right: 0;
     bottom: 0;
     width: 84%;
-    height: 11%;
+    height: 5%;
     border-radius: 30px;
     background: linear-gradient(
       180deg,
