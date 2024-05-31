@@ -1,4 +1,3 @@
-//라이브러리 js
 import React, { useState, useEffect, useRef } from 'react';
 import './library.css';
 import { FaHeart } from "react-icons/fa";
@@ -6,7 +5,7 @@ import { AiOutlineStepBackward, AiOutlineStepForward } from "react-icons/ai";
 import { FaPause, FaPlay } from "react-icons/fa6";
 import { LuRepeat, LuRepeat1 } from "react-icons/lu";
 import { CiMenuKebab } from "react-icons/ci";
-import { AiFillCaretDown } from "react-icons/ai";
+import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import MusicController from './musicController';
 import PlaylistMenu from './playlistMenu';
 import AlbumMenu from './albumMenu';
@@ -198,7 +197,6 @@ function MusicPlayer() {
         throw new Error('Failed to delete music');
       }
 
-      // Filter out the deleted music from the list
       const updatedMusicList = musicData.filter(music => music.id !== id);
       setMusicData(updatedMusicList);
     } catch (error) {
@@ -358,6 +356,14 @@ function MusicPlayer() {
     }
   };
 
+  const toggleMusicController = () => {
+    setShowMusicController(!showMusicController);
+  };
+
+  const checkIfTruncated = (element) => {
+    return element.scrollWidth > element.clientWidth;
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -365,18 +371,31 @@ function MusicPlayer() {
   return (
     <div className="screen-container">
       <div className='playlist-list'>
-        <h1 className='library-h1'>My Playlist</h1>
+        <h1 className='library-h1'>Library</h1>
         <div className="library-card">
           {musicData.map((music, index) => (
             <div key={music.id} className="music-card" onClick={() => playMusic(music, index)}>
               <div className="music-info">
-                <p className="music-title">
-                  {music.title}
+                <div className="music-title-container">
+                  <div
+                    className={`music-title`}
+                    ref={el => {
+                      if (el) {
+                        if (checkIfTruncated(el)) {
+                          el.classList.add('truncated');
+                        } else {
+                          el.classList.remove('truncated');
+                        }
+                      }
+                    }}
+                  >
+                    {music.title}
+                  </div>
                   <button className='heart-button' onClick={(e) => {
                     e.stopPropagation(); toggleFavorite(music); }}>
                     <FaHeart color={music.favorite ? 'red' : 'gray'} />
                   </button>
-                </p>
+                </div>
                 <p className="artist">by {music.artist}</p>
                 <p className="group">({music.group})</p>
                 <button className='menu-button' onClick={(e) => { e.stopPropagation(); toggleMenu(index); }}>
@@ -411,7 +430,7 @@ function MusicPlayer() {
           onClose={closeAlbumMenu}
         />
       )}
-      {selectedMusic && (
+      {selectedMusic && showMusicController && (
         <MusicController
           currentTrack={currentTrack}
           isPlaying={isPlaying}
@@ -422,57 +441,63 @@ function MusicPlayer() {
           audioRef={audioRef}
           repeatMode={repeatMode}
           handleRepeatToggle={handleRepeatToggle}
+          toggleMusicController={toggleMusicController}
         />
+      )}
+      {!showMusicController && (
+        <button className="toggle-controller" onClick={toggleMusicController}>
+          <AiFillCaretUp />
+        </button>
       )}
       {editingMusic && (
         <div className="edit-menu">
-        <form onSubmit={handleEditSubmit}>
-          <table className="edit-table">
-            <tbody>
-              <tr>
-                <td><label htmlFor="title">제목:</label></td>
-                <td>
-                  <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    value={editingMusic.title}
-                    onChange={handleEditChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td><label htmlFor="artist">아티스트:</label></td>
-                <td>
-                  <input
-                    type="text"
-                    id="artist"
-                    name="artist"
-                    value={editingMusic.artist}
-                    onChange={handleEditChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td><label htmlFor="group">그룹:</label></td>
-                <td>
-                  <input
-                    type="text"
-                    id="group"
-                    name="group"
-                    value={editingMusic.group}
-                    onChange={handleEditChange}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div className='edit-btn'>
-            <button type="submit">수정</button>
-            <button type="button" onClick={closeEditMenu}>취소</button>
-          </div>
-        </form>
-      </div>      
+          <form onSubmit={handleEditSubmit}>
+            <table className="edit-table">
+              <tbody>
+                <tr>
+                  <td><label htmlFor="title">제목:</label></td>
+                  <td>
+                    <input
+                      type="text"
+                      id="title"
+                      name="title"
+                      value={editingMusic.title}
+                      onChange={handleEditChange}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td><label htmlFor="artist">아티스트:</label></td>
+                  <td>
+                    <input
+                      type="text"
+                      id="artist"
+                      name="artist"
+                      value={editingMusic.artist}
+                      onChange={handleEditChange}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td><label htmlFor="group">그룹:</label></td>
+                  <td>
+                    <input
+                      type="text"
+                      id="group"
+                      name="group"
+                      value={editingMusic.group}
+                      onChange={handleEditChange}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div className='edit-btn'>
+              <button type="submit">수정</button>
+              <button type="button" onClick={closeEditMenu}>취소</button>
+            </div>
+          </form>
+        </div>
       )}
     </div>
   );

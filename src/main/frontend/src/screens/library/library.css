@@ -8,7 +8,7 @@
 .library-h1 {
   color: white;
   margin-left: 5%;
-  margin-top: 10px;
+  margin-top: 5%;
   margin-bottom: auto;
 }
 
@@ -42,13 +42,23 @@
   padding: 20px 10px;
 }
 
-.music-title {
+.music-title-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.music-title-container .music-title {
   font-size: 16px;
   margin-bottom: 5px;
   color: white;
   white-space: nowrap; /* 텍스트가 한 줄로 표시되도록 설정 */
   overflow: hidden; /* 넘치는 텍스트 숨김 */
   text-overflow: ellipsis; /* 넘치는 텍스트는 말줄임표(...)로 표시 */
+  /*display: inline-block; /* 인라인 요소로 설정하여 다른 요소와 함께 표시되도록 함 */
+  max-width: calc(100% - 30px); /* 최대 너비를 설정하여 하트 버튼의 너비만큼 공간을 확보 */
+  flex-grow: 1;
+  margin-left: 5px;
 }
 
 .artist {
@@ -70,6 +80,8 @@
 .music-card .heart-button {
   background-color: transparent;
   border: none;
+  /*margin-left: 5px;*/
+  flex-shrink: 0;
 }
 
 .toggle-visibility-button {
@@ -99,8 +111,10 @@
 .music-controller .music-info {
   text-align: center;
   /*margin-left: 5%;*/
+  color: #fff;
   flex: 1;
   padding: 20px 80px;
+  white-space: pre-wrap;
 }
 
 .music-controller .player-controls {
@@ -110,6 +124,29 @@
   align-items: center;
   padding-right: 80px;
   padding-top: 30px;
+}
+
+.library-music-controller .toggle-controller{
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  position: fixed;
+  z-index: 999;
+  position: fixed;
+  bottom: 23%;
+  right: 0;
+}
+
+.screen-container .toggle-controller{
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  z-index: 999;
+  position: fixed;
+  bottom: 23%;
+  right: 0;
 }
 
 .range-controls {
@@ -245,7 +282,8 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   z-index: 200;
   width: 90%;
-  max-width: 400px;
+  /*max-width: 400px;*/
+  max-width: 30%;
 }
 
 .edit-table {
@@ -278,6 +316,10 @@
   border-radius: 5px;
   cursor: pointer;
   margin-top: 10px;
+}
+
+.edit-btn button{
+  margin-right: 5%;
 }
 
 .edit-table button[type="submit"] {
