@@ -18,6 +18,8 @@ function MusicForm() {
 
     try {
       if (link) {
+        alert('음악 파일을 처리하는 데 약간의 시간이 소요될 수 있습니다.');
+
         const dlResponse = await fetch('http://localhost:8080/api/dl', {
           method: 'POST',
           headers: {
@@ -70,7 +72,7 @@ function MusicForm() {
 
   return (
     <div className="screen-container">
-      <div className="container">
+      <div className="upload-container">
         <div className="form-box">
           <h1>음악 업로드</h1>
           <form onSubmit={handleSubmit} encType="multipart/form-data" className="music-form">
