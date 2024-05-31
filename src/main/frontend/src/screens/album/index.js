@@ -85,6 +85,7 @@ export default function Album() {
                         formData.append('favorite', 'false');
                         formData.append('cover', defaultAlbumCover); // Using defaultAlbumCover here
 
+
                         newAlbum.musics.forEach((id, index) => {
                             formData.append(`musics[${index}]`, id);
                         });
@@ -308,11 +309,19 @@ export default function Album() {
         }
     };
 
-    const handleAddMusicToAlbum = async (albumId, musicId) => {
+    const handleAddMusicToAlbum = async (albumId, musicName) => {
         try {
+            // 음악 이름으로 음악 ID 찾기
+            const music = musicList.find((item) => item.title === musicName);
+            if (!music) {
+                console.error('해당 이름의 음악을 찾을 수 없습니다:', musicName);
+                return;
+            }
+            const musicId = music.id;
+
             const response = await fetch(`http://localhost:8080/api/album/${albumId}`);
             if (!response.ok) {
-                throw new Error('Failed to fetch album details');
+                throw new Error('앨범 세부 정보를 가져오지 못했습니다');
             }
             const albumData = await response.json();
 
@@ -328,16 +337,17 @@ export default function Album() {
             });
 
             if (!updateResponse.ok) {
-                throw new Error('Failed to update album music list');
+                throw new Error('앨범 음악 목록 업데이트 실패');
             }
 
             const updatedAlbum = await updateResponse.json();
             setSelectedMusics(updatedAlbum.musics);
             setAlbums(prevAlbums => prevAlbums.map(album => album.id === albumId ? updatedAlbum : album));
         } catch (error) {
-            console.error('Error adding music to album:', error);
+            console.error('앨범에 음악 추가 중 오류 발생:', error);
         }
     };
+
 
     const handleCreatePlaylist = async (album) => {
         try {
@@ -360,10 +370,15 @@ export default function Album() {
 
             // Playlist가 생성된 후 음악 추가
             await handleAddMusicsToPlaylist(playlist.id, album.musics);
+
+            // 알림 표시
+            alert("Playlist에 추가되었습니다.");
         } catch (error) {
             console.error('Error creating playlist:', error);
         }
     };
+
+
 
     const handleAddMusicsToPlaylist = async (playlistId, musics) => {
         try {
@@ -394,6 +409,11 @@ export default function Album() {
         }
     };
 
+    const handleToggleMenu = (albumId) => {
+        setShowMenu((prevMenu) => (prevMenu === albumId ? null : albumId));
+    };
+
+
     const handleAlbumArtUpload = async (albumId, file) => {
         try {
             const formData = new FormData();
@@ -423,7 +443,6 @@ export default function Album() {
             console.error('Error uploading album art:', error);
         }
     };
-
 
 
     return (
@@ -460,7 +479,8 @@ export default function Album() {
                                     }}>
                                         <FaHeart color={album.favorite ? 'red' : 'gray'}/>
                                     </button>
-                                    <FaRegCirclePlay className='play-button' onClick={() => handleCreatePlaylist(album)}/>
+                                    <FaRegCirclePlay className='play-button'
+                                                     onClick={() => handleCreatePlaylist(album)}/>
                                 </h3>
                                 <img
                                     src={`http://localhost:8080/api/album/art/${album.id}` ? `http://localhost:8080/api/album/art/${album.id}` : defaultAlbumCover} // Using defaultAlbumCover as fallback
@@ -469,14 +489,15 @@ export default function Album() {
 
                                 />
                                 <div className="album-menu2">
-                                    <CiMenuKebab onClick={() => setShowMenu(album.id)}/>
+                                    <CiMenuKebab onClick={() => handleToggleMenu(album.id)}/>
                                     {showMenu === album.id && (
                                         <div className="menu-options">
-                                            <p onClick={() => setEditAlbumId(album.id)}>정보 수정</p>
-                                            <p onClick={() => handleDeleteAlbum(album.id)}>앨범 삭제</p>
+                                            <p id="p-edit" onClick={() => setEditAlbumId(album.id)}>정보 수정</p>
+                                            <p id="p-delete" onClick={() => handleDeleteAlbum(album.id)}>앨범 삭제</p>
                                         </div>
                                     )}
                                 </div>
+
                             </div>
                             {editAlbumId === album.id && (
                                 <div>
@@ -527,8 +548,9 @@ export default function Album() {
                                     )}
                                     <div>
                                         <input
+                                            id="song-add"
                                             type="text"
-                                            placeholder="New Music ID"
+                                            placeholder="New Music Name"
                                             value={newMusicId}
                                             onChange={(e) => setNewMusicId(e.target.value)}
                                         />
@@ -536,6 +558,7 @@ export default function Album() {
                                             Add Music
                                         </button>
                                     </div>
+
                                 </div>
                             )}
                         </div>

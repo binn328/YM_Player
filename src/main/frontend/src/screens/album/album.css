@@ -1,4 +1,3 @@
-
 .library-body {
   width: 97%;
   padding: 20px;
@@ -15,7 +14,7 @@
   position: relative;
   opacity: 1;
 
-  width: 200px;
+  width: 190px;
   height: auto;
   margin: 10px;
   border-radius: 15px;
@@ -49,7 +48,7 @@
   padding: 10px;
   width: 97%;
   position: relative;
-  top: -20em;
+  top: -37%;
   z-index: 20;
 }
 
@@ -240,9 +239,7 @@ li::marker{
 .menu-options{
   background-color: white;
 }
-.menu-options:hover{
-  background-color: #9a9a9a;
-}
+
 
 .dropdown-menu {
   position: absolute;
@@ -282,6 +279,7 @@ li::marker{
   padding: 10px;
   margin-top: 10px;
   border-top: 1px solid #ddd;
+  color: gray;
 }
 
 .library-body{
@@ -313,3 +311,26 @@ input{
 svg.play-button:hover{
   transform: scale(2); /* 이미지 확대 효과 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 효과 */}
+
+.card-body::-webkit-scrollbar{
+  display:none;
+}
+
+#p-edit{
+  background-color: white;
+}
+
+#p-delete{
+  background-color: white;
+}
+
+#p-edit:hover{
+  background-color: gray;
+}
+
+#p-delete:hover{
+  background-color: gray;
+}
+button.heart-button{
+  background-color: initial;
+}
