@@ -55,6 +55,7 @@ const MusicController = ({
   };
 
   return (
+    <div className='library-music-controller'>
     <div className="music-controller">
       <div className="music-info">
         <p className="music-title">{currentTrack.title}</p>
@@ -94,7 +95,9 @@ const MusicController = ({
           </div>
         </div>
       </div>
-      <button className="toggle-controller" onClick={toggleMusicController}>
+      
+    </div>
+    <button className="toggle-controller" onClick={toggleMusicController}>
         <AiFillCaretDown />
       </button>
     </div>
