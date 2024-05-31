@@ -125,6 +125,23 @@ export default function Album() {
         fetchMusic();
     }, []);
 
+    const fetchAlbumArt = async (albumId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/album/art/${albumId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch album art');
+            }
+            const blob = await response.blob();
+            const imageUrl = URL.createObjectURL(blob);
+            setAlbums((prevAlbums) =>
+                prevAlbums.map((album) => album.id === albumId ? { ...album, cover: imageUrl } : album)
+            );
+        } catch (error) {
+            console.error('Error fetching album art:', error);
+        }
+    };
+    
+
     const fetchAndUploadAlbumCover = async (albumId) => {
         try {
             const response = await fetch(defaultAlbumCover);
@@ -173,6 +190,7 @@ export default function Album() {
             setAlbums([...albums, data]);
             setAlbumName("");
             setAlbumCover(null); // Reset album cover after creation
+            await fetchAlbumArt(data.id);
         } catch (error) {
             console.error('Error creating album:', error);
         }
@@ -184,7 +202,7 @@ export default function Album() {
             setSelectedMusics([]);
             return;
         }
-
+    
         setSelectedAlbum(album.id);
         console.log("Selected Album:", album);
         try {
@@ -197,10 +215,13 @@ export default function Album() {
             console.log("Music List:", musicList);
             console.log("Selected Album Music IDs:", albumData.musics);
             setSelectedMusics(albumData.musics);
+            await fetchAlbumArt(album.id); // 앨범 클릭 시 이미지 가져오기 호출
         } catch (error) {
             console.error('Error fetching album details:', error);
         }
     };
+    
+
 
     const handleUpdateAlbumName = async (albumId) => {
         try {
@@ -225,6 +246,8 @@ export default function Album() {
             );
             setEditAlbumId(null);
             setEditAlbumName("");
+
+            await fetchAlbumArt(albumId);
         } catch (error) {
             console.error('Error updating album name:', error);
         }
@@ -439,6 +462,8 @@ export default function Album() {
             if (selectedAlbum === albumId) {
                 setAlbumArtUrl(URL.createObjectURL(file)); // Update album art URL directly
             }
+
+            await fetchAlbumArt(albumId);
         } catch (error) {
             console.error('Error uploading album art:', error);
         }
@@ -483,7 +508,9 @@ export default function Album() {
                                                      onClick={() => handleCreatePlaylist(album)}/>
                                 </h3>
                                 <img
-                                    src={`http://localhost:8080/api/album/art/${album.id}` ? `http://localhost:8080/api/album/art/${album.id}` : defaultAlbumCover} // Using defaultAlbumCover as fallback
+                                    //src={`http://localhost:8080/api/album/art/${album.id}` ? `http://localhost:8080/api/album/art/${album.id}` : defaultAlbumCover} // Using defaultAlbumCover as fallback
+                                    src={album.cover||`http://localhost:8080/api/album/art/${album.id}` || defaultAlbumCover}
+                                    alt={album.name} 
                                     className="album-cover"
                                     onClick={() => handleAlbumClick(album)}
 
