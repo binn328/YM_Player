@@ -364,6 +364,29 @@ function MusicPlayer() {
     return element.scrollWidth > element.clientWidth;
   };
 
+  const downloadMusic = async (music) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/music/item/${music.id}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to download music');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${music.title}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading music:', error);
+    }
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -405,8 +428,10 @@ function MusicPlayer() {
                   <div className="menu">
                     <p onClick={(e) => { e.stopPropagation(); openPlaylistMenu(music); }}>플레이리스트에 추가</p>
                     <p onClick={(e) => { e.stopPropagation(); openAlbumMenu(music); }}>앨범에 추가</p>
-                    <p onClick={(e) => { e.stopPropagation(); openEditMenu(music); toggleMenu(index);}}>정보 수정</p>
+                    <p onClick={(e) => { e.stopPropagation(); openEditMenu(music); toggleMenu(index); }}>정보 수정</p>
+                    <p onClick={(e) => { e.stopPropagation(); downloadMusic(music); }}>다운로드</p>
                     <p onClick={(e) => { e.stopPropagation(); deleteMusic(music.id); }}>삭제</p>
+                    
                   </div>
                 )}
               </div>
