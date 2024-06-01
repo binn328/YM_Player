@@ -140,7 +140,7 @@ export default function Album() {
             console.error('Error fetching album art:', error);
         }
     };
-    
+
 
     const fetchAndUploadAlbumCover = async (albumId) => {
         try {
@@ -202,7 +202,7 @@ export default function Album() {
             setSelectedMusics([]);
             return;
         }
-    
+
         setSelectedAlbum(album.id);
         console.log("Selected Album:", album);
         try {
@@ -220,7 +220,7 @@ export default function Album() {
             console.error('Error fetching album details:', error);
         }
     };
-    
+
 
 
     const handleUpdateAlbumName = async (albumId) => {
@@ -348,9 +348,19 @@ export default function Album() {
             }
             const albumData = await response.json();
 
-            const updatedMusics = [...albumData.musics, musicId];
+            console.log('현재 앨범의 음악 목록:', albumData.musics);
+            console.log('추가하려는 음악 ID:', musicId);
 
-            const updatedAlbumData = {...albumData, musics: updatedMusics};
+            // 앨범에 이미 존재하는지 확인 (음악 ID가 이미 있는지 확인)
+            if (albumData.musics.some((music) => music.id === musicId)) {
+
+                alert('음악이 이미 앨범에 존재합니다:', musicName);
+                return;
+            }
+
+            const updatedMusics = [...albumData.musics, { id: musicId }];
+
+            const updatedAlbumData = { ...albumData, musics: updatedMusics };
             const updateResponse = await fetch(`http://localhost:8080/api/album/update`, {
                 method: 'POST',
                 headers: {
@@ -510,7 +520,7 @@ export default function Album() {
                                 <img
                                     //src={`http://localhost:8080/api/album/art/${album.id}` ? `http://localhost:8080/api/album/art/${album.id}` : defaultAlbumCover} // Using defaultAlbumCover as fallback
                                     src={album.cover||`http://localhost:8080/api/album/art/${album.id}` || defaultAlbumCover}
-                                    alt={album.name} 
+                                    alt={album.name}
                                     className="album-cover"
                                     onClick={() => handleAlbumClick(album)}
 
@@ -591,6 +601,8 @@ export default function Album() {
                         </div>
                     ))}
                 </div>
+
+
             </div>
         </div>
     );
