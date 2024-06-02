@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,11 +17,48 @@
             <input type="submit" value="확인">
         </form>
     </div>
+    <div>
+        <!-- 노래 수정 테스트 폼 -->
+        <form method="POST" action="http://localhost:8080/api/music/update/663223bb5a0c370d39334792">
+            제목 : <input type="text" name="title" /><br>
+            가수 : <input type="text" name="artist" /><br>
+            그룹 : <input type="text" name="group" /><br>
+            <label> 좋아요
+                <input type="checkbox" name="favorite" value="true">
+            </label>
+            <input type="submit" value="확인">
+            <input type="hidden" name="_method" value="PUT"/>
+        </form>
+    </div>
     <!-- 노래 재생 테스트, item/{id}를 넣으면 해당 노래가 재생됨-->
     <div>
         <audio controls autoplay>
-            <source src="http://localhost:8080/api/music/item/663202e5aed26504f068f0fa" type="audio/mpeg">
+            <source src="http://localhost:8080/api/music/item/66320eee5521fc2444274a36" type="audio/mpeg">
         </audio>
     </div>
+    <hr>
+    <div style="border: 1px solid black">
+        <!-- 앨범 추가 테스트 폼 -->
+        <form method="POST" action="http://localhost:8080/api/album">
+            제목 : <input type="text" name="name" /><br>
+            <input type="hidden" name="favorite" value="false">
+            <input type="submit" value="확인">
+        </form>
+    </div>
+    <div style="border: 1px solid black">
+        <!-- 앨범 아트 업로드 폼 -->
+        <form method="POST" action="http://localhost:8080/api/album/art/66435f78a7ceac0580d6d503" enctype=multipart/form-data>
+            <p>앨범아트 업로드 및 확인</p>
+            파일 : <input type="file" name="file" /><br>
+            <input type="submit" value="확인">
+        </form>
+        <img src="http://localhost:8080/api/album/art/66435f78a7ceac0580d6d503">
+    </div>
+    <!-- 재생목록 추가 테스트 폼 -->
+    <form method="POST" action="http://localhost:8080/api/playlist">
+        제목 : <input type="text" name="name" /><br>
+        <input type="hidden" name="favorite" value="false">
+        <input type="submit" value="확인">
+    </form>
     </body>
 </html>

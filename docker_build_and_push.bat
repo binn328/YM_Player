@@ -1,5 +1,5 @@
 @echo off
-set /p version=Enter version:
+set /p tag=Enter tag:
 docker build -t binn328/ym-player .
-docker image tag binn328/ym-player binn328/ym-player:%version%
-docker image push binn328/ym-player:%version%
+docker image tag binn328/ym-player binn328/ym-player:%tag%
+docker image push binn328/ym-player:%tag%

@@ -8,7 +8,6 @@ public class YmPlayerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(YmPlayerApplication.class, args);
-
 	}
 
 }

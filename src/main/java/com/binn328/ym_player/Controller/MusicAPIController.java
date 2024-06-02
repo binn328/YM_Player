@@ -34,14 +34,8 @@ public class MusicAPIController {
      * @return 200 OK, 발견한 모든 음악을 반환합니다.
      */
     @GetMapping()
-    public ResponseEntity<List<Music>> getAllMusic() {
+    public ResponseEntity<List<Music>> getMusics() {
         return ResponseEntity.ok(musicRepository.findAll());
-    }
-
-    @GetMapping("/env")
-    public String getEnv() {
-        log.info("env: " + System.getenv("DATA_DIR"));
-        return "";
     }
 
     /**
@@ -50,7 +44,7 @@ public class MusicAPIController {
      * @return 있다면 200 OK, 아니면 404 를 반환합니다.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Music> getMusicById(@PathVariable String id) {
+    public ResponseEntity<Music> getMusic(@PathVariable String id) {
         Optional<Music> music = musicRepository.findById(id);
         if (music.isPresent()) {
             return ResponseEntity.ok(music.get());
@@ -60,7 +54,7 @@ public class MusicAPIController {
     }
 
     @GetMapping(value = "/item/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Resource> getMusicByItemId(@PathVariable String id) {
+    public ResponseEntity<Resource> getMusicItem(@PathVariable String id) {
         Resource file = storageService.getMusic(id);
         if (file == null) {
             return ResponseEntity.notFound().build();
@@ -76,7 +70,7 @@ public class MusicAPIController {
      * @return 실패시 502, 성공 시 202
      */
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Music> addMusic(MusicForm form, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<Music> createMusic(MusicForm form, @RequestPart("file") MultipartFile file) {
         // 받아온 음악을 엔티티화
         Music music = form.toEntity();
         log.info(music.toString());
@@ -91,7 +85,7 @@ public class MusicAPIController {
         return new ResponseEntity<>(savedMusic, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<Music> updateMusic(MusicForm form, @PathVariable String id) {
         // TODO JSON 을 받게 수정하거나, musicForm 대신 그냥 Music을 넣어도 되지 않을까?
         Music musicUpdateData = form.toEntity();
@@ -111,12 +105,13 @@ public class MusicAPIController {
                 musicToUpdate.setGroup(musicUpdateData.getGroup());
             }
             // 좋아요 여부 업데이트
-            musicToUpdate.setFavorite(musicToUpdate.isFavorite());
+            musicToUpdate.setFavorite(musicUpdateData.isFavorite());
 
+            log.info(musicToUpdate.toString());
             // db에 저장
-            musicRepository.save(musicToUpdate);
+            Music savedMusic = musicRepository.save(musicToUpdate);
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(savedMusic, HttpStatus.OK);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -125,7 +120,7 @@ public class MusicAPIController {
      * 음악을 제거합니다.
      * @param id 제거될 음악의 id 입니다.
      */
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<Music> deleteMusic(@PathVariable String id) {
 
         // DB에 해당 음악이 없으면 notFound()

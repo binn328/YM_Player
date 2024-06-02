@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * 음악 정보를 담아올 DAO
  */
@@ -20,12 +22,5 @@ public class Music {
     private String artist;
     private String group;
     private boolean favorite;
-    // private chapter;
-    public Music(String id, String title, String artist, String group) {
-        this.id = id;
-        this.title = title;
-        this.artist = artist;
-        this.group = group;
-        this.favorite = false;
-    }
+    private List<Chapter> chapters;
 }

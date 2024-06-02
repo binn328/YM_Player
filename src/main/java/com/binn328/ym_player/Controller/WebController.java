@@ -1,5 +1,6 @@
 package com.binn328.ym_player.Controller;
 
+import jakarta.websocket.OnError;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -8,8 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class WebController {
-    @GetMapping("/")
+    @GetMapping({"/", "/error"})
     public String homePage() {
         return "index.html";
     }
+
 }

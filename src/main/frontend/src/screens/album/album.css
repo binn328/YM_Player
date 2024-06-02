@@ -1,0 +1,336 @@
+.library-body {
+  width: 97%;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.album-card {
+  background-size: cover;
+  background-position: center;
+  /* 기본 이미지 위에 표시되는 이미지를 가리기 위해 z-index 설정 */
+  z-index: 2;
+  /* 다른 내용이 기본 이미지 위에 오도록 설정 */
+  position: relative;
+  opacity: 1;
+
+  width: 190px;
+  height: auto;
+  margin: 10px;
+  border-radius: 15px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#album-cover-input{
+  opacity: 0;
+  width: 0px;
+  height: 0px;
+}
+
+.album-card {
+  transition: transform 0.3s ease-in-out;
+  border-radius: 4px;
+}
+
+.album-card:hover {
+  transform: scale(1.1); /* 이미지 확대 효과 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 효과 */}
+
+.create-album{
+  display: block;
+  unicode-bidi: isolate;
+  background-color: #fafafa33;
+  height: 3%;
+  border-radius: 8px;
+  padding: 10px;
+  width: 97%;
+  position: relative;
+  top: -37%;
+  z-index: 20;
+}
+
+.library-body button {
+  display: inline-flex;
+  color: white;
+  font-family: Orbitron, sans-serif;
+  outline: none;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+
+
+  background-color: #1f4a78;
+}
+.library-body button:hover {
+  background-color: #7eb9fb;
+}
+.library-body button:active {
+  background-color: #022f5e;
+}
+.album-cover{
+  opacity: 1;
+  z-index: 1;
+  background-color: #fafafa33;
+}
+
+.album-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 15px 15px 0 0;
+
+}
+
+.album-card h3 {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  text-align: center;
+}
+
+.song-list {
+  width: 100%;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 0 0 15px 15px;
+  margin-top: auto;
+}
+
+.song-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.song-list li {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+
+.audio-input {
+  color: black;
+  padding: 5px;
+  margin-top: 2px;
+  background-color: #a8e2e4;
+  border-radius: 0px 10px 10px 0px;
+}
+#select-music {
+  background-color: #a8e2e4;
+  padding: 5px;
+  color: #818181;
+  border-radius: 10px;
+  float: left;
+}
+
+.edit-album-details {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.edit-album-details input[type="text"]{
+  margin-bottom: 10px;
+}
+.edit-album-details input[type="file"] {
+  margin-bottom: 10px;
+  margin-left: 70px;
+}
+
+.edit-album-details button {
+  margin-bottom: 10px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#save-name {
+  background-color: #00608d;
+  border-radius: 5px;
+  color: #fff;
+  padding: 4px;
+}
+
+.text-color {
+  color: #818181;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+#add-song {
+  background-color: #fff;
+  border-radius: 5px;
+  margin-left: 60px;
+}
+
+
+/*여기부터 추가함*/
+
+#album-title {
+  display: block;
+  font-size: 2.5em;
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+  unicode-bidi: isolate;
+  font-family: Orbitron, sans-serif;
+}
+
+.album-header {
+  width: 97%;
+  height: 1%;
+  display: block;
+  unicode-bidi: isolate;
+}
+
+
+.album-card-container {
+  position: relative;
+}
+
+.album-card {
+  position: relative;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+li::marker{
+  font-family: Orbitron, sans-serif;
+  color: #a1a1a1;
+}
+.no-title {
+  font-family: Orbitron, sans-serif;
+  color: #a1a1a1;
+}
+
+
+#Songs{
+  font-family: Orbitron, sans-serif;
+  color: white;
+}
+#no-music{
+  font-family: Orbitron, sans-serif;
+  color: #a1a1a1;
+}
+.album-cover {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+
+}
+
+.album-menu2 {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+.menu-options{
+  background-color: white;
+}
+
+
+.dropdown-menu {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  z-index: 4;
+}
+
+.dropdown-menu input {
+  margin-bottom: 5px;
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 5px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #0056b3;
+}
+
+.album-songs {
+  padding: 10px;
+  margin-top: 10px;
+  border-top: 1px solid #ddd;
+  color: gray;
+}
+
+.library-body{
+  overflow: scroll;
+  height:95%;
+}
+
+.library-body::-webkit-scrollbar{
+  display: none;
+}
+input{
+  z-index: 20;
+}
+#create-album{
+  z-index: 20;
+}
+
+.card-body{
+  position: fixed;
+  top: 20%;
+  width: 89%;
+  height: 75%;
+  z-index: 0;
+  overflow: auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+svg.play-button:hover{
+  transform: scale(2); /* 이미지 확대 효과 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 효과 */}
+
+.card-body::-webkit-scrollbar{
+  display:none;
+}
+
+#p-edit{
+  background-color: white;
+}
+
+#p-delete{
+  background-color: white;
+}
+
+#p-edit:hover{
+  background-color: gray;
+}
+
+#p-delete:hover{
+  background-color: gray;
+}
+button.heart-button{
+  background-color: initial;
+}

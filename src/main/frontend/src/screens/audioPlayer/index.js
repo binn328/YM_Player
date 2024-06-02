@@ -4,129 +4,256 @@ import Controls from "./controls";
 import ProgressCircle from "./progressCircle";
 import WaveAnimation from "./waveAnimation";
 
-export default function AudioPlayer({
-  currentTrack,
-  currentIndex,
-  setCurrentIndex,
-  total,
-}) {
+const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [trackProgress, setTrackProgress] = useState(0);
-  // 노트북에 있는 음악 파일 경로
-  const audioSrc = "/path/to/your/audio/file.mp3";
+  const [duration, setDuration] = useState(0);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [songTitle, setSongTitle] = useState("");
+  const [songArtist, setSongArtist] = useState("");
+  const [audioSrc, setAudioSrc] = useState("");
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isShuffleOn, setIsShuffleOn] = useState(false);
+  const [repeatMode, setRepeatMode] = useState("none");
 
-  const audioRef = useRef(new Audio(audioSrc));
-
+  const audioRef = useRef(new Audio());
   const intervalRef = useRef();
-
   const isReady = useRef(false);
-
-  const { duration } = audioRef.current;
 
   const currentPercentage = duration ? (trackProgress / duration) * 100 : 0;
 
   const startTimer = () => {
     clearInterval(intervalRef.current);
-
     intervalRef.current = setInterval(() => {
       if (audioRef.current.ended) {
         handleNext();
       } else {
         setTrackProgress(audioRef.current.currentTime);
       }
-    }, [1000]);
+    }, 1000);
+  };
+
+  const handleNext = () => {
+    if (repeatMode === "one") {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      if (playlistMusicDetails && playlistMusicDetails.length > 0) {
+        setCurrentSongIndex((prevIndex) =>
+          isShuffleOn
+            ? Math.floor(Math.random() * playlistMusicDetails.length)
+            : (prevIndex + 1) % playlistMusicDetails.length
+        );
+      }
+    }
+    if (isPlaying) {
+      audioRef.current.play().catch(console.error);
+    }
+  };
+
+  const handlePrev = () => {
+    if (playlistMusicDetails && playlistMusicDetails.length > 0) {
+      setCurrentSongIndex((prevIndex) =>
+        isShuffleOn
+          ? Math.floor(Math.random() * playlistMusicDetails.length)
+          : prevIndex === 0
+          ? playlistMusicDetails.length - 1
+          : prevIndex - 1
+      );
+    }
+    if (isPlaying) {
+      audioRef.current.play().catch(console.error);
+    }
   };
 
   useEffect(() => {
-    if (audioRef.current.src) {
-      if (isPlaying) {
-        audioRef.current.play();
-        startTimer();
-      } else {
-        clearInterval(intervalRef.current);
-        audioRef.current.pause();
-      }
-    } else {
-      if (isPlaying) {
-        audioRef.current = new Audio(audioSrc);
-        audioRef.current.play();
-        startTimer();
-      } else {
-        clearInterval(intervalRef.current);
-        audioRef.current.pause();
-      }
+    const storedIndex = localStorage.getItem("currentSongIndex");
+    if (storedIndex !== null) {
+      setCurrentSongIndex(parseInt(storedIndex));
     }
-  }, [isPlaying]);
+  }, []);
 
   useEffect(() => {
-    audioRef.current.pause();
-    audioRef.current = new Audio(audioSrc);
+    localStorage.setItem("currentSongIndex", currentSongIndex);
+  }, [currentSongIndex]);
 
-    setTrackProgress(audioRef.current.currentTime);
+  useEffect(() => {
+    if (!isInitialized && playlistMusicDetails && playlistMusicDetails.length > 0) {
+      setCurrentSongIndex(0);
+      setIsInitialized(true);
+    }
+  }, [playlistMusicDetails, isInitialized]);
+
+  useEffect(() => {
+    if (playlistMusicDetails && playlistMusicDetails.length > 0) {
+      const currentSong = playlistMusicDetails[currentSongIndex];
+      setSongTitle(currentSong.title);
+      setSongArtist(currentSong.artist);
+      setAudioSrc(`http://localhost:8080/api/music/item/${currentSong.id}`);
+      setTrackProgress(0);
+    }
+  }, [currentSongIndex, playlistMusicDetails]);
+
+  useEffect(() => {
+    if (!audioSrc) return;
+
+    const audio = audioRef.current;
+    audio.pause();
+    audio.src = audioSrc;
+    audio.load();
+
+    const updateTime = () => setTrackProgress(audio.currentTime);
+    const updateDuration = () => setDuration(audio.duration);
+
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("durationchange", updateDuration);
 
     if (isReady.current) {
-      audioRef.current.play();
-      setIsPlaying(true);
-      startTimer();
+      if (isPlaying) {
+        audio.play().then(startTimer).catch(console.error);
+      }
     } else {
       isReady.current = true;
     }
-  }, [currentIndex]);
+
+    return () => {
+      audio.pause();
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("durationchange", updateDuration);
+      clearInterval(intervalRef.current);
+    };
+  }, [audioSrc]);
+
+  useEffect(() => {
+    const handleEnd = () => handleNext();
+    const audio = audioRef.current;
+
+    audio.removeEventListener("ended", handleEnd);
+    audio.addEventListener("ended", handleEnd);
+
+    return () => {
+      audio.removeEventListener("ended", handleEnd);
+    };
+  }, [repeatMode]);
 
   useEffect(() => {
     return () => {
-      audioRef.current.pause();
+      const audio = audioRef.current;
+      audio.pause();
       clearInterval(intervalRef.current);
     };
   }, []);
 
-  const handleNext = () => {
-    if (currentIndex < total.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else setCurrentIndex(0);
+  useEffect(() => {
+    if (isShuffleOn) {
+      const shuffledPlaylist = [...playlistMusicDetails].sort(() => Math.random() - 0.5);
+      setPlaylistMusicDetails(shuffledPlaylist);
+    }
+  }, [isShuffleOn]);
+
+  useEffect(() => {
+    if (playlistMusicDetails && playlistMusicDetails.length > 0) {
+      const currentSong = playlistMusicDetails[currentSongIndex];
+      setSongTitle(currentSong.title);
+      setSongArtist(currentSong.artist);
+      setAudioSrc(`http://localhost:8080/api/music/item/${currentSong.id}`);
+      if (isPlaying) {
+        audioRef.current.play().catch(console.error);
+      }
+    }
+  }, [playlistMusicDetails]);
+
+  const togglePlay = () => {
+    const audio = audioRef.current;
+    if (isPlaying) {
+      audio.pause();
+      clearInterval(intervalRef.current);
+      setIsPlaying(false);
+    } else {
+      audio.play()
+        .then(() => {
+          startTimer();
+          setIsPlaying(true);
+        })
+        .catch((error) => {
+          console.error("Error occurred while playing audio:", error);
+        });
+    }
   };
 
-  const handlePrev = () => {
-    if (currentIndex - 1 < 0) setCurrentIndex(total.length - 1);
-    else setCurrentIndex(currentIndex - 1);
+  const handleShuffle = () => {
+    setIsShuffleOn(!isShuffleOn);
+    if (!isPlaying) {
+      const shuffledPlaylist = [...playlistMusicDetails].sort(() => Math.random() - 0.5);
+      setPlaylistMusicDetails(shuffledPlaylist);
+    }
+  };
+
+  const handleRepeatToggle = () => {
+    setRepeatMode(repeatMode === "none" ? "one" : "none");
   };
 
   const addZero = (n) => {
     return n > 9 ? "" + n : "0" + n;
   };
-  const artists = [];
-  currentTrack?.album?.artists.forEach((artist) => {
-    artists.push(artist.name);
-  });
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${addZero(secs)}`;
+  };
+
   return (
     <div className="player-body flex">
       <div className="player-left-body">
         <ProgressCircle
           percentage={currentPercentage}
-          isPlaying={true}
-          image={currentTrack?.album?.images[0]?.url}
+          isPlaying={isPlaying}
+          image={
+            playlistMusicDetails && playlistMusicDetails[currentSongIndex]
+              ? playlistMusicDetails[currentSongIndex].album?.images[0]?.url
+              : null
+          }
           size={300}
           color="#C96850"
         />
       </div>
       <div className="player-right-body flex">
-        <p className="song-title">{currentTrack?.name}</p>
-        <p className="song-artist">{artists.join(" | ")}</p>
+        <p className="song-title">{songTitle}</p>
+        <p className="song-artist">{songArtist}</p>
         <div className="player-right-bottom flex">
           <div className="song-duration flex">
-            <p className="duration">0:{addZero(Math.round(trackProgress))}</p>
+            <p className="duration">{formatTime(trackProgress)}</p>
             <WaveAnimation isPlaying={isPlaying} />
-            <p className="duration">0:30</p>
+            <p className="duration">{formatTime(duration)}</p>
+          </div>
+          <div className="playbar flex">
+            <input
+              type="range"
+              value={trackProgress}
+              step="1"
+              min="0"
+              max={duration ? duration : `${duration}`}
+              onChange={(e) => {
+                setTrackProgress(Number(e.target.value));
+                audioRef.current.currentTime = Number(e.target.value);
+              }}
+            />
           </div>
           <Controls
             isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
+            setIsPlaying={togglePlay}
             handleNext={handleNext}
             handlePrev={handlePrev}
-            total={total}
+            handleShuffle={handleShuffle}
+            isShuffleOn={isShuffleOn}
+            repeatMode={repeatMode}
+            handleRepeatToggle={handleRepeatToggle}
           />
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default AudioPlayer;

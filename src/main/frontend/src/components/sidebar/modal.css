@@ -1,0 +1,93 @@
+.upload-label {
+    position: relative;
+    width: 100px; 
+    height: 100px; 
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px; 
+    color: #fff; 
+    background-color: #a9cff7; 
+    border-radius: 50%; 
+    cursor: pointer; 
+    margin: 5px; 
+}
+
+.upload-label input[type="file"] {
+    position: absolute;
+    top: -9999px;
+}
+
+.sample-image {
+    cursor: pointer; 
+    display: flex;
+    flex-wrap: wrap; 
+}
+
+.sample-image img {
+    background-color: #fff;
+    padding: 5px;
+    width: 100px; 
+    height: 100px; 
+    margin: 20px; 
+}
+
+.modal-box {
+    padding: 18px;
+    position: fixed;
+    /* top: 0; */
+    left: 23%;
+    top: 18%;
+    width: 52%;
+    height: 100%;
+    background-color: #ffffffe6;
+    /* width: calc(100% - 40px); */
+    border-radius: 8px;
+    box-shadow: 0 0 10px #0003;
+    max-height: 300px;
+    padding: 30px;
+    z-index: 999;
+}
+
+.modal-box .modal {
+    background: white;
+    position: fixed;
+    top: 20%;
+    left: 25%;
+    box-shadow: 0 0 10px #0000001a;
+    font-size: 25px;
+    height: 30%;
+    overflow: auto;
+    overflow: scroll;
+    padding: 20px;
+    width: 50%;
+    z-index: 999;
+    border-radius: 10px;
+}
+
+.modal-box .modal::-webkit-scrollbar{
+    display: none;
+}
+
+.modal h2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 25px;
+    padding: 15px;
+   
+}
+
+
+.sample-image img:hover, .sample-image .upload-label:hover{
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+}
