@@ -75,7 +75,7 @@ function MusicForm() {
     <div className="screen-container">
       <div className="upload-container">
         <div className="form-box">
-          <h1>음악 업로드</h1>
+          <h1>Music Upload</h1>
           <form onSubmit={handleSubmit} encType="multipart/form-data" className="music-form">
             <div className="form-group">
               <label>제목</label>
