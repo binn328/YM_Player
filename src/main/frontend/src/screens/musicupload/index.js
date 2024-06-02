@@ -18,7 +18,7 @@ function MusicForm() {
 
     try {
       if (link) {
-        alert('음악 파일을 처리하는 데 약간의 시간이 소요될 수 있습니다.');
+        alert('링크 변환에 성공했지만, 음악 업로드에는 약간의 시간이 소요될 수 있습니다.');
 
         const dlResponse = await fetch('http://localhost:8080/api/dl', {
           method: 'POST',
@@ -35,6 +35,7 @@ function MusicForm() {
 
         console.log('링크 변환 요청 성공');
       } else {
+        alert('음악이 성공적으로 업로드되었습니다.');
         const formData = new FormData();
         formData.append('title', title);
         formData.append('artist', artist);
