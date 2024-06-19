@@ -61,7 +61,7 @@ const Addsong = ({ addToPlaylist, onClose, currentPlaylist }) => {
   useEffect(() => {
     const fetchMusicList = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/music');
+        const response = await axios.get( '/api/music');
         setMusicList(response.data);
       } catch (error) {
         console.error('음악 목록 가져오기 오류:', error);

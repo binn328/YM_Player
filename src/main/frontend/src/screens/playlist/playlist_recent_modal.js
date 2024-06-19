@@ -71,7 +71,7 @@ const PlaylistRecentModal = ({ isOpen, toggleModal }) => {
 
   // 서버에서 최근에 추가된 곡 목록 가져오기
   useEffect(() => {
-    fetch('http://localhost:8080/api/music')
+    fetch( '/api/music')
       .then(response => response.json())
       .then(data => {
         setRecentlyAdded(data.reverse());

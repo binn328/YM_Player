@@ -17,6 +17,7 @@ import java.util.Optional;
 @Log4j2
 @RestController
 @RequestMapping("/api/album")
+@CrossOrigin(origins = "*")
 public class AlbumAPIController {
     private final AlbumRepository albumRepository;
     private final StorageService storageService;

@@ -22,7 +22,7 @@ export default function Player() {
 
   useEffect(() => {
     if (location.state) {
-      axios.get("http://localhost:8080/api/music")
+      axios.get( "/api/music")
         .then((res) => {
           setTracks(res.data);
           setCurrentTrack(res.data[0]);
