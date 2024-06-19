@@ -63,7 +63,7 @@ const MusicController = ({
       </div>
       <div className="player-controls">
         <audio ref={audioRef} onTimeUpdate={handleTimeUpdate}>
-          <source src={`http://localhost:8080/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
+          <source src={ `/api/music/item/${currentTrack.id}`} type="audio/mpeg" />
         </audio>
         <div className="range-controls">
           <div className="time-range-container">

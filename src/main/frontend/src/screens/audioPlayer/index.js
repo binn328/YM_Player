@@ -89,7 +89,7 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
       const currentSong = playlistMusicDetails[currentSongIndex];
       setSongTitle(currentSong.title);
       setSongArtist(currentSong.artist);
-      setAudioSrc(`http://localhost:8080/api/music/item/${currentSong.id}`);
+      setAudioSrc( `/api/music/item/${currentSong.id}`);
       setTrackProgress(0);
     }
   }, [currentSongIndex, playlistMusicDetails]);
@@ -156,7 +156,7 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
       const currentSong = playlistMusicDetails[currentSongIndex];
       setSongTitle(currentSong.title);
       setSongArtist(currentSong.artist);
-      setAudioSrc(`http://localhost:8080/api/music/item/${currentSong.id}`);
+      setAudioSrc( `/api/music/item/${currentSong.id}`);
       if (isPlaying) {
         audioRef.current.play().catch(console.error);
       }

@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @Log4j2
 @RequestMapping("/api/dl")
+@CrossOrigin(origins = "*")
 public class DownloadAPIController {
     private final DownloadService downloadService;
     private final MusicRepository musicRepository;

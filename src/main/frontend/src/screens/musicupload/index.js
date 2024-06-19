@@ -20,7 +20,7 @@ function MusicForm() {
       if (link) {
         alert('링크 변환에 성공했지만, 음악 업로드에는 약간의 시간이 소요될 수 있습니다.');
 
-        const dlResponse = await fetch('http://localhost:8080/api/dl', {
+        const dlResponse = await fetch( '/api/dl', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ function MusicForm() {
           console.log(`${pair[0]}: ${pair[1]}`);
         }
 
-        const response = await fetch('http://localhost:8080/api/music', {
+        const response = await fetch( '/api/music', {
           method: 'POST',
           body: formData
         });
