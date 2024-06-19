@@ -18,6 +18,7 @@ import java.util.Optional;
 @Log4j2
 @RestController
 @RequestMapping("/api/music")
+@CrossOrigin(origins = "*")
 /**
  * /api/music 아래에서 동작하는 API 컨트롤러
  */

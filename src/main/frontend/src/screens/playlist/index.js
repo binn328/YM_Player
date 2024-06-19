@@ -22,8 +22,8 @@ const Playlist = () => {
 
   const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
 
-  const serverURL = 'http://localhost:8080/api/music';
-  const playlistURL = 'http://localhost:8080/api/playlist';
+  const serverURL =  '/api/music';
+  const playlistURL =  '/api/playlist';
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);

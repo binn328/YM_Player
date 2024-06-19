@@ -6,7 +6,7 @@ const PlaylistFavoriteModal = ({ isOpen, toggleModal }) => {
 
   // 서버에서 좋아요한 곡 목록 가져오기
   useEffect(() => {
-    fetch('http://localhost:8080/api/music') 
+    fetch( '/api/music')
       .then(response => response.json())
       .then(data => {
         const favoriteSongs = data.filter(song => song.favorite === true);
