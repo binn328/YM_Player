@@ -50,7 +50,7 @@ function MusicPlayer() {
 
   const fetchMusicData = async () => {
     try {
-      const response = await fetch( '/api/music');
+      const response = await fetch('http://localhost:8080/api/music');
       if (!response.ok) {
         throw new Error('Failed to fetch music data');
       }
@@ -63,7 +63,7 @@ function MusicPlayer() {
 
   const fetchPlaylists = async () => {
     try {
-      const response = await fetch( '/api/playlist');
+      const response = await fetch('http://localhost:8080/api/playlist');
       if (!response.ok) {
         throw new Error('Failed to fetch playlists');
       }
@@ -76,7 +76,7 @@ function MusicPlayer() {
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch( '/api/album');
+      const response = await fetch('http://localhost:8080/api/album');
       if (!response.ok) {
         throw new Error('Failed to fetch albums');
       }
@@ -88,19 +88,22 @@ function MusicPlayer() {
   };
 
   const playMusic = (music, index) => {
-    if (currentTrack && isPlaying) {
-      stopMusic();
+    if (audioRef.current) {
+      audioRef.current.pause(); // 이전 트랙 정지
     }
     setCurrentTrack(music);
     setSelectedMusic(music.id);
     setCurrentIndex(index);
     setIsPlaying(true);
     if (audioRef.current) {
-      audioRef.current.src =  `/api/music/item/${music.id}`;
-      audioRef.current.play();
+      audioRef.current.src = `http://localhost:8080/api/music/item/${music.id}`;
+      audioRef.current.play().catch(error => {
+        console.log("Playback failed due to autoplay policy:", error);
+      }); // 새로운 트랙 재생
     }
     setShowMusicController(true); // 음악을 재생할 때 MusicController를 열도록 설정
-  };
+  };  
+  
 
   const stopMusic = () => {
     if (audioRef.current) {
@@ -162,7 +165,7 @@ function MusicPlayer() {
         formData.append('chapters', JSON.stringify(music.chapters));
       }
 
-      const response = await fetch( `/api/music/update/${music.id}`, {
+      const response = await fetch(`http://localhost:8080/api/music/update/${music.id}`, {
         method: 'POST',
         body: formData,
       });
@@ -188,7 +191,7 @@ function MusicPlayer() {
 
   const deleteMusic = async (id) => {
     try {
-      const response = await fetch( `/api/music/delete/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/music/delete/${id}`, {
         method: 'POST',
       });
 
@@ -222,7 +225,7 @@ function MusicPlayer() {
       const updatedMusics = [...playlist.musics, { id: music.id }];
       const updatedPlaylist = { ...playlist, musics: updatedMusics };
 
-      const response = await fetch( `/api/playlist/update`, {
+      const response = await fetch(`http://localhost:8080/api/playlist/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -249,7 +252,7 @@ function MusicPlayer() {
       const updatedMusics = [...album.musics, { id: music.id }];
       const updatedAlbum = { ...album, musics: updatedMusics };
 
-      const response = await fetch( `/api/album/update`, {
+      const response = await fetch(`http://localhost:8080/api/album/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -331,7 +334,7 @@ function MusicPlayer() {
         formData.append('chapters', JSON.stringify(editingMusic.chapters));
       }
 
-      const response = await fetch( `/api/music/update/${editingMusic.id}`, {
+      const response = await fetch(`http://localhost:8080/api/music/update/${editingMusic.id}`, {
         method: 'POST',
         body: formData,
       });
@@ -366,7 +369,7 @@ function MusicPlayer() {
 
   const downloadMusic = async (music) => {
     try {
-      const response = await fetch( `/api/music/item/${music.id}`, {
+      const response = await fetch(`http://localhost:8080/api/music/item/${music.id}`, {
         method: 'GET',
       });
 
