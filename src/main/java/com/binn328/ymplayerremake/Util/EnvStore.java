@@ -5,18 +5,22 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Log4j2
 @Getter
 @Component
 public class EnvStore {
-    private final String rootDir;
-    private final String musicDir;
-    private final String downloadDir;
+    private final Path rootDir;
+    private final Path musicDir;
+    private final Path downloadDir;
+    private final Path tempDir;
 
     public EnvStore() {
-        rootDir = File.separator + "data";
-        musicDir = rootDir + File.separator + "musics";
-        downloadDir = rootDir + File.separator + "downloads";
+        rootDir = Paths.get("data");
+        musicDir = rootDir.resolve("musics");
+        downloadDir = rootDir.resolve("downloads");
+        tempDir = rootDir.resolve("temp");
     }
 }
