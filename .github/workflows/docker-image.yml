@@ -1,0 +1,35 @@
+name: Docker Image Build & Push
+
+on:
+  push:
+    branches: [ "main", "develop", "feature/*" ]
+  pull_request:
+    branches: [ "main", "develop", "feature/*" ]
+
+jobs:
+  push_to_registry:
+    name: Docker Login & Build & Push
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 해당 저장소로 체크아웃합니다.
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        
+      # 2. 도커 허브에 로그인합니다.
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      # 3. 현재 브랜치 이름을 환경 변수로 설정합니다.
+      - name: Set branch name
+        run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      # 4. 이미지를 빌드합니다.
+      - name: Build
+        run: docker build -t binn328/ym-player:${{ env.BRANCH_NAME }} .
+
+      # 5. 이미지를 도커 허브에 push 합니다.
+      - name: Push
+        run: docker image push binn328/ym-player:${{ env.BRANCH_NAME }}
