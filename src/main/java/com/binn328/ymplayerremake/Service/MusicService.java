@@ -5,9 +5,12 @@ import com.binn328.ymplayerremake.Repository.MusicRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,7 +44,7 @@ public class MusicService {
             throw new IllegalArgumentException("Music file must not be null");
         }
 
-        // 파일 타입 검사
+        //파일 타입 검사
         String mimeType = fileService.getMimeType(file);
 
         if (!mimeType.equals("audio/mpeg")) {
@@ -54,7 +57,6 @@ public class MusicService {
         Path filePath = fileService.saveFile(file, filename);
 
         /* DB 저장하기 */
-        music.setId(uuid);
         music.setFilePath(filePath.toString());
 
         try {
@@ -89,6 +91,22 @@ public class MusicService {
                 .orElseThrow(() -> new EntityNotFoundException("Muisc not found with id: " + id));
     }
 
+    /**
+     * 음악 파일을 반환합니다.
+     * @param id 찾을 음악의 id
+     * @return 해당하는 음악이 있으면 파일로 반환합니다.
+     * @throws IOException 음악을 찾는 중 문제가 있으면 에러를 일으킵니다.
+     * @throws EntityNotFoundException 해당하는 음악이 없을 경우 에러를 일으킵니다.
+     */
+    public Resource getMusicFile(UUID id) throws IOException{
+        Music music = getMusicInfo(id);
+        File file = Path.of(music.getFilePath()).toFile();
+        if (!file.exists()) {
+            throw new IOException("Can't find music file with id: " + id);
+        }
+        return new FileSystemResource(file);
+    }
+
     /* UPDATE */
 
     /**
@@ -98,29 +116,65 @@ public class MusicService {
      * @return 수정된 음악의 정보를 반환합니다.
      * @throws EntityNotFoundException 해당하는 음악이 없을 경우 에러를 일으킵니다.
      */
-//    public Music editMusicInfo(UUID id, Music editedMusic) {
-//        // 유효성 검사
-//        if (editedMusic == null || editedMusic.getTitle() == null || editedMusic.getTitle().equals("")) {
-//            throw new IllegalArgumentException("Music must not be null");
-//        }
-//
-//        // 해당하는 음악이 있는지 검사
-//        Music music = getMusicInfo(id);
-//
-//        // 업데이트
-//        music.setTitle(editedMusic.getTitle());
-//        music.setGenre(editedMusic.getGenre());
-//        music.setComment(editedMusic.getComment());
-//        music.setTrackNumber(editedMusic.getTrackNumber());
-//        music.setYear(editedMusic.getYear());
-//        music.setArtist(editedMusic.getArtist());
-//        music.setAlbum(editedMusic.getAlbum());
-//        music.setMusicbrainzId(editedMusic.getMusicbrainzId());
-//        // TODO musicbrainzID가 제공되면 다른 로직을 적용하자
-//
-//        // 저장
-//        musicRepository.save(music);
-//    }
+    @Transactional
+    public Music editMusicInfo(UUID id, Music editedMusic) {
+        // 유효성 검사
+        if (editedMusic == null || editedMusic.getTitle() == null || editedMusic.getTitle().equals("")) {
+            throw new IllegalArgumentException("Music must not be null");
+        }
+
+        // 해당하는 음악이 있는지 검사
+        Music music = getMusicInfo(id);
+
+        // 업데이트
+        music.setTitle(editedMusic.getTitle());
+        music.setGenre(editedMusic.getGenre());
+        music.setComment(editedMusic.getComment());
+        music.setTrackNumber(editedMusic.getTrackNumber());
+        music.setYear(editedMusic.getYear());
+        music.setArtist(editedMusic.getArtist());
+        music.setAlbum(editedMusic.getAlbum());
+        music.setMusicbrainzId(editedMusic.getMusicbrainzId());
+        // TODO musicbrainzID가 제공되면 다른 로직을 적용하자
+
+        // 저장
+        return musicRepository.save(music);
+    }
+
+    /**
+     * 음악 파일을 교체합니다.
+     * @param id 교체할 음악의 id
+     * @param file 교체할 음악 파일
+     * @throws IOException 파일 처리 중 문제가 발생하면 에러를 일으킵니다.
+     * @throws IllegalArgumentException 주어진 매개변수가 올바르지 않으면 에러를 일으킵니다.
+     */
+    public void editMusicFile(UUID id, MultipartFile file) throws IOException {
+        // 파일 유효성 검사
+        if (file == null || file.getSize() == 0) {
+            throw new IllegalArgumentException("Music file must not be null");
+        }
+
+        //파일 타입 검사
+        String mimeType = fileService.getMimeType(file);
+
+        if (!mimeType.equals("audio/mpeg")) {
+            throw new IllegalArgumentException("Music file must have audio extension");
+        }
+
+        // id 유효성 검사
+        Music music;
+        try {
+            music = getMusicInfo(id);
+        } catch (EntityNotFoundException e) {
+            throw new IllegalArgumentException("Music not found with id: " + id);
+        }
+        
+        // TODO 파일에 메타데이터 설정하기
+
+        // 파일 교체
+        Path originalFilePath = Path.of(music.getFilePath());
+        fileService.saveFile(file, originalFilePath);
+    }
 
 
 
@@ -137,4 +191,6 @@ public class MusicService {
         fileService.deleteFile(music.getFilePath());
         musicRepository.delete(music);
     }
+
+
 }

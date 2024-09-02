@@ -4,14 +4,19 @@ import com.binn328.ymplayerremake.DTO.CustomResponse;
 import com.binn328.ymplayerremake.Entity.Music;
 import com.binn328.ymplayerremake.Service.MusicService;
 import com.binn328.ymplayerremake.Util.ResponseBuilder;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,21 +40,11 @@ public class MusicController {
     public ResponseEntity<CustomResponse> postMusic(
             @ModelAttribute Music music,
             @RequestParam MultipartFile file
-    ) {
-        try {
-            musicService.addMusic(music, file);
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(responseBuilder.success("Music uploaded successfully"));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(responseBuilder.error(e.getMessage()));
-        } catch (IOException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(responseBuilder.error("File processing error: " + e.getMessage()));
-        }
+    ) throws IOException {
+        musicService.addMusic(music, file);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(responseBuilder.success("Music uploaded successfully"));
     }
 
     /* READ */
@@ -60,58 +55,42 @@ public class MusicController {
      */
     @GetMapping("/api/music")
     public ResponseEntity<CustomResponse> getMusics() {
-        try {
-            List<Music> musics = musicService.getMusicsInfo();
-            Map<String, Object> result = new HashMap<>();
-            result.put("musics", musics);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(responseBuilder.success("", result));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(responseBuilder.error("DB read error: " + e.getMessage()));
-        }
+        List<Music> musics = musicService.getMusicsInfo();
+        Map<String, Object> result = new HashMap<>();
+        result.put("musics", musics);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseBuilder.success("", result));
     }
 
     /**
      * id에 해당하는 음악 정보를 반환합니다.
      * @param id 찾아올 음악의 UUID
-     * @return 요청에 성공하면 HTTP 상태코드 200(OK)와 음악을 담아 반환합니다.
+     * @return 요청에 성공하면 HTTP 상태코드 200(OK)와 음악 정보를 담아 반환합니다.
      *         데이터베이스를 읽는 중 문제가 발생하면 HTTP 상태코드 500(INTERNAL_SERVER_ERROR)를 반환합니다.
      */
     @GetMapping("/api/music/{id}/info")
     public ResponseEntity<CustomResponse> getMusicInfo(@PathVariable UUID id) {
-        try {
-            Music result = musicService.getMusicInfo(id);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(responseBuilder.success("success", result));
-        } catch(EntityNotFoundException e) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(responseBuilder.error(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(responseBuilder.error(e.getMessage()));
-        }
-
+        Music result = musicService.getMusicInfo(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseBuilder.success("success", result));
     }
 
     /**
      * id에 해당하는 음악 파일을 반환합니다.
      * @param id 찾아올 음악의 UUID
-     * @return
+     * @return 요청에 성공하면 HTTP 상태코드 200(OK)와 음악 파일을 담아 반환합니다.
+     *         파일을 가져오는 중 문제가 발생하면 HTTP 상태코드 500(INTERNAL_SERVER_ERROR)를 반환합니다.
+     *         id에 해당하는 음악이 없으면 HTTP 상태코드 404(NOT_FOUND)를 반환합니다.
      */
-//    @GetMapping("/api/music/{id}/file")
-//    public ResponseEntity<CustomResponse> getMusicFile(@PathVariable String id) {
-//        try {
-//            musicService.getMusicFile(id);
-//        } catch () {
-//
-//        }
-//    }
+    @GetMapping("/api/music/{id}/file")
+    public ResponseEntity<CustomResponse> getMusicFile(@PathVariable UUID id) throws IOException {
+        Resource file = musicService.getMusicFile(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseBuilder.success("success", file));
+    }
 
 
     /* UPDATE */
@@ -120,58 +99,51 @@ public class MusicController {
      * 음악의 메타데이터를 수정합니다.
      * @param id 수정할 음악의 UUID
      * @param music 수정될 음악의 메타데이터
-     * @return
+     * @return 요청에 성공하면 HTTP 상태코드 200(OK)와 수정된 음악 정보를 담아 반환합니다.
+     *         id에 해당하는 음악이 없으면 HTTP 상태코드 404(NOT_FOUND)를 반환합니다.
      */
-//    @PutMapping("/api/music/{id}/info")
-//    public ResponseEntity<CustomResponse> updateMusicInfo(
-//            @PathVariable UUID id,
-//            @RequestBody Music music
-//    ) {
-//        musicService.editMusicInfo(id, music);
-//        return null;
-//    }
+    @PutMapping("/api/music/{id}/info")
+    public ResponseEntity<CustomResponse> updateMusicInfo(
+            @PathVariable UUID id,
+            @RequestBody Music music
+    ) {
+        Music editedMusic = musicService.editMusicInfo(id, music);
+        return ResponseEntity.ok(responseBuilder.success("success", editedMusic));
+    }
 
     /**
      * 음악 파일을 교체합니다.
      * @param id 교체할 음악의 UUID
      * @param file 교체할 음악 파일
-     * @return
+     * @return 요청에 성공하면 HTTP 상태코드 200(OK)와 성공 메시지를 담아 반환합니다.
+     *         파일을 처리하는 중 문제가 발생하면 HTTP 상태코드 500(INTERNAL_SERVER_ERROR)를 반환합니다.
+     * @throws IOException 파일을 처리하는 중 문제가 발생하면 에러를 일으킵니다.
      */
-//    @PutMapping("/api/music/{id}/file")
-//    public ResponseEntity<CustomResponse> updateMusicFile(
-//            @PathVariable UUID id,
-//            @RequestParam MultipartFile file
-//    ) {
-//        musicService.editMusicFile(id, file);
-//        return null;
-//    }
+    @PutMapping("/api/music/{id}/file")
+    public ResponseEntity<CustomResponse> updateMusicFile(
+            @PathVariable UUID id,
+            @RequestParam MultipartFile file
+    ) throws IOException {
+        musicService.editMusicFile(id, file);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseBuilder.success("success"));
+    }
 
     /* DELETE */
 
     /**
      * 음악을 제거합니다.
      * @param id 제거할 음악의 UUID
-     * @return
+     * @return 요청에 성공하면 HTTP 상태코드 204(NO_CONTENT)와 성공 메시지를 담아 반환합니다.
+     *         파일을 처리하는 중 문제가 발생하면 HTTP 상태코드 500(INTERNAL_SERVER_ERROR)를 반환합니다.
+     * @throws IOException 파일을 처리하는 중 문제가 발생하면 에러를 일으킵니다.
      */
     @DeleteMapping("/api/music/{id}")
-    public ResponseEntity<CustomResponse> deleteMusic(@PathVariable UUID id) {
-        try {
-            musicService.deleteMusic(id);
-            return ResponseEntity
-                    .status(HttpStatus.NO_CONTENT)
-                    .body(responseBuilder.success("Music deleted successfully"));
-        } catch (IOException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(responseBuilder.error("File processing error: " + e.getMessage()));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(responseBuilder.error(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(responseBuilder.error(e.getMessage()));
-        }
+    public ResponseEntity<CustomResponse> deleteMusic(@PathVariable UUID id) throws IOException {
+        musicService.deleteMusic(id);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(responseBuilder.success("Music deleted successfully"));
     }
 }

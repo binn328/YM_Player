@@ -18,7 +18,7 @@ public class EnvStore {
     private final Path tempDir;
 
     public EnvStore() {
-        rootDir = Paths.get("data");
+        rootDir = Paths.get("/data");
         musicDir = rootDir.resolve("musics");
         downloadDir = rootDir.resolve("downloads");
         tempDir = rootDir.resolve("temp");
