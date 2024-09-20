@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -16,15 +17,16 @@ public class Music {
     private UUID id;
 
     private String title;
-    private String year;
-    private String genre;
-    private String trackNumber;
-    private String comment;
+    private int length;
     private String filePath;
     private String musicbrainzId;
 
-    // 추후에 해당 타입과 연결
-    private String artist;
-    private String album;
+    @ManyToMany(mappedBy = "musics")
+    private Set<Artist> artists = new HashSet<>();
 
+    @ManyToMany(mappedBy = "musics")
+    private Set<Album> albums = new HashSet<>();
+
+    @ManyToMany(mappedBy = "musics")
+    private Set<Playlist> playlists = new HashSet<>();
 }

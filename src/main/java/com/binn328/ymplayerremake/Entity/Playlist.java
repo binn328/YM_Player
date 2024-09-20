@@ -20,9 +20,9 @@ public class Playlist {
 
     @ManyToMany
     @JoinTable(
-            name = "playlist_music",
+            name = "playlistMusic",
             joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "music_id")
     )
-    private Set<Music> musicSet = new HashSet<>();
+    private Set<Music> musics = new HashSet<>();
 }

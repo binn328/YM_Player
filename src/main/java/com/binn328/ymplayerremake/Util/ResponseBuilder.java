@@ -3,9 +3,6 @@ package com.binn328.ymplayerremake.Util;
 import com.binn328.ymplayerremake.DTO.CustomResponse;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Component
 public class ResponseBuilder {
     /**

@@ -39,6 +39,8 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation group: 'org.mockito', name: 'mockito-core', version: '5.13.0'
+    runtimeOnly 'com.h2database:h2'
 }
 
 tasks.named('test') {

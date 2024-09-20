@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -11,23 +12,29 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Artist {
+public class Album {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String name;
-
+    private String title;
+    private LocalDateTime releaseDate;
+    private String country;
     private String musicbrainzId;
 
     @ManyToMany
     @JoinTable(
-            name = "ArtistMusic",
-            joinColumns = @JoinColumn(name = "artist_id"),
+            name = "AlbumMusic",
+            joinColumns = @JoinColumn(name = "album_id"),
             inverseJoinColumns = @JoinColumn(name = "music_id")
     )
     private Set<Music> musics = new HashSet<>();
 
-    @ManyToMany(mappedBy = "artists")
-    private Set<Album> albums = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "ArtistMusic",
+            joinColumns = @JoinColumn(name = "album_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
+    )
+    private Set<Artist> artists = new HashSet<>();
 }

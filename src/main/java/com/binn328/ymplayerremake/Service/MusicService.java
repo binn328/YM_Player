@@ -128,12 +128,7 @@ public class MusicService {
 
         // 업데이트
         music.setTitle(editedMusic.getTitle());
-        music.setGenre(editedMusic.getGenre());
-        music.setComment(editedMusic.getComment());
-        music.setTrackNumber(editedMusic.getTrackNumber());
-        music.setYear(editedMusic.getYear());
-        music.setArtist(editedMusic.getArtist());
-        music.setAlbum(editedMusic.getAlbum());
+
         music.setMusicbrainzId(editedMusic.getMusicbrainzId());
         // TODO musicbrainzID가 제공되면 다른 로직을 적용하자
 
