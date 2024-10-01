@@ -23,10 +23,10 @@ public class FileService {
      */
     @PostConstruct
     public void init() {
-        createDirectory(envStore.getRootDir());
-        createDirectory(envStore.getDownloadDir());
-        createDirectory(envStore.getTempDir());
-        createDirectory(envStore.getMusicDir());
+        createDirectory(envStore.getRootPath());
+        createDirectory(envStore.getDownloadPath());
+        createDirectory(envStore.getTempPath());
+        createDirectory(envStore.getMusicPath());
     }
 
     /**
@@ -80,7 +80,7 @@ public class FileService {
      * @throws IOException 파일 저장 중 문제가 생기면 에러를 일으킵니다.
      */
     public Path saveFile(MultipartFile file, String filename) throws IOException {
-        Path filePath = envStore.getMusicDir().resolve(filename);
+        Path filePath = envStore.getMusicPath().resolve(filename);
         log.info("Save file: " + filePath);
 
         if (file.isEmpty()) {
