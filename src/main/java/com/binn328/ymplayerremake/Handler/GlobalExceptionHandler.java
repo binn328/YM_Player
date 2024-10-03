@@ -5,7 +5,6 @@ import com.binn328.ymplayerremake.Util.ResponseBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +20,7 @@ public class GlobalExceptionHandler {
 
     /**
      * IOException 을 다루는 전역 에러 처리 함수입니다.
+     *
      * @param e IOException
      * @return 파일 처리 오류 발생으로 HTTP 상태코드 500(INTERNAL_SERVER_ERROR)와 오류 메시지를 담은 응답을 반환합니다.
      */
@@ -33,6 +33,7 @@ public class GlobalExceptionHandler {
 
     /**
      * EntityNotFoundException 을 다루는 전역 에러 처리 함수입니다.
+     *
      * @param e EntityNotFoundException
      * @return id에 해당하는 엔티티가 데이터베이스에 없어 HTTP 상태코드 404(NOT_FOUND)를 반환합니다.
      */
@@ -45,6 +46,7 @@ public class GlobalExceptionHandler {
 
     /**
      * IllegalArgumentException 을 다루는 전역 에러 처리 함수입니다.
+     *
      * @param e IllegalArgumentException
      * @return 유효성 검사에 실패하여 HTTP 상태코드 400(BAD_REQUEST)와 오류 메시지를 담은 응답을 반환합니다.
      */

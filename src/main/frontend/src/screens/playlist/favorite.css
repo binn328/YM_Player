@@ -1,42 +1,42 @@
 .favorite-modal {
     position: fixed;
-    width:30%;
+    width: 30%;
     top: 50%;
     left: 50%;
     transform: translate(-20%, -50%);
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.9); 
-    padding: 20px; 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
-    z-index: 9999; 
-    height:70%;
-  }
-  
-  .favorite-modal h2 {
-   
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    height: 70%;
+}
+
+.favorite-modal h2 {
+
     margin-top: 10px;
-  }
-  
-  .favorite-modal ul {
+}
+
+.favorite-modal ul {
     list-style-type: none;
     padding: 0;
-  }
-  
-  .Fmodal{
+}
+
+.Fmodal {
     background: white;
     border-radius: 20px;
     padding: 20px;
-    font-size:30px;
-    text-align:center;
-    height:93%;
-    overflow:scroll;
-  }
+    font-size: 30px;
+    text-align: center;
+    height: 93%;
+    overflow: scroll;
+}
 
-  .favorite-modal li {
+.favorite-modal li {
     margin-bottom: 10px;
-  }
-  
-  .favorite-modal button {
+}
+
+.favorite-modal button {
     background-color: #201658;
     color: white;
     border: none;
@@ -44,33 +44,34 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size:25px;
-  }
-  
-  .favorite-modal button:hover {
-    background-color: #0f0b24;
-  }
+    font-size: 25px;
+}
 
-  .favorite-list {
+.favorite-modal button:hover {
+    background-color: #0f0b24;
+}
+
+.favorite-list {
     list-style: none;
     padding: 0;
-  }
-  
-  .favorite-list li {
+}
+
+.favorite-list li {
     margin-bottom: 10px;
-    border-bottom: 1px solid #ccc; 
+    border-bottom: 1px solid #ccc;
     padding-bottom: 5px;
     cursor: pointer;
     overflow: scroll;
-  }
-  
-  .favorite-list li:last-child {
-    border-bottom: none; 
-  }
-  
-  .favorite-list li::-webkit-scrollbar{
+}
+
+.favorite-list li:last-child {
+    border-bottom: none;
+}
+
+.favorite-list li::-webkit-scrollbar {
     display: none;
-  }
-  .Fmodal::-webkit-scrollbar{
+}
+
+.Fmodal::-webkit-scrollbar {
     display: none;
-  }
+}

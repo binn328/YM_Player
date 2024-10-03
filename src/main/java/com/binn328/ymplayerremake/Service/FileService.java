@@ -31,6 +31,7 @@ public class FileService {
 
     /**
      * 주어진 경로에 디렉터리를 생성합니다.
+     *
      * @param path 디렉터리 경로
      */
     private void createDirectory(Path path) {
@@ -46,6 +47,7 @@ public class FileService {
 
     /**
      * 임시 파일을 생성하고 MIME 타입을 반환합니다.
+     *
      * @param file 검사할 파일
      * @return MIME 타입
      * @throws IOException 파일 입출력 중 문제가 생기면 에러를 일으킵니다.
@@ -74,7 +76,8 @@ public class FileService {
 
     /**
      * 파일을 저장합니다.
-     * @param file 저장할 파일
+     *
+     * @param file     저장할 파일
      * @param filename 저장될 파일의 이름
      * @return 저장된 파일 경로
      * @throws IOException 파일 저장 중 문제가 생기면 에러를 일으킵니다.
@@ -100,7 +103,8 @@ public class FileService {
 
     /**
      * 파일을 저장합니다.
-     * @param file 저장할 파일
+     *
+     * @param file     저장할 파일
      * @param filename 저장될 파일의 이름
      * @return 저장된 파일 경로
      * @throws IOException 파일 저장 중 문제가 생기면 에러를 일으킵니다.
@@ -112,9 +116,9 @@ public class FileService {
     }
 
 
-
     /**
      * 파일을 삭제합니다.
+     *
      * @param path Path 타입의 삭제할 파일의 경로
      * @throws IOException 파일 삭제 중 문제가 발생하면 에러를 일으킵니다.
      */
@@ -124,6 +128,7 @@ public class FileService {
 
     /**
      * 파일을 삭제합니다.
+     *
      * @param path String 타입의 삭제할 파일의 경로
      * @throws IOException 파일 삭제 중 문제가 발생하면 에러를 일으킵니다.
      */

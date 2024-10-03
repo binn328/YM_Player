@@ -6,84 +6,84 @@
 }*/
 
 .upload-container {
-  width: 400px;
-  padding: 25px;
-  border-radius: 8px;
-  background-color: #ffffff;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 25px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .upload-container h1 {
-  margin-top: 0;
-  color: #1a518c;
-  text-align: center;
+    margin-top: 0;
+    color: #1a518c;
+    text-align: center;
 }
 
 .upload-container .form-group {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .upload-container .form-group label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
 .upload-container .form-group input[type="text"],
 .upload-container .form-group input[type="file"],
 .upload-container .form-group input[type="url"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #dcdcdc;
-  border-radius: 5px;
-  box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
 .upload-container .form-group input[type="file"] {
-  padding: 12px 10px;
+    padding: 12px 10px;
 }
 
 .upload-container .form-group input[type="file"]::-webkit-file-upload-button {
-  padding: 10px;
-  background-color: #1a518c;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+    padding: 10px;
+    background-color: #1a518c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .upload-container .form-group input[type="file"]::-webkit-file-upload-button:hover {
-  background-color: #15446e;
+    background-color: #15446e;
 }
 
 .upload-container .form-group input[type="url"] {
-  padding-left: 30px;
-  background-image: url('https://img.icons8.com/material-outlined/24/000000/link--v2.png');
-  background-repeat: no-repeat;
-  background-position: 5px center;
+    padding-left: 30px;
+    background-image: url('https://img.icons8.com/material-outlined/24/000000/link--v2.png');
+    background-repeat: no-repeat;
+    background-position: 5px center;
 }
 
 .upload-container button[type="submit"] {
-  width: 100%;
-  padding: 12px;
-  background-color: #1a518c;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    width: 100%;
+    padding: 12px;
+    background-color: #1a518c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .upload-container button[type="submit"]:hover {
-  background-color: #15446e;
+    background-color: #15446e;
 }
 
 @media screen and (max-width: 480px) {
-  .upload-container {
-    width: 90%;
-  }
+    .upload-container {
+        width: 90%;
+    }
 }

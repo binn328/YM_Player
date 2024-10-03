@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MetadataController {
     private final MusicbrainzService metadataService;
+
     @GetMapping("/test/get/{title}")
     public String getMetadata(@PathVariable String title) {
         metadataService.find(title);

@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,8 +26,9 @@ public class MusicService {
 
     /**
      * 음악을 추가합니다.
+     *
      * @param music 추가할 음악의 정보
-     * @param file 추가할 음악 파일
+     * @param file  추가할 음악 파일
      * @throws IOException 파일 입출력 중 문제가 생기면 에러를 일으킵니다.
      */
     @Transactional
@@ -72,6 +72,7 @@ public class MusicService {
 
     /**
      * 전체 음악 목록을 반환합니다.
+     *
      * @return 성공 시 음악 목록을 반환합니다.
      */
     public List<Music> getMusicsInfo() {
@@ -81,9 +82,10 @@ public class MusicService {
 
     /**
      * id에 해당하는 음악 정보를 반환합니다.
+     *
      * @param id 찾을 음악의 ID
      * @return 성공 시 해당 음악의 정보를 반환합니다.
-     *         실패 시 에러를 발생시킵니다.
+     * 실패 시 에러를 발생시킵니다.
      * @throws EntityNotFoundException 해당하는 음악이 없을 경우 에러를 일으킵니다.
      */
     public Music getMusicInfo(UUID id) {
@@ -93,12 +95,13 @@ public class MusicService {
 
     /**
      * 음악 파일을 반환합니다.
+     *
      * @param id 찾을 음악의 id
      * @return 해당하는 음악이 있으면 파일로 반환합니다.
-     * @throws IOException 음악을 찾는 중 문제가 있으면 에러를 일으킵니다.
+     * @throws IOException             음악을 찾는 중 문제가 있으면 에러를 일으킵니다.
      * @throws EntityNotFoundException 해당하는 음악이 없을 경우 에러를 일으킵니다.
      */
-    public Resource getMusicFile(UUID id) throws IOException{
+    public Resource getMusicFile(UUID id) throws IOException {
         Music music = getMusicInfo(id);
         File file = Path.of(music.getFilePath()).toFile();
         if (!file.exists()) {
@@ -111,7 +114,8 @@ public class MusicService {
 
     /**
      * 음악의 정보를 수정합니다.
-     * @param id 수정할 음악의 id
+     *
+     * @param id          수정할 음악의 id
      * @param editedMusic 수정된 음악의 정보
      * @return 수정된 음악의 정보를 반환합니다.
      * @throws EntityNotFoundException 해당하는 음악이 없을 경우 에러를 일으킵니다.
@@ -138,9 +142,10 @@ public class MusicService {
 
     /**
      * 음악 파일을 교체합니다.
-     * @param id 교체할 음악의 id
+     *
+     * @param id   교체할 음악의 id
      * @param file 교체할 음악 파일
-     * @throws IOException 파일 처리 중 문제가 발생하면 에러를 일으킵니다.
+     * @throws IOException              파일 처리 중 문제가 발생하면 에러를 일으킵니다.
      * @throws IllegalArgumentException 주어진 매개변수가 올바르지 않으면 에러를 일으킵니다.
      */
     public void editMusicFile(UUID id, MultipartFile file) throws IOException {
@@ -163,7 +168,7 @@ public class MusicService {
         } catch (EntityNotFoundException e) {
             throw new IllegalArgumentException("Music not found with id: " + id);
         }
-        
+
         // TODO 파일에 메타데이터 설정하기
 
         // 파일 교체
@@ -177,11 +182,12 @@ public class MusicService {
 
     /**
      * 특정 음악을 제거합니다.
+     *
      * @param id 제거할 음악의 ID
      * @throws IOException 파일 삭제 중 문제가 발생하면 에러를 일으킵니다.
      */
     @Transactional
-    public void deleteMusic(UUID id) throws IOException{
+    public void deleteMusic(UUID id) throws IOException {
         Music music = getMusicInfo(id);
         fileService.deleteFile(music.getFilePath());
         musicRepository.delete(music);

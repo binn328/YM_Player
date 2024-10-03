@@ -6,7 +6,7 @@ export default function Trending() {
             <iframe
                 title="chart"
                 src="https://www.hanteochart.com/"
-                style={{ width: '100%', height: '100vh', border: 'none' }}
+                style={{width: '100%', height: '100vh', border: 'none'}}
             />
         </div>
     );

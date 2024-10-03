@@ -1,121 +1,122 @@
-.playlist-modal{
-    color:white;
-    display:flex;
-    margin-left:50px;
+.playlist-modal {
+    color: white;
+    display: flex;
+    margin-left: 50px;
 }
 
 
-.music-list{
+.music-list {
     /*margin-left:200px;*/
     width: 50%;
 }
 
 
 .music-list ul::-webkit-scrollbar, .current-playlist ul::-webkit-scrollbar, .playlist-modal::-webkit-scrollbar {
-    display: none; 
-  }
-
-.playlist-modal button{
-    margin-left:40px;
-    padding:30px;
-    font-size:50px;
-    background:transparent;
-    color:white;
-    cursor: pointer;
-    border:none;
-    align-self:flex-start;
-    
+    display: none;
 }
-.current-playlist ul{
-    cursor:pointer;
+
+.playlist-modal button {
+    margin-left: 40px;
+    padding: 30px;
+    font-size: 50px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    border: none;
+    align-self: flex-start;
+
+}
+
+.current-playlist ul {
+    cursor: pointer;
     overflow-y: auto;
     max-height: 20vh;
-   
+
 }
 
-.current-playlist h2, .music-list h2{
+.current-playlist h2, .music-list h2 {
     font-size: 40px;
 }
 
-.current-playlist li{
-    padding-bottom:15px;
-    font-size:25px;
+.current-playlist li {
+    padding-bottom: 15px;
+    font-size: 25px;
 }
 
-.music-list ul{
+.music-list ul {
     cursor: pointer;
     overflow-y: auto;
     max-height: 20vh;
-    
+
 }
 
-.music-list li{
+.music-list li {
     padding-bottom: 15px;
-    font-size:25px;
+    font-size: 25px;
 }
 
-.context-menu{
-  color:black;
+.context-menu {
+    color: black;
 }
 
 
 @media (max-width: 480px) {
     .playlist-modal {
-      width: 40%;
-      padding: 5px;
+        width: 40%;
+        padding: 5px;
     }
-  
+
     .current-playlist, .music-list {
-      margin-bottom: 10px;
-      width:40%;
+        margin-bottom: 10px;
+        width: 40%;
     }
-  
+
     .current-playlist li, .music-list li {
-      padding: 8px;
-      font-size:14px;
+        padding: 8px;
+        font-size: 14px;
     }
-  
+
     .playlist-modal button {
-      width: 15px;
-      height: 15px;
-      top: 5px;
-      right: 2px;
-      font-size: 20px;
+        width: 15px;
+        height: 15px;
+        top: 5px;
+        right: 2px;
+        font-size: 20px;
     }
 
-   
-  }
 
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
     .playlist-modal {
-      width: 50%;
-      padding: 10px;
+        width: 50%;
+        padding: 10px;
     }
-  
+
     .current-playlist, .music-list {
-      margin-bottom: 10px;
-      width:50%;
+        margin-bottom: 10px;
+        width: 50%;
     }
-  
+
     .current-playlist li, .music-list li {
-      padding: 8px;
-      font-size:16px;
+        padding: 8px;
+        font-size: 16px;
     }
-  
+
     .playlist-modal button {
-      width: 25px;
-      height: 25px;
-      top: 5px;
-      right: 5px;
-      font-size: 30px;
-      margin-left: 10px;
+        width: 25px;
+        height: 25px;
+        top: 5px;
+        right: 5px;
+        font-size: 30px;
+        margin-left: 10px;
     }
 
     .current-playlist h2, .music-list h2 {
-      font-size: 25px;
-  }
+        font-size: 25px;
+    }
 
-  .song-icons, .liked-icons{
-    font-size:50px;
-  }
-  }
+    .song-icons, .liked-icons {
+        font-size: 50px;
+    }
+}

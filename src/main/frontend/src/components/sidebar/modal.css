@@ -1,17 +1,17 @@
 .upload-label {
     position: relative;
-    width: 100px; 
-    height: 100px; 
+    width: 100px;
+    height: 100px;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px; 
-    color: #fff; 
-    background-color: #a9cff7; 
-    border-radius: 50%; 
-    cursor: pointer; 
-    margin: 5px; 
+    font-size: 24px;
+    color: #fff;
+    background-color: #a9cff7;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 5px;
 }
 
 .upload-label input[type="file"] {
@@ -20,17 +20,17 @@
 }
 
 .sample-image {
-    cursor: pointer; 
+    cursor: pointer;
     display: flex;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
 }
 
 .sample-image img {
     background-color: #fff;
     padding: 5px;
-    width: 100px; 
-    height: 100px; 
-    margin: 20px; 
+    width: 100px;
+    height: 100px;
+    margin: 20px;
 }
 
 .modal-box {
@@ -66,7 +66,7 @@
     border-radius: 10px;
 }
 
-.modal-box .modal::-webkit-scrollbar{
+.modal-box .modal::-webkit-scrollbar {
     display: none;
 }
 
@@ -83,11 +83,11 @@
     cursor: pointer;
     font-size: 25px;
     padding: 15px;
-   
+
 }
 
 
-.sample-image img:hover, .sample-image .upload-label:hover{
+.sample-image img:hover, .sample-image .upload-label:hover {
     transform: scale(1.1);
     transition: all 0.2s ease;
 }

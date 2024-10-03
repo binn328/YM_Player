@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 public class ResponseBuilder {
     /**
      * 성공 응답을 생성합니다.
+     *
      * @param message
      * @return
      */
@@ -16,6 +17,7 @@ public class ResponseBuilder {
 
     /**
      * 데이터가 담긴 성공 응답을 생성합니다.
+     *
      * @param message
      * @param data
      * @return
@@ -26,6 +28,7 @@ public class ResponseBuilder {
 
     /**
      * 에러 응답을 생성합니다.
+     *
      * @param message
      * @return
      */

@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class WebController implements ErrorController {
     @GetMapping({"/", "/error"})
     public String homePage() {
-        return "index.html" ;
+        return "index.html";
     }
 }

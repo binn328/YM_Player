@@ -1,64 +1,64 @@
-.add-song-container{
+.add-song-container {
     width: 90%;
     background: linear-gradient(100deg, #1e2a3e, #3645621a);
-    
+
     cursor: pointer;
     z-index: 999;
     border-radius: 10px;
     margin-bottom: 30px;
-    height:50%;
+    height: 50%;
     overflow: scroll;
 }
 
-.add-song-top{
-   
+.add-song-top {
+
     background: linear-gradient(0deg, #1e2a3e, #3645621a);
-    width:100%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     flex-direction: row;
     align-items: center;
-    
+
 }
 
-.add-song-top button{
+.add-song-top button {
     cursor: pointer;
 }
 
-.add-song-container h2{
-    text-align:center;
+.add-song-container h2 {
+    text-align: center;
 
 }
 
-.add-song-container button{
+.add-song-container button {
     color: white;
     background: transparent;
-    font-size:30px;
+    font-size: 30px;
     font-weight: 900;
     justify-content: space-between;
-    border:none;
-    
+    border: none;
+
 }
 
-.add-song-container .error-message{
-    text-align:center;
+.add-song-container .error-message {
+    text-align: center;
 }
 
-.add-song-container li{
-    list-style:none;
+.add-song-container li {
+    list-style: none;
     padding-bottom: 10px;
     overflow: scroll;
 }
 
-.add-song-container li::-webkit-scrollbar{
+.add-song-container li::-webkit-scrollbar {
     display: none;
 }
 
-.add-song-container li:hover{
-    background-color: rgba(0,0,0,0.2);
+.add-song-container li:hover {
+    background-color: rgba(0, 0, 0, 0.2);
     transition: 0.2s ease-in-out;
 }
 
-.add-song-container::-webkit-scrollbar{
+.add-song-container::-webkit-scrollbar {
     display: none;
 }
