@@ -64,63 +64,37 @@ sourceSets {
     }
 }
 
-def reactBuildDir = "$frontendDir/build"
+processResources {
+    dependsOn "copyReactBuildFiles"
+}
 
 task installReact(type: Exec) {
     workingDir "$frontendDir"
-
-    // 입력 파일 정의
-    inputs.files fileTree("$frontendDir") {
-        include 'package.json', 'package-lock.json'
-    }
-
-    // 출력 디렉토리 정의
-    outputs.dir "$frontendDir/node_modules"
-
+    inputs.dir "$frontendDir"
     group = BasePlugin.BUILD_GROUP
-    if (System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")) {
-        commandLine "cmd", "/c", "npm audit fix && npm install"
+    if (System.getProperty("os.name")
+            .toLowerCase(Locale.ROOT)
+            .contains("windows")) {
+        commandLine "npm.cmd", "audit", "fix"
+        commandLine "npm.cmd", "install"
     } else {
-        commandLine "sh", "-c", "npm audit fix && npm install"
+        commandLine "npm", "audit", "fix"
+        commandLine "npm", "install"
     }
 }
-
 task buildReact(type: Exec) {
-    dependsOn installReact
+    dependsOn "installReact"
     workingDir "$frontendDir"
-
-    // 입력 디렉토리 정의 (소스 코드)
-    inputs.dir "$frontendDir/src"
-
-    // 출력 디렉토리 정의 (빌드 결과물)
-    outputs.dir "$frontendDir/build"
-
+    inputs.dir "$frontendDir"
     group = BasePlugin.BUILD_GROUP
     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine "cmd", "/c", "npm run build"
+        commandLine "npm.cmd", "run-script", "build"
     } else {
-        commandLine "sh", "-c", "npm run build"
+        commandLine "npm", "run-script", "build"
     }
 }
-
 task copyReactBuildFiles(type: Copy) {
-    dependsOn buildReact
-    from "$reactBuildDir"
+    dependsOn "buildReact"
+    from "$frontendDir/build"
     into "$projectDir/src/main/resources/static"
-
-    // 입력 디렉토리 정의 (React 빌드 결과물)
-    inputs.dir "$reactBuildDir"
-
-    // 출력 디렉토리 정의 (Spring Boot 리소스)
-    outputs.dir "$projectDir/src/main/resources/static"
 }
-
-build.dependsOn copyReactBuildFiles
-
-// React 빌드 작업이 processResources에 의존하지 않도록 설정
-processResources {
-    // Remove dependency on copyReactBuildFiles if necessary
-    // dependsOn "copyReactBuildFiles"
-}
-
-// React 빌드를 build 단계로 제한하여 테스트 시 React 빌드가 실행되지 않도록 함
