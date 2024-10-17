@@ -81,9 +81,30 @@
 .upload-container button[type="submit"]:hover {
     background-color: #15446e;
 }
-
+/*
 @media screen and (max-width: 480px) {
     .upload-container {
         width: 90%;
+    }
+}*/
+
+@media screen and (max-width: 376px) {
+    .upload-container {
+        width: 250px; /* 너비를 250px로 수정 */
+        padding: 15px;
+    }
+
+    .upload-container .form-group input[type="text"],
+    .upload-container .form-group input[type="file"],
+    .upload-container .form-group input[type="url"] {
+        width: calc(100% - 14px); /* 패딩과 경계선을 고려한 너비 계산 */
+        padding: 7px;
+        font-size: 0.85rem;
+    }
+
+    .upload-container button[type="submit"] {
+        width: 100%; /* 버튼도 부모 요소에 맞게 100% */
+        padding: 9px;
+        font-size: 0.9rem;
     }
 }

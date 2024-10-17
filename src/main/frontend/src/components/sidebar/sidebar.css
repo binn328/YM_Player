@@ -1,16 +1,103 @@
-.sidebar-container {
-    width: 100px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: space-between;
+/* 전체 컨테이너 */
+.sidebar-wrapper {
+    position: relative;
 }
 
+/* 햄버거 메뉴 아이콘 스타일 */
+.hamburger-icon {
+    font-size: 30px;
+    color: #00608d;
+    cursor: pointer;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001; /* 사이드바 위에 햄버거 아이콘이 항상 보이게 */
+}
+
+/* 사이드바 기본 스타일 */
+.sidebar-container {
+    width: 200px;
+    height: 100vh; /* 화면의 높이에 맞춰서 사이드바 높이 조정 */
+    background-color: #282c34;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center; /* 아이콘들을 중앙으로 정렬 */
+    position: fixed;
+    top: 0;
+    left: -200px; /* 기본적으로 사이드바를 숨김 */
+    transition: left 0.3s ease;
+    z-index: 1000; /* 사이드바가 화면의 앞에 위치하도록 설정 */
+}
+
+/* 사이드바가 열렸을 때 */
+.sidebar-container.open {
+    left: 0;
+}
+
+/* 사이드바 내부 콘텐츠를 스크롤 가능하게 설정 */
+.sidebar-content {
+    flex-grow: 1; /* 사이드바 콘텐츠가 남은 공간을 차지하게 함 */
+    overflow-y: auto; /* 스크롤 가능하도록 설정 */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 사이드바 버튼들을 중앙에 정렬 */
+}
+
+/* 프로필 이미지 스타일 */
 .profile-img {
     width: 50px;
     height: 50px;
     border-radius: 20px;
     margin-top: 20px;
     cursor: pointer;
+    display: block; /* 이미지를 블록 요소로 설정하여 중앙 정렬 가능하게 */
+    margin-left: auto;
+    margin-right: auto; /* 수평 중앙 정렬 */
+}
+
+/* 마지막 사이드바 버튼 고정 */
+.sidebar-container .sidebar-button:last-child {
+    margin-bottom: 20px;
+}
+
+/* 버튼 컨테이너 */
+.btn-body {
+    height: 80px;
+    width: 80px;
+    border-radius: 20px;
+    color: #a8e2e4;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 5px auto;
+    transition: all 0.2s ease;
+
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+/* 버튼 활성화 시 */
+.btn-body.active {
+    background-color: #00608d;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* 버튼 hover 시 */
+.btn-body:hover {
+    color: #fff;
+    transform: scale(1.2);
+    transition: all 0.3s ease-in-out;
+}
+
+/* 버튼 텍스트 */
+.btn-title {
+    margin: 4px auto;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center; /* 텍스트를 중앙에 정렬 */
+    display: block; /* 텍스트를 블록 요소로 설정해 중앙에 배치 가능하게 함 */
 }
