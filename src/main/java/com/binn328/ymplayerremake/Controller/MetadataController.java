@@ -13,7 +13,7 @@ public class MetadataController {
 
     @GetMapping("/test/get/{title}")
     public String getMetadata(@PathVariable String title) {
-        metadataService.find(title);
+        //metadataService.find(title);
         return "";
     }
 }

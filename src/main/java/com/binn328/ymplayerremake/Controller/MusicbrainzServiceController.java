@@ -1,7 +1,5 @@
 package com.binn328.ymplayerremake.Controller;
 
-import com.binn328.ymplayerremake.DTO.MBAlbum;
-import com.binn328.ymplayerremake.DTO.MBArtist;
 import com.binn328.ymplayerremake.DTO.MBMusic;
 import com.binn328.ymplayerremake.Service.MusicbrainzService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +21,5 @@ public class MusicbrainzServiceController {
         return musicService.getMusicInfo(title, artist);  // MBMusic 객체 반환
     }
 
-    // 앨범 정보를 반환하는 엔드포인트
-    @GetMapping("/album")
-    public MBAlbum getAlbumInfo(@RequestParam String title, @RequestParam String artist) {
-        return musicService.getAlbumInfo(title, artist);  // MBAlbum 객체 반환
-    }
-
-    // 아티스트 정보를 반환하는 엔드포인트
-    @GetMapping("/artist")
-    public MBArtist getArtistInfo(@RequestParam String title, @RequestParam String artist) {
-        return musicService.getArtistInfo(title, artist);  // MBArtist 객체 반환
-    }
 }
 
