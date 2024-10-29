@@ -6,7 +6,9 @@ import com.binn328.ymplayerremake.Service.MusicService;
 import com.binn328.ymplayerremake.Util.ResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,11 +85,13 @@ public class MusicController {
      * id에 해당하는 음악이 없으면 HTTP 상태코드 404(NOT_FOUND)를 반환합니다.
      */
     @GetMapping("/api/music/{id}/file")
-    public ResponseEntity<CustomResponse> getMusicFile(@PathVariable UUID id) throws IOException {
+    public ResponseEntity<Resource> getMusicFile(@PathVariable UUID id) throws IOException {
         Resource file = musicService.getMusicFile(id);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(responseBuilder.success("success", file));
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM) // 파일을 바이너리 형식으로 전송
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"") // 다운로드를 위한 헤더 설정
+                .body(file);
     }
 
 
