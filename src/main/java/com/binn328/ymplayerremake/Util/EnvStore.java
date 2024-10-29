@@ -34,7 +34,7 @@ public class EnvStore {
             throw new IllegalArgumentException("Property 'env.rootDir' must be set");
         }
 
-        rootPath = Paths.get(rootDir);
+        rootPath = Paths.get(rootDir).toAbsolutePath();
         musicPath = rootPath.resolve("musics");
         downloadPath = rootPath.resolve("downloads");
         tempPath = rootPath.resolve("temp");
