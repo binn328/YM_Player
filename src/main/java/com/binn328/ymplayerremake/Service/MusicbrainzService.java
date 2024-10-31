@@ -180,6 +180,10 @@ public class MusicbrainzService {
         MBMusic music = new MBMusic();
 
         try {
+            // 'artist' 문자열에서 '- TOPIC'을 제거
+            if (artist.toUpperCase().endsWith("- TOPIC")) {
+                artist = artist.substring(0, artist.length() - 7).trim();
+            }
             // 제목과 아티스트 이름을 URL에 사용할 수 있도록 인코딩
             String encodedTitle = URLEncoder.encode(title.toLowerCase(), "UTF-8");
             String encodedArtist = URLEncoder.encode(artist.toLowerCase(), "UTF-8");
@@ -190,6 +194,12 @@ public class MusicbrainzService {
             // API 호출 및 응답 받기
             JsonNode response = restTemplate.getForObject(url, JsonNode.class);
             JsonNode recordings = response.path("recordings");
+
+            // recordings 배열이 비어 있으면 getMusicInfoByTitle 메서드 실행
+            if (recordings.isArray() && recordings.size() == 0) {
+                System.out.println("No recordings found for title and artist. Attempting search by title only.");
+                return getMusicInfoByTitle(title);
+            }
 
             // recordings 배열에서 "Live"가 포함되지 않은 앨범을 가진 첫 번째 recording을 선택
             JsonNode bestMatch = null;
@@ -219,6 +229,12 @@ public class MusicbrainzService {
                         break;
                     }
                 }
+            }
+
+            // 조건에 맞는 recording이 없으면 getMusicInfoByTitle 메서드를 실행
+            if (bestMatch == null || selectedRelease == null) {
+                System.out.println("No suitable recording found with an album title without 'Live' and a date. Attempting search by title only.");
+                return getMusicInfoByTitle(title);
             }
 
             // 선택된 recording이 있을 경우 처리
@@ -298,4 +314,130 @@ public class MusicbrainzService {
 
         return music;
     }
+
+    /**
+     * 제목만으로 음악 정보를 검색합니다.
+     *
+     * @param title 음악 제목
+     * @return MBMusic 객체 또는 null (음악 정보를 찾지 못한 경우)
+     */
+    public MBMusic getMusicInfoByTitle(String title) {
+        MBMusic music = new MBMusic();
+
+        try {
+            // 제목을 URL에 사용할 수 있도록 인코딩
+            String encodedTitle = URLEncoder.encode(title.toLowerCase(), "UTF-8");
+
+            // 인코딩된 값으로 API URL 생성
+            String url = "https://musicbrainz.org/ws/2/recording?query=recording:\"" + encodedTitle + "\"&fmt=json";
+
+            // API 호출 및 응답 받기
+            JsonNode response = restTemplate.getForObject(url, JsonNode.class);
+            JsonNode recordings = response.path("recordings");
+
+            // recordings 배열에서 "Live"가 포함되지 않은 앨범을 가진 첫 번째 recording을 선택
+            JsonNode bestMatch = null;
+            JsonNode selectedRelease = null;
+
+            if (recordings.isArray()) {
+                for (JsonNode recording : recordings) {
+                    JsonNode releases = recording.path("releases");
+
+                    // releases 배열을 순회하여 "Live"가 포함되지 않은 앨범을 찾고, date 값이 있는 경우에만 선택
+                    for (JsonNode release : releases) {
+                        String albumTitle = release.path("title").asText("");
+                        String releaseDate = release.path("date").asText(null);
+
+                        // "Live"가 포함되지 않은 앨범이면서 date 필드가 있는 경우 선택
+                        if (!albumTitle.toLowerCase().contains("live") && releaseDate != null && !releaseDate.isEmpty()) {
+                            //System.out.println("Selected recording with album title without 'Live' and has a date: " + albumTitle);
+                            bestMatch = recording;
+                            selectedRelease = release;
+                            break;
+                        }
+                    }
+
+                    if (bestMatch != null) {
+                        break;
+                    }
+                }
+            }
+
+            // 선택된 recording이 있을 경우 처리
+            if (bestMatch != null && selectedRelease != null) {
+                // 음악 정보 설정
+                music.setMusicTitle(bestMatch.path("title").asText(null));
+                Integer musicLength = bestMatch.has("length") ? bestMatch.path("length").asInt() : null;
+                music.setMusicLength(musicLength != null ? musicLength : 0);  // null 체크 후 기본값 사용
+                music.setMusicMusicbrainz_id(bestMatch.path("id").asText(null));
+
+                // 앨범 정보 설정
+                music.setAlbumTitle(selectedRelease.path("title").asText(null));
+                String releaseId = selectedRelease.path("id").asText(null);
+
+                // 발매 날짜 설정
+                String dateString = selectedRelease.path("date").asText(null);
+                if (dateString != null && !dateString.isEmpty()) {
+                    try {
+                        if (dateString.length() == 4) {
+                            music.setAlbumReleaseDate(LocalDate.of(Integer.parseInt(dateString), 1, 1));
+                        } else if (dateString.length() == 7) {
+                            YearMonth yearMonth = YearMonth.parse(dateString);
+                            music.setAlbumReleaseDate(yearMonth.atDay(1));
+                        } else {
+                            music.setAlbumReleaseDate(LocalDate.parse(dateString));
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Error parsing release date: " + e.getMessage());
+                        music.setAlbumReleaseDate(null);
+                    }
+                }
+
+                // 국가 정보 설정
+                String country = selectedRelease.path("country").asText(null);
+                music.setAlbumCountry(country);
+                music.setAlbumMusicbrainz_id(releaseId);
+
+                // 아티스트 정보 설정
+                JsonNode artistNode = bestMatch.path("artist-credit").get(0).path("artist");
+                music.setArtistName(artistNode.path("name").asText(null));
+                music.setArtistMusicbrainz_id(artistNode.path("id").asText(null));
+
+                // 트랙 위치 설정 (앨범 내 몇 번째 트랙인지 확인)
+                JsonNode mediaArray = selectedRelease.path("media");
+                if (mediaArray.isArray() && mediaArray.size() > 0) {
+                    for (JsonNode media : mediaArray) {
+                        JsonNode tracks = media.path("track");  // `track` 배열로 접근
+                        if (tracks.isArray()) {
+                            for (JsonNode track : tracks) {
+                                // 트랙 제목이 일치하면 해당 트랙의 `number`를 사용하여 트랙 번호 설정
+                                String trackTitle = track.path("title").asText("");
+                                if (trackTitle.equalsIgnoreCase(music.getMusicTitle())) {
+                                    Integer trackNumber = track.has("number") ? Integer.parseInt(track.path("number").asText("0")) : null;
+                                    music.setTrackNumber(trackNumber != null ? trackNumber : -1);  // null 체크 후 기본값 사용
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // 앨범 아트 URL 설정 (Cover Art Archive 사용)
+                if (releaseId != null) {
+                    String coverArtUrl = "https://coverartarchive.org/release/" + releaseId + "/front";
+                    music.setAlbumCoverArtUrl(coverArtUrl);
+                }
+            } else {
+                System.out.println("No suitable recording found with an album title without 'Live' and a date.");
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return music;
+    }
+
 }
