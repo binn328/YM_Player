@@ -335,6 +335,12 @@ public class MusicbrainzService {
             JsonNode response = restTemplate.getForObject(url, JsonNode.class);
             JsonNode recordings = response.path("recordings");
 
+            // recordings 배열이 비어 있으면 null 반환
+            if (recordings.isArray() && recordings.size() == 0) {
+                System.out.println("No recordings found for title and artist. Attempting search by title only.");
+                return null;
+            }
+
             // recordings 배열에서 "Live"가 포함되지 않은 앨범을 가진 첫 번째 recording을 선택
             JsonNode bestMatch = null;
             JsonNode selectedRelease = null;
