@@ -38,3 +38,7 @@ out/
 
 ### React ###
 /src/main/resources/static/
+
+### db ###
+/docker/mongo-data/
+/docker/ym-data/
