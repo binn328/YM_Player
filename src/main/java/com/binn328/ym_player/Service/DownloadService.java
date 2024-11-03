@@ -11,10 +11,12 @@ import com.sapher.youtubedl.mapper.VideoInfo;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.web.Link;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -27,21 +29,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Log4j2
 @Service
 public class DownloadService {
-    @Autowired
     private final StorageService storageService;
     private final BlockingQueue<DownloadRequest> downloadQueue;
     private final ExecutorService executorService;
     private final String downloadDir = System.getenv("DATA_DIR") + File.separator + "tmp";
-    private final List<DownloadStatus> doingList;
-    private final List<DownloadStatus> todoList;
+    private final LinkedList<DownloadStatus> doingList;
+    private final LinkedList<DownloadStatus> todoList;
     /**
      * 생성자, downloadQueue.take()는 작업이 오기를 기다린다.
      * 만약 작업이 들어오면 즉시 동작을 실행한다.
      */
     public DownloadService(StorageService storageService) {
         this.storageService = storageService;
-        this.doingList = new ArrayList<>();
-        this.todoList = new ArrayList<>();
+        this.doingList = new LinkedList<>();
+        this.todoList = new LinkedList<>();
         this.downloadQueue = new LinkedBlockingQueue<>();
         this.executorService = Executors.newSingleThreadExecutor();
         YoutubeDL.setExecutablePath("yt-dlp");

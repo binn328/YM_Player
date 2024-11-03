@@ -7,11 +7,11 @@
     justify-content: space-evenly;
     align-items: center;
     background: linear-gradient(
-      0deg,
-      rgba(30, 42, 62, 1) 0%,
-      rgba(54, 69, 98, 0.1) 100%
+            0deg,
+            rgba(30, 42, 62, 1) 0%,
+            rgba(54, 69, 98, 0.1) 100%
     );
     -webkit-backdrop-filter: blur(12.5px);
     backdrop-filter: blur(12.5px);
-  }
+}
   

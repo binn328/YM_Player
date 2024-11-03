@@ -1,12 +1,12 @@
 .left-player-body {
-    width: 68%;
+   width: 100%;
     margin-right: 2%;
     height: 100%;
     color: #fff;
-  }
-  
-  .right-player-body {
-    
+}
+
+.right-player-body {
+
     align-items: center;
     -webkit-backdrop-filter: blur(12.5px);
     backdrop-filter: blur(12.5px);
@@ -20,52 +20,135 @@
     width: 28%;
     flex-direction: column;
     color: #fff;
-   
-  }
 
-  .player-h1{
-    
+
+
+
+
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px; /* 재생 목록의 너비 */
+    height: 100%;
+    transform: translateX(100%); /* 기본적으로 숨김 */
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+    padding: 20px;
+   
+
+}
+
+/* 재생 목록이 열릴 때 */
+.right-player-body.open {
+    transform: translateX(0);
+}
+
+/* 재생 목록이 닫힐 때 */
+.right-player-body.closed {
+    transform: translateX(100%);
+}
+
+/* 토글 버튼 스타일 */
+.playlist-toggle-btn {
+    position: fixed;
+    top: 20px; /* 원하는 위치로 조정 */
+    right: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1100;
+    transition: background-color 0.3s;
+}
+
+.playlist-toggle-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* 재생 목록 내의 리스트 스타일 */
+.current-playlist {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.current-playlist:hover {
+    background-color: #ddd;
+}
+
+/* 컨텍스트 메뉴 스타일 */
+.context-menu {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1200;
+}
+
+.context-menu div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.context-menu div:hover {
+    background-color: #f0f0f0;
+}
+
+
+
+
+
+
+
+
+
+.player-h1 {
+
     margin-left: 5%;
     margin-top: 20px;
-  }
+}
 
-  .right-player-body::-webkit-scrollbar{
-    display:none;
-  }
+.right-player-body::-webkit-scrollbar {
+    display: none;
+}
 
 
-  
-  .right-player-body ul{
+.right-player-body ul {
     word-wrap: break-word;
     text-align: center;
     font-size: 25px;
     padding-bottom: 15px;
     overflow: scroll;
-    height:75%;
-    width:90%;
-  }
+    height: 75%;
+    width: 90%;
+}
 
-  .right-player-body li{
-    width:95%;
-  }
+.right-player-body li {
+    width: 95%;
+}
 
-  .right-player-body .current-playlist{
-    cursor:pointer;
+.right-player-body .current-playlist {
+    cursor: pointer;
     padding-right: 20px;
-    
-  }
 
-  .right-player-body .current-playlist:hover{
-    background-color: rgba(0,0,0,0.2);
+}
+
+.right-player-body .current-playlist:hover {
+    background-color: rgba(0, 0, 0, 0.2);
     transition: 0.2s ease-in-out;
-  }
+}
 
-  .right-player-body ul::-webkit-scrollbar{
-    display:none;
-  }
+.right-player-body ul::-webkit-scrollbar {
+    display: none;
+}
 
 
-  .right-player-body .context-menu {
+.right-player-body .context-menu {
     position: absolute;
     z-index: 1000;
     background-color: white;
@@ -74,19 +157,15 @@
     padding: 10px;
     border-radius: 5px;
     text-align: center;
-  }
-  
-  .right-player-body .context-menu div {
+}
+
+.right-player-body .context-menu div {
     padding: 8px 12px;
     cursor: pointer;
-  }
-  
-  .context-menu div:hover {
-    background-color: #f1f1f1;
-  }
-  
+}
 
-  .current-playlist-add-btn{
+
+.current-playlist-add-btn {
     position: absolute;
     right: 0;
     bottom: 0;
@@ -94,9 +173,9 @@
     height: 5%;
     border-radius: 30px;
     background: linear-gradient(
-      180deg,
-      rgba(54, 69, 98, 0) 10%,
-      rgba(54, 69, 98, 1) 100%
+            180deg,
+            rgba(54, 69, 98, 0) 10%,
+            rgba(54, 69, 98, 1) 100%
     );
     opacity: 0;
     transition: 0.5s ease-in-out;
@@ -106,9 +185,9 @@
     justify-content: flex-end;
     padding: 8%;
     cursor: pointer;
-  }
+}
 
-  .current-playlist-add-btn:hover{
+.current-playlist-add-btn:hover {
     opacity: 1;
-    transform:scale(1.1,1.1);
-  }
+    transform: scale(1.1, 1.1);
+}

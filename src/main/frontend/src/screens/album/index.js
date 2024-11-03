@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { CiMenuKebab } from "react-icons/ci";
-import { FaHeart } from "react-icons/fa";
-import { FaRegCirclePlay } from "react-icons/fa6";
+import React, {useEffect, useState} from "react";
+import {CiMenuKebab} from "react-icons/ci";
+import {FaHeart} from "react-icons/fa";
+import {FaRegCirclePlay} from "react-icons/fa6";
 import "./album.css";
 import defaultAlbumCover from './icon-image.png';
 
@@ -24,7 +24,7 @@ export default function Album() {
     useEffect(() => {
         const fetchAlbums = async () => {
             try {
-                const response = await fetch( '/api/album');
+                const response = await fetch('/api/album');
                 const data = await response.json();
                 setAlbums(data);
             } catch (error) {
@@ -34,11 +34,11 @@ export default function Album() {
 
         const fetchMusicAndCreateAlbums = async () => {
             try {
-                const albumResponse = await fetch( '/api/album');
+                const albumResponse = await fetch('/api/album');
                 const albumsData = await albumResponse.json();
                 const existingAlbumNames = albumsData.map((album) => album.name);
 
-                const musicResponse = await fetch( '/api/music');
+                const musicResponse = await fetch('/api/music');
                 const musicData = await musicResponse.json();
 
                 const groupedMusic = {};
@@ -57,7 +57,7 @@ export default function Album() {
                         const updatedMusics = [...existingAlbum.musics, ...newMusicIds];
                         const updatedAlbumData = {...existingAlbum, musics: updatedMusics};
 
-                        const updateResponse = await fetch( `/api/album/update`, {
+                        const updateResponse = await fetch(`/api/album/update`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -90,7 +90,7 @@ export default function Album() {
                             formData.append(`musics[${index}]`, id);
                         });
 
-                        const response = await fetch( '/api/album', {
+                        const response = await fetch('/api/album', {
                             method: 'POST',
                             body: formData,
                         });
@@ -113,7 +113,7 @@ export default function Album() {
     useEffect(() => {
         const fetchMusic = async () => {
             try {
-                const response = await fetch( '/api/music');
+                const response = await fetch('/api/music');
                 const data = await response.json();
                 setMusicList(data);
                 console.log("MusicList", data);
@@ -127,14 +127,14 @@ export default function Album() {
 
     const fetchAlbumArt = async (albumId) => {
         try {
-            const response = await fetch( `/api/album/art/${albumId}`);
+            const response = await fetch(`/api/album/art/${albumId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch album art');
             }
             const blob = await response.blob();
             const imageUrl = URL.createObjectURL(blob);
             setAlbums((prevAlbums) =>
-                prevAlbums.map((album) => album.id === albumId ? { ...album, cover: imageUrl } : album)
+                prevAlbums.map((album) => album.id === albumId ? {...album, cover: imageUrl} : album)
             );
         } catch (error) {
             console.error('Error fetching album art:', error);
@@ -150,7 +150,7 @@ export default function Album() {
             const formData = new FormData();
             formData.append('file', blob);
 
-            const uploadResponse = await fetch( `/api/album/art/${albumId}`, {
+            const uploadResponse = await fetch(`/api/album/art/${albumId}`, {
                 method: 'POST',
                 body: formData
             });
@@ -177,7 +177,7 @@ export default function Album() {
             formData.append('cover', albumCover || defaultAlbumCover); // Using defaultAlbumCover here
             formData.append('musics', []);
 
-            const response = await fetch( '/api/album', {
+            const response = await fetch('/api/album', {
                 method: 'POST',
                 body: formData,
             });
@@ -206,7 +206,7 @@ export default function Album() {
         setSelectedAlbum(album.id);
         console.log("Selected Album:", album);
         try {
-            const response = await fetch( `/api/album/${album.id}`);
+            const response = await fetch(`/api/album/${album.id}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch album details');
             }
@@ -222,10 +222,9 @@ export default function Album() {
     };
 
 
-
     const handleUpdateAlbumName = async (albumId) => {
         try {
-            const response = await fetch( '/api/album/update', {
+            const response = await fetch('/api/album/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -255,7 +254,7 @@ export default function Album() {
 
     const toggleFavorite = async (album) => {
         try {
-            const response = await fetch( `/api/album/update`, {
+            const response = await fetch(`/api/album/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -281,7 +280,7 @@ export default function Album() {
 
     const handleDeleteAlbum = async (albumId) => {
         try {
-            const response = await fetch( `/api/album/delete/${albumId}`, {
+            const response = await fetch(`/api/album/delete/${albumId}`, {
                 method: 'POST',
             });
 
@@ -297,7 +296,7 @@ export default function Album() {
 
     const handleDeleteMusic = async (albumId, musicId) => {
         try {
-            const response = await fetch( `/api/album/${albumId}`);
+            const response = await fetch(`/api/album/${albumId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch album details');
             }
@@ -309,7 +308,7 @@ export default function Album() {
 
             const updatedAlbumData = {...albumData, musics: updatedMusics};
             console.log('새로운 앨범 데이터:', updatedAlbumData);
-            const updateResponse = await fetch( `/api/album/update`, {
+            const updateResponse = await fetch(`/api/album/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -342,7 +341,7 @@ export default function Album() {
             }
             const musicId = music.id;
 
-            const response = await fetch( `/api/album/${albumId}`);
+            const response = await fetch(`/api/album/${albumId}`);
             if (!response.ok) {
                 throw new Error('앨범 세부 정보를 가져오지 못했습니다');
             }
@@ -358,10 +357,10 @@ export default function Album() {
                 return;
             }
 
-            const updatedMusics = [...albumData.musics, { id: musicId }];
+            const updatedMusics = [...albumData.musics, {id: musicId}];
 
-            const updatedAlbumData = { ...albumData, musics: updatedMusics };
-            const updateResponse = await fetch( `/api/album/update`, {
+            const updatedAlbumData = {...albumData, musics: updatedMusics};
+            const updateResponse = await fetch(`/api/album/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -412,7 +411,6 @@ export default function Album() {
     };
 
 
-
     const handleAddMusicsToPlaylist = async (playlistId, musics) => {
         try {
             const formattedMusics = musics.map((musicId, index) => ({
@@ -452,7 +450,7 @@ export default function Album() {
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await fetch( `/api/album/art/${albumId}`, {
+            const response = await fetch(`/api/album/art/${albumId}`, {
                 method: 'POST',
                 body: formData
             });
@@ -519,7 +517,7 @@ export default function Album() {
                                 </h3>
                                 <img
                                     //src={`http://localhost:8080/api/album/art/${album.id}` ? `http://localhost:8080/api/album/art/${album.id}` : defaultAlbumCover} // Using defaultAlbumCover as fallback
-                                    src={album.cover|| `/api/album/art/${album.id}` || defaultAlbumCover}
+                                    src={album.cover || `/api/album/art/${album.id}` || defaultAlbumCover}
                                     alt={album.name}
                                     className="album-cover"
                                     onClick={() => handleAlbumClick(album)}

@@ -1,8 +1,7 @@
-
 import React from 'react';
 import './modal.css';
 
-const Modal = ({ isOpen, toggleModal, playlistName, handlePlaylistSubmit, handlePlaylistNameChange }) => {
+const Modal = ({isOpen, toggleModal, playlistName, handlePlaylistSubmit, handlePlaylistNameChange}) => {
     return (
         isOpen && (
             <div className="modal-overlay">
@@ -14,8 +13,8 @@ const Modal = ({ isOpen, toggleModal, playlistName, handlePlaylistSubmit, handle
                             placeholder="플레이리스트 이름"
                             value={playlistName}
                             onChange={handlePlaylistNameChange}
-                            id="playlistName" 
-                            name="playlistName" 
+                            id="playlistName"
+                            name="playlistName"
                         />
                         <button onClick={handlePlaylistSubmit}>확인</button>
                         <button onClick={toggleModal}>취소</button>

@@ -1,3 +1,5 @@
+
+
 import React, { useState, useRef, useEffect } from "react";
 import "./audioPlayer.css";
 import Controls from "./controls";
@@ -205,7 +207,7 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
 
   return (
     <div className="player-body flex">
-      <div className="player-left-body">
+      <div className="player-body-top">
         <ProgressCircle
           percentage={currentPercentage}
           isPlaying={isPlaying}
@@ -216,9 +218,10 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
           }
           size={300}
           color="#C96850"
+
         />
-      </div>
-      <div className="player-right-body flex">
+      
+      <div className="player-body-top-bottom flex">
         <p className="song-title">{songTitle}</p>
         <p className="song-artist">{songArtist}</p>
         <div className="player-right-bottom flex">
@@ -251,6 +254,7 @@ const AudioPlayer = ({ playlistMusicDetails, setPlaylistMusicDetails }) => {
             handleRepeatToggle={handleRepeatToggle}
           />
         </div>
+      </div>
       </div>
     </div>
   );

@@ -1,49 +1,48 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 
 .app-container {
-    font-family: 'Orbitron', sans-serif; 
-    width:100vw;
+    font-family: 'Orbitron', sans-serif;
+    width: 100vw;
     height: 100vh;
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    flex-direction: column; 
-    background-color: black; 
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: black;
 }
 
 .ym-player {
-    font-size:200%;
-    color: white; 
-    text-align: center; 
+    font-size: 200%;
+    color: white;
+    text-align: center;
 }
 
 .start-button {
     padding: 10px 20px;
     font-size: 30px;
-    background-color: #3e3beb; 
-    color: white; 
+    background-color: #3e3beb;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 20px;
-    font-family: 'Orbitron', sans-serif; 
+    font-family: 'Orbitron', sans-serif;
 }
 
 .start-button:hover {
-    background-color: #4341c0; 
+    background-color: #4341c0;
 }
 
 
 @keyframes spin {
     0% {
-      transform: rotate(0deg);
+        transform: rotate(0deg);
     }
     100% {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
-  
-  .ym-player h1 svg {
-    animation: spin 4s linear infinite; 
-  }
+}
+
+.ym-player h1 svg {
+    animation: spin 4s linear infinite;
+}

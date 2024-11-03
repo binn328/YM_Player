@@ -1,40 +1,40 @@
 
-  .recently-added-modal {
-    width:35%;
-    height:70%;
+.recently-added-modal {
+    width: 35%;
+    height: 70%;
     position: fixed;
     top: 50%;
-    transform: translate(50%, -50%); 
+    transform: translate(50%, -50%);
     border-radius: 8px;
-    z-index: 9999; 
-    background-color: rgba(255, 255, 255, 0.9); 
-    padding: 20px; 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+    z-index: 9999;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     word-wrap: break-word;
-    
-    
+
+
 }
 
-.Rmodal{
-  word-wrap: break-word;
-  height:93%;
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  font-size: 30px;
-  text-align: center;
-  overflow: scroll;
+.Rmodal {
+    word-wrap: break-word;
+    height: 93%;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+    overflow: scroll;
 }
 
-.Smodal{
-  word-wrap: break-word;
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  font-size: 30px;
-  text-align: center;
-  overflow: scroll;
-  height: 70%;
+.Smodal {
+    word-wrap: break-word;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+    overflow: scroll;
+    height: 70%;
 }
 
 
@@ -67,45 +67,46 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size:25px;
-  }
+    font-size: 25px;
+}
 
 .recently-added-modal button:hover {
     background-color: #0f0b24;
 }
 
 .recently-added-modal li:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .song-info-modal {
     position: fixed;
-    width: 70%; 
+    width: 70%;
     top: 50%;
-    left: 60%; 
+    left: 60%;
     transform: translate(60%, -50%);
     border-radius: 8px;
-    z-index: 9999; 
-    background-color: rgba(255, 255, 255, 0.9); 
-    padding: 20px; 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+    z-index: 9999;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-.song-info-modal h2{
-  overflow: scroll;
+.song-info-modal h2 {
+    overflow: scroll;
 }
 
-.song-info-modal h2::-webkit-scrollbar{
-  display:none;
+.song-info-modal h2::-webkit-scrollbar {
+    display: none;
 }
 
-.recently-added-list li::-webkit-scrollbar{
-  display:none;
+.recently-added-list li::-webkit-scrollbar {
+    display: none;
 }
 
-.Rmodal::-webkit-scrollbar{
-  display: none;
+.Rmodal::-webkit-scrollbar {
+    display: none;
 }
-.Smodal::-webkit-scrollbar{
-  display: none;
+
+.Smodal::-webkit-scrollbar {
+    display: none;
 }

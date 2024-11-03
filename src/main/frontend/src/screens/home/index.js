@@ -37,7 +37,7 @@ export default function Home(){
 }*/
 
 import React from "react";
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Library from '../library';
 import Trending from "../trending";
 import Player from "../player";
@@ -49,29 +49,29 @@ import Musicupload from "../musicupload";
 import Logo from '../logo';
 
 
-export default function Home(){
-  return ( 
-<div>
-    <BrowserRouter>
-      <div className="main-body">
-        
-        <Sidebar/>
-        <Routes>
-          <Route path="/" element={ <Logo />} />
-        
-            <Route path="/library" element={<Library />} />
-            <Route path="/trending" element={<Trending />} />
-            <Route path="/player" element={<Player />} />
-            <Route path="/playlist" element={<Playlist />} />
-            <Route path ="/album" element={<Album/>} />
-            <Route path="/musicupload" element={<Musicupload />} />
-            
-  </Routes>
-      </div>
-      
-    </BrowserRouter>
-    </div>
-  );
+export default function Home() {
+    return (
+        <div>
+            <BrowserRouter>
+                <div className="main-body">
+
+                    <Sidebar/>
+                    <Routes>
+                        <Route path="/" element={<Logo/>}/>
+
+                        <Route path="/library" element={<Library/>}/>
+                        <Route path="/trending" element={<Trending/>}/>
+                        <Route path="/player" element={<Player/>}/>
+                        <Route path="/playlist" element={<Playlist/>}/>
+                        <Route path="/album" element={<Album/>}/>
+                        <Route path="/musicupload" element={<Musicupload/>}/>
+
+                    </Routes>
+                </div>
+
+            </BrowserRouter>
+        </div>
+    );
 
 
 }
