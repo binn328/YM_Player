@@ -3,7 +3,7 @@ services:
     ym-player:
         # image 뒤의 태그를 개발 중인 브랜치의 이름으로 설정해주세요.
         # 예시: binn328/ym-player:add-album
-        image: binn328/ym-player:0.3
+        image: binn328/ym-player:latest
         #restart: always
         user: root
         ports:
@@ -16,7 +16,7 @@ services:
         depends_on:
             - mongodb
     mongodb:
-        image: mongo:latest
+        image: mongo:4.4
         #restart: always
         ports:
             - 27017:27017
