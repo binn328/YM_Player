@@ -29,6 +29,19 @@ export default function Sidebar() {
         setIsSidebarOpen(!isSidebarOpen); // 아이콘 클릭 시 사이드바 열기/닫기
     };
 
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (isSidebarOpen && !event.target.closest('.sidebar-container') && !event.target.closest('.hamburger-icon')) {
+                setIsSidebarOpen(false); // 사이드바가 열려 있고, 사이드바 외부 클릭 시 닫기
+            }
+        };
+
+        document.addEventListener('click', handleOutsideClick);
+        return () => {
+            document.removeEventListener('click', handleOutsideClick); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+        };
+    }, [isSidebarOpen]);
+
     return (
         <div className="sidebar-wrapper">
             {/* 햄버거 메뉴 아이콘 */}

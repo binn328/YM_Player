@@ -16,7 +16,7 @@
 
 /* 사이드바 기본 스타일 */
 .sidebar-container {
-    width: 200px;
+    width: 0; /* 처음에 사이드바를 숨김 */
     height: 100vh; /* 화면의 높이에 맞춰서 사이드바 높이 조정 */
     background-color: #282c34;
     display: flex;
@@ -25,25 +25,46 @@
     align-items: center; /* 아이콘들을 중앙으로 정렬 */
     position: fixed;
     top: 0;
-    left: -200px; /* 기본적으로 사이드바를 숨김 */
-    transition: left 0.3s ease;
+    transition: width 0.3s ease; /* 사이드바가 수평으로 열리고 닫히는 애니메이션 */
     z-index: 1000; /* 사이드바가 화면의 앞에 위치하도록 설정 */
+    overflow-y: auto; /* 스크롤 가능하도록 설정 */
 }
 
 /* 사이드바가 열렸을 때 */
 .sidebar-container.open {
-    left: 0;
+    width: 200px; /* 열렸을 때의 너비 */
 }
 
-/* 사이드바 내부 콘텐츠를 스크롤 가능하게 설정 */
+/* 사이드바 내부 콘텐츠 */
 .sidebar-content {
     flex-grow: 1; /* 사이드바 콘텐츠가 남은 공간을 차지하게 함 */
-    overflow-y: auto; /* 스크롤 가능하도록 설정 */
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center; /* 사이드바 버튼들을 중앙에 정렬 */
+    overflow-y: auto; /* 스크롤 가능하도록 설정 */
+    padding-bottom: 20px; /* 버튼이 사이드바 하단에 위치하게 하기 위해 추가 */
 }
+
+/* 스크롤바 숨기기 */
+.sidebar-container::-webkit-scrollbar {
+    display: none; /* 웹킷 기반 브라우저에서 스크롤바 숨기기 */
+}
+
+.sidebar-container {
+    scrollbar-width: none; /* Firefox에서 스크롤바 숨기기 */
+}
+
+/* 웹킷 브라우저에서 스크롤바 숨기기 */
+.sidebar-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* Firefox에서 스크롤바 숨기기 */
+.sidebar-content {
+    scrollbar-width: none;
+}
+
 
 /* 프로필 이미지 스타일 */
 .profile-img {
