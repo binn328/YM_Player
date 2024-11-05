@@ -72,14 +72,23 @@
 }
 
 /* 재생 목록 내의 리스트 스타일 */
-.current-playlist {
+.playlist-modal .current-playlist {
     padding: 10px;
     cursor: pointer;
+    margin-right: 2%;
+    width: 45%;
 }
 
+.right-player-body .current-playlist {
+    padding: 10px;
+    cursor: pointer;
+    margin-right: 2%;
+    
+}
+/*
 .current-playlist:hover {
     background-color: #ddd;
-}
+}*/
 
 /* 컨텍스트 메뉴 스타일 */
 .context-menu {
@@ -98,13 +107,6 @@
 .context-menu div:hover {
     background-color: #f0f0f0;
 }
-
-
-
-
-
-
-
 
 
 .player-h1 {

@@ -213,7 +213,7 @@
     background-color: #2b3b4d;
 }
 
-li::marker {
+.library-body li::marker {
     font-family: Orbitron, sans-serif;
     color: #a1a1a1;
 }
@@ -393,7 +393,7 @@ svg.play-button {
 .album-card, .album-card-container {
     position: relative;
 }
-svg:hover {
+.library-body svg:hover {
     transform: scale(1.5);
 }
 
