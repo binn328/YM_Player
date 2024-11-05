@@ -5,7 +5,7 @@
     left: 50%;
     transform: translate(-20%, -50%);
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: #1b2843;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     z-index: 9999;
@@ -23,7 +23,7 @@
 }
 
 .Fmodal {
-    background: white;
+    background:#fafafa;;
     border-radius: 20px;
     padding: 20px;
     font-size: 30px;

@@ -5,6 +5,13 @@
     overflow-y: auto; /* 세로 스크롤 활성화 */
 }
 
+.music-image{
+    height: 80px;
+    width: 100px;
+    border: 5px solid white;
+    align-items: center;
+}
+
 .library-h1 {
     /*color: white;*/
     margin-left: 2%;
@@ -50,7 +57,7 @@
 
 .music-title-container .music-title {
     font-size: 16px;
-    margin-bottom: 5px;
+    /*margin-bottom: 5px;*/
     color: white;
     white-space: nowrap; /* 텍스트가 한 줄로 표시되도록 설정 */
     overflow: hidden; /* 넘치는 텍스트 숨김 */
@@ -338,4 +345,10 @@
 
 .edit-table .cancel-button:hover {
     background: #666;
+}
+
+.music-card-top{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
