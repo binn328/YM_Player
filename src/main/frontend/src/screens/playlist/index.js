@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom'; // useNavigate를 가져옵니다.
 import {BsMusicPlayer} from 'react-icons/bs';
-import {TbMusicExclamation, TbMusicHeart} from 'react-icons/tb';
+//import {TbMusicExclamation, TbMusicHeart} from 'react-icons/tb';
 import {FaHeart} from 'react-icons/fa';
 import PlaylistModal from './playlistModal';
 import PlaylistRecentModal from './playlist_recent_modal';
@@ -19,6 +19,9 @@ const Playlist = () => {
     const [favoriteModalOpen, setFavoriteModalOpen] = useState(false);
     const [recentlyAddedCount, setRecentlyAddedCount] = useState(0);
     const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
+
+    const [recentlyAdded, setRecentlyAdded] = useState([]);
+    const [favoriteSongs, setFavoriteSongs] = useState([]);
 
     const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
 
@@ -188,6 +191,8 @@ const Playlist = () => {
         fetch(serverURL)
             .then((response) => response.json())
             .then((data) => {
+                //setRecentlyAdded(data.slice(0, 4));
+                //setFavoriteSongs(data.slice(0, 4));
                 setRecentlyAddedCount(data.length);
                 setLikedSongsCount(data.filter((song) => song.favorite).length);
             })
@@ -201,22 +206,46 @@ const Playlist = () => {
             .catch((error) => console.error('플레이리스트 가져오기 오류:', error));
     }, []);
 
+    // 서버에서 최근에 추가된 곡 목록 가져오기
+    useEffect(() => {
+        fetch('/api/music')
+            .then(response => response.json())
+            .then(data => {
+                setRecentlyAdded(data.reverse().slice(0, 4));
+            })
+            .catch(error => console.error('Error fetching data:', error));
+            
+            fetch('/api/music')
+            .then(response => response.json())
+            .then(data => {
+                const favoriteSongs = data.filter(song => song.favorite === true);
+                setFavoriteSongs(favoriteSongs.reverse().slice(0, 4));
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }, []);
+
+
     return (
         <div className="playlist-container screen-container" onClick={hideContextMenu}>
             <div className="playlist-header">
                 <h2>Play List</h2>
             </div>
             <div className="song">
-                <div className="recently-added">
+                <div className="recently-added" onClick={toggleRecentModal}>
                     <h3>최근에 추가한 곡({recentlyAddedCount})</h3>
-                    <div className="song-icons" onClick={toggleRecentModal}>
-                        <TbMusicExclamation/>
+                    <div className="song-box" >
+                    {recentlyAdded.map((song) => (
+                           <li>{song.title}</li>
+
+                        ))}
                     </div>
                 </div>
-                <div className="liked-songs">
+                <div className="liked-songs" onClick={toggleFavoriteModal}>
                     <h3>좋아요 한 곡 ({likedSongsCount})</h3>
-                    <div className="song-icons" onClick={toggleFavoriteModal}>
-                        <TbMusicHeart/>
+                    <div className="song-box" >
+                    {favoriteSongs.map((song) => (
+                            <li>{song.title}</li>
+                        ))}
                     </div>
                 </div>
             </div>

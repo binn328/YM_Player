@@ -398,6 +398,20 @@ function MusicPlayer() {
                 <div className="library-card">
                     {musicData.map((music, index) => (
                         <div key={music.id} className="music-card" onClick={() => playMusic(music, index)}>
+                        <div className="music-card-top">
+                            <div className="music-image"></div>
+                            {/*<button className='menu-button' onClick={(e) => {
+                                e.stopPropagation();
+                                toggleMenu(index);
+                                
+                            }}/> */}
+                            <button className='menu-button' onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleMenu(index);
+                                }}>
+                                    <CiMenuKebab/>
+                                </button>
+                        </div>
                             <div className="music-info">
                                 <div className="music-title-container">
                                     <div
@@ -423,12 +437,12 @@ function MusicPlayer() {
                                 </div>
                                 <p className="artist">by {music.artist}</p>
                                 <p className="group">({music.group})</p>
-                                <button className='menu-button' onClick={(e) => {
+                               {/* <button className='menu-button' onClick={(e) => {
                                     e.stopPropagation();
                                     toggleMenu(index);
                                 }}>
                                     <CiMenuKebab/>
-                                </button>
+                                </button>*/}
                                 {showMenu[index] && (
                                     <div className="menu">
                                         <p onClick={(e) => {

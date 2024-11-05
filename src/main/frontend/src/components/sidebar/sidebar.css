@@ -44,6 +44,7 @@
     align-items: center; /* 사이드바 버튼들을 중앙에 정렬 */
     overflow-y: auto; /* 스크롤 가능하도록 설정 */
     padding-bottom: 20px; /* 버튼이 사이드바 하단에 위치하게 하기 위해 추가 */
+    justify-content: space-evenly;
 }
 
 /* 스크롤바 숨기기 */

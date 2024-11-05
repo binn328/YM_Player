@@ -51,6 +51,7 @@
     position: relative;
     top: -37%;
     z-index: 20;
+    margin-left: 2%;
 }
 
 .library-body button {
@@ -190,6 +191,7 @@
     unicode-bidi: isolate;
     font-family: Orbitron, sans-serif;
     color: white;
+    margin-left: 2%;
 }
 
 .album-header {
@@ -308,6 +310,7 @@ input {
 
 #create-album {
     z-index: 20;
+    
 }
 
 .card-body {
@@ -319,6 +322,7 @@ input {
     overflow: auto;
     display: flex;
     flex-wrap: wrap;
+    margin-left: 2%;
 }
 
 svg.play-button:hover {
@@ -376,7 +380,7 @@ svg{
     margin-top: 0; /* 위쪽 마진 제거 */
     color: gray;
 }
-h3 {
+.album-card h3 {
     margin: inherit;
     margin-left: 35%;
     color: white;
@@ -567,7 +571,7 @@ svg:hover {
     }
 
     /* 제목을 클릭했을 때 레이아웃 조정 */
-    h3 {
+    .album-card h3 {
         font-size: 14px;
         text-align: center;
     }
