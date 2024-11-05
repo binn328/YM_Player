@@ -6,6 +6,7 @@ import {CiMenuKebab} from "react-icons/ci";
 import MusicController from './musicController';
 import PlaylistMenu from './playlistMenu';
 import AlbumMenu from './albumMenu';
+import { TbTriangleFilled, TbTriangleInvertedFilled } from "react-icons/tb";
 
 function MusicPlayer() {
     const [musicData, setMusicData] = useState([]);
@@ -24,8 +25,10 @@ function MusicPlayer() {
     const [editingMusic, setEditingMusic] = useState(null);
     const [openedMenuIndex, setOpenedMenuIndex] = useState(null);
     const [showMusicController, setShowMusicController] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true); // 펼쳐진 상태 여부를 저장
 
     const audioRef = useRef(null);
+    const menuRef = useRef(null);
 
     useEffect(() => {
         fetchMusicData();
@@ -268,6 +271,24 @@ function MusicPlayer() {
         }
     };
 
+    const closeMenu = () => {
+        setShowMenu({});
+        setOpenedMenuIndex(null);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                closeMenu();
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     const toggleMenu = (index) => {
         if (openedMenuIndex !== null && openedMenuIndex !== index) {
             setShowMenu(prevState => ({
@@ -360,6 +381,10 @@ function MusicPlayer() {
         setShowMusicController(!showMusicController);
     };
 
+    const toggleController = () => {
+        setIsExpanded((prev) => !prev);
+    };
+
     const checkIfTruncated = (element) => {
         return element.scrollWidth > element.clientWidth;
     };
@@ -394,17 +419,15 @@ function MusicPlayer() {
     return (
         <div className="screen-container">
             <div className='playlist-list'>
-                <h1 className='library-h1'>Library</h1>
+                <div className='library-header'>
+                    <h2>Library</h2>
+                </div>
+                {/*<h2 className='library-h2'>Library</h2>*/}
                 <div className="library-card">
                     {musicData.map((music, index) => (
                         <div key={music.id} className="music-card" onClick={() => playMusic(music, index)}>
                         <div className="music-card-top">
                             <div className="music-image"></div>
-                            {/*<button className='menu-button' onClick={(e) => {
-                                e.stopPropagation();
-                                toggleMenu(index);
-                                
-                            }}/> */}
                             <button className='menu-button' onClick={(e) => {
                                     e.stopPropagation();
                                     toggleMenu(index);
@@ -436,7 +459,7 @@ function MusicPlayer() {
                                     </button>
                                 </div>
                                 <p className="artist">by {music.artist}</p>
-                                <p className="group">({music.group})</p>
+                                {/*<p className="group">({music.group})</p>*/}
                                {/* <button className='menu-button' onClick={(e) => {
                                     e.stopPropagation();
                                     toggleMenu(index);
@@ -444,7 +467,7 @@ function MusicPlayer() {
                                     <CiMenuKebab/>
                                 </button>*/}
                                 {showMenu[index] && (
-                                    <div className="menu">
+                                    <div className="menu" ref={menuRef}>
                                         <p onClick={(e) => {
                                             e.stopPropagation();
                                             openPlaylistMenu(music);
@@ -466,7 +489,6 @@ function MusicPlayer() {
                                             e.stopPropagation();
                                             deleteMusic(music.id);
                                         }}>삭제</p>
-
                                     </div>
                                 )}
                             </div>
