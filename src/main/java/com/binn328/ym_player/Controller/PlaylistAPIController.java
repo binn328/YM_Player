@@ -15,7 +15,6 @@ import java.util.Optional;
 @Log4j2
 @RestController
 @RequestMapping("/api/playlist")
-@CrossOrigin(origins = "*")
 public class PlaylistAPIController {
     private final PlaylistRepository playlistRepository;
     private final PlaylistService playlistService;

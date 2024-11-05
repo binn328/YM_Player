@@ -98,6 +98,7 @@ public class DownloadService {
         doingList.addLast(todoList.removeFirst());
         // 1. 우선 해당 url이 올바른지, 정보부터 요청해서 확인
         log.info("YTstage1 started");
+        log.info("url: " + request.getUrl());
         try {
             // 정보를 요청
             Optional<VideoInfo> videoInfoOptional = YtDlp.getVideoInfo(request.getUrl());
@@ -114,12 +115,12 @@ public class DownloadService {
         log.info("YTstage2 started");
         // 2. 다운로드를 수행
         // 다운로드 전 옵션 수정
-        YtDlpRequest ytDlpRequest = new YtDlpRequest(request.getUrl(), downloadDir);
-        ytDlpRequest.setOption("extract-audio");
-        ytDlpRequest.setOption("audio-format", "mp3");
-        ytDlpRequest.setOption("audio-quality", 0);
-        ytDlpRequest.setOption("output", "%(id)s.mp3");
-        ytDlpRequest.setOption("no-playlist");
+        YtDlpRequest ytDlpRequest = new YtDlpRequest(request.getUrl().trim(), downloadDir);
+        ytDlpRequest.addOption("--extract-audio");
+        ytDlpRequest.addOption("--audio-format", "mp3");
+        ytDlpRequest.addOption("--audio-quality", 0);
+        ytDlpRequest.addOption("--output", "%(id)s.mp3");
+        ytDlpRequest.addOption("--no-playlist");
         // 다운로드 수행
         YtDlpResponse response;
         try {

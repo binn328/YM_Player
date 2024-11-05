@@ -12,14 +12,4 @@ public class YmPlayerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(YmPlayerApplication.class, args);
 	}
-
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("https://test.binn328.com");
-			}
-		};
-	}
 }
