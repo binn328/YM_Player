@@ -515,7 +515,6 @@ export default function Album() {
                                     onClick={() => handleAlbumClick(album)}
                                     onError={(e) => e.target.src = defaultAlbumCover}
                                 />
-
                                 {selectedAlbum === album.id && (
                                     <div className="album-songs">
                                         <h4 id="Songs">Songs</h4>
@@ -556,11 +555,10 @@ export default function Album() {
                                                 Add Music
                                             </button>
                                         </div>
-
                                     </div>
                                 )}
                                 <div className="album-menu2">
-                                    <CiMenuKebab onClick={() => handleToggleMenu(album.id)}/>
+                                    <CiMenuKebab className="svg-album-menu2" onClick={() => handleToggleMenu(album.id)}/>
                                     {showMenu === album.id && (
                                         <div className="menu-options">
                                             <p id="p-edit" onClick={() => setEditAlbumId(album.id)}>정보 수정</p>
@@ -569,7 +567,7 @@ export default function Album() {
                                     )}
                                 </div>
                             </div>
-                            <h3 onClick={() => handleAlbumClick(album)}>{album.name}
+                            <h3 className="album-h3" onClick={() => handleAlbumClick(album)}>{album.name}
                                 <button className='heart-button' onClick={(e) => {
                                     e.stopPropagation();
                                     toggleFavorite(album);

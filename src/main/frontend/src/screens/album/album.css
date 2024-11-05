@@ -63,8 +63,6 @@
     border: none;
     cursor: pointer;
     font-size: 1rem;
-
-
     background-color: #1f4a78;
 }
 
@@ -249,7 +247,9 @@ li::marker {
     right: 10px;
     z-index: 10;
 }
-
+.svg-album-menu2{
+    color: white;
+}
 .menu-options {
     background-color: white;
 }
@@ -353,9 +353,14 @@ svg.play-button:hover {
 button.heart-button {
     background-color: initial;
 }
-svg{
+svg.play-button {
     color: white;
 }
+.album-h3{
+    color: white;
+    text-align: center;
+}
+
 .album-card {
     display: flex; /* flex 사용 */
     flex-direction: row; /* 수평 배치 */
@@ -575,9 +580,7 @@ svg:hover {
         font-size: 14px;
         text-align: center;
     }
-    svg:hover {
-        transform: scale(1.5);
-    }
+
     .album-card:hover {
         transform: scale(1);
     }
