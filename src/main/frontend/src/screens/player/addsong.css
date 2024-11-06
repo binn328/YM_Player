@@ -6,7 +6,7 @@
     z-index: 999;
     border-radius: 10px;
     margin-bottom: 30px;
-    height: 50%;
+    /*height: 50%;*/
     overflow: scroll;
 }
 

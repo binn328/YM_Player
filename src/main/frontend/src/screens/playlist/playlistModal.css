@@ -1,7 +1,8 @@
 .playlist-modal {
     color: white;
     display: flex;
-    margin-left: 50px;
+    margin-left: 2%;
+    transition: all 0.2s ease;
 }
 
 
@@ -27,18 +28,18 @@
 
 }
 
-.current-playlist ul {
+.playlist-modal .current-playlist ul {
     cursor: pointer;
     overflow-y: auto;
     max-height: 20vh;
 
 }
 
-.current-playlist h2, .music-list h2 {
+.playlist-modal .current-playlist h2, .music-list h2 {
     font-size: 40px;
 }
 
-.current-playlist li {
+.playlist-modal .current-playlist li {
     padding-bottom: 15px;
     font-size: 25px;
 }
@@ -66,12 +67,13 @@
         padding: 5px;
     }
 
-    .current-playlist, .music-list {
+    .playlist-modal .current-playlist, .music-list {
         margin-bottom: 10px;
         width: 40%;
+
     }
 
-    .current-playlist li, .music-list li {
+    .playlist-modal .current-playlist li, .music-list li {
         padding: 8px;
         font-size: 14px;
     }
