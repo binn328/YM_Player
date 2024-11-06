@@ -1,9 +1,8 @@
 /*플리메뉴css*/
 .playlist-menu {
     /*position: absolute;*/
-    background: #fafafa;
-    border: 20px solid #201658;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 8px solid #ccc;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     display: flex;
@@ -30,7 +29,6 @@
 
 .playlist-menu h2 {
     margin-top: 0;
-    text-align: center;
 }
 
 .playlist-menu ul {
