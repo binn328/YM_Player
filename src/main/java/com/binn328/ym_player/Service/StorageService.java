@@ -2,6 +2,13 @@ package com.binn328.ym_player.Service;
 
 import com.binn328.ym_player.Model.Music;
 import com.binn328.ym_player.Repository.MusicRepository;
+import com.binn328.ym_player.Util.Acoustid.AcoustID;
+import com.binn328.ym_player.Util.Acoustid.ChromaPrint;
+import com.binn328.ym_player.Util.Musicbrainz.MusicBrainz;
+import com.binn328.ym_player.Util.TrackInformation;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.ID3v24Tag;
+import com.mpatric.mp3agic.Mp3File;
 import com.wonkglorg.ytdlp.mapper.json.VideoInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.io.FileSystemResource;
@@ -164,25 +171,85 @@ public class StorageService {
             log.error("Failed to download file: {}", filePath);
             return false;
         }
+
+
+        log.info("Chromaprint statge started");
+        // 음악의 지문을 얻어온다.
+        TrackInformation trackInformation = null;
+        try {
+            ChromaPrint chromaPrint = AcoustID.chromaprint(path.toFile(), "fpcalc");
+            log.info("chromaprint: " + chromaPrint.toString());
+            // 지문을 토대로 검색을 실시한다.
+            String musicbrainzId = AcoustID.lookup(chromaPrint);
+            // 검색에 성공하면
+            if (musicbrainzId != null) {
+                // 해당 id로 정보를 얻어옴
+                trackInformation = MusicBrainz.lookup(musicbrainzId);
+            } else {
+                // 검색에 실패하면
+            }
+        } catch (IOException e) {
+            log.error("Failed to process chromaprint");
+            e.printStackTrace();
+        }
+
+
         // 2. db에 등록한다.
         log.info("DBstage2 started");
         Music music = new Music();
-        music.setTitle(videoInfo.getTitle());
-        music.setArtist(videoInfo.getUploader());
-        music.setFavorite(false);
-        music.setGroup("Unknown");
-        Music savedMusic = musicRepository.save(music);
-        if (savedMusic == null) {
-            log.error("Failed to save music: {}", music);
+
+        // 검색된 정보가 있다면
+        if (trackInformation != null) {
+            music.setTitle(trackInformation.getTitle());
+            music.setArtist(trackInformation.getArtist());
+            music.setGroup(trackInformation.getRelease());
+            music.setFavorite(false);
+        } else {
+            music.setTitle(videoInfo.getTitle());
+            music.setArtist(videoInfo.getUploader());
+            music.setGroup("Unknown");
+            music.setFavorite(false);
+        }
+
+        Music savedMusic;
+        try {
+            savedMusic = musicRepository.save(music);
+        } catch (Exception e) {
+            log.error("error in saving music");
             return false;
         }
 
-        // 파일 경로 및 이름 변경
+        // TODO: mp3에 메타데이터를 입힌다.
         try {
-            Files.move(path, Paths.get(musicDir + File.separator + savedMusic.getId() + ".mp3"));
+            Mp3File mp3File = new Mp3File(path);
+
+            ID3v2 id3v2Tag;
+            if (mp3File.hasId3v2Tag()) {
+                id3v2Tag = mp3File.getId3v2Tag();
+            } else {
+                id3v2Tag = new ID3v24Tag();
+                mp3File.setId3v2Tag(id3v2Tag);
+            }
+
+            if (trackInformation != null) {
+                id3v2Tag.setTitle(trackInformation.getTitle());
+                id3v2Tag.setArtist(trackInformation.getArtist());
+                id3v2Tag.setAlbum(trackInformation.getRelease());
+
+                if (trackInformation.getArtwork() != null) {
+                    id3v2Tag.setAlbumImage(trackInformation.getArtwork(), "image/png");
+                }
+            } else {
+                id3v2Tag.setTitle(videoInfo.getTitle());
+                id3v2Tag.setArtist(videoInfo.getUploader());
+            }
+            mp3File.save(Paths.get(musicDir + File.separator + savedMusic.getId() + ".mp3").toString());
+            Files.deleteIfExists(path);
+
             return true;
-        } catch (IOException e) {
-            log.error("Failed to move music: {}", e.getMessage());
+        } catch (Exception e) {
+            log.error("Failed to process mp3 metadata");
+            e.printStackTrace();
             return false;
         }
     }
