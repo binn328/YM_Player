@@ -134,6 +134,8 @@ public class DownloadService {
             return;
         }
 
+        log.info("chromaprint stage 1 started");
+
         log.info("YTstage3 started");
         // 3. 다운로드된 파일을 DB에 저장
         if (storageService.parseAndSave(videoInfo)) {
