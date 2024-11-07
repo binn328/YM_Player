@@ -77,7 +77,7 @@ public class MusicAPIController {
         // DB에 저장
         Music savedMusic = musicRepository.save(music);
         // 음악파일을 저장, 실패하면 작업을 되돌리고 서버 오류를 반환
-        if (!storageService.saveMusic(file, savedMusic.getId())) {
+        if (!storageService.saveMusic(file, savedMusic)) {
             musicRepository.deleteById(savedMusic.getId());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

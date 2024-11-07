@@ -6,9 +6,7 @@ import com.binn328.ym_player.Util.Acoustid.AcoustID;
 import com.binn328.ym_player.Util.Acoustid.ChromaPrint;
 import com.binn328.ym_player.Util.Musicbrainz.MusicBrainz;
 import com.binn328.ym_player.Util.TrackInformation;
-import com.mpatric.mp3agic.ID3v2;
-import com.mpatric.mp3agic.ID3v24Tag;
-import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.*;
 import com.wonkglorg.ytdlp.mapper.json.VideoInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.io.FileSystemResource;
@@ -21,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 /**
  * 파일의 관리를 담당하는 서비스
@@ -46,7 +45,7 @@ public class StorageService {
      * @param fileName 저장될 파일의 이름, 데이터베이스의 id이다.
      * @return 저장 성공 시 true, 아니면 false
      */
-    public boolean saveMusic(MultipartFile musicFile, String fileName) {
+    public boolean saveMusic(MultipartFile musicFile, Music musicInfo) {
         try {
             // 디렉터리가 존재하는지 확인하고 생성
             File dir = new File(musicDir);
@@ -57,16 +56,93 @@ public class StorageService {
                 }
             }
 
-            // 파일을 저장
-            String filePath = musicDir + File.separator + fileName + ".mp3";
-            Path path = Paths.get(filePath).toAbsolutePath();
-            musicFile.transferTo(path.toFile());
+            Path path = Paths.get(downloadDir).resolve(UUID.randomUUID().toString() + ".mp3");
+
+
+            log.info("Chromaprint statge started");
+            try {
+                musicFile.transferTo(path);
+            } catch (Exception e) {
+                log.error("musicfile transfer failed");
+            }
+
+            // 음악의 지문을 얻어온다.
+            TrackInformation trackInformation = null;
+            try {
+                ChromaPrint chromaPrint = AcoustID.chromaprint(path.toFile(), "fpcalc");
+                log.info("chromaprint: " + chromaPrint.getChromaprint());
+                log.info("duration: " + chromaPrint.getDuration());
+                // 지문을 토대로 검색을 실시한다.
+                String musicbrainzId = AcoustID.lookup(chromaPrint);
+                // 검색에 성공하면
+                if (musicbrainzId != null) {
+                    // 해당 id로 정보를 얻어옴
+                    trackInformation = MusicBrainz.lookup(musicbrainzId);
+                } else {
+                    // 검색에 실패하면
+                }
+            } catch (IOException e) {
+                log.error("Failed to process chromaprint");
+                e.printStackTrace();
+            }
+
+            if (trackInformation != null) {
+                log.info("update music info...");
+                Music music = musicRepository.findById(musicInfo.getId()).orElse(null);
+                if (music != null) {
+                    music.setTitle(trackInformation.getTitle());
+                    music.setArtist(trackInformation.getArtist());
+                    music.setGroup(trackInformation.getRelease());
+                    music.setFavorite(false);
+
+                    musicRepository.save(music);
+                }
+            }
+
+            log.info("process mp3 tagging...");
+            try {
+                Mp3File mp3File = new Mp3File(path);
+
+                ID3v2 id3v2Tag;
+                if (mp3File.hasId3v2Tag()) {
+                    id3v2Tag = mp3File.getId3v2Tag();
+                } else {
+                    id3v2Tag = new ID3v24Tag();
+                    mp3File.setId3v2Tag(id3v2Tag);
+                }
+
+                if (trackInformation != null) {
+                    id3v2Tag.setTitle(trackInformation.getTitle());
+                    id3v2Tag.setArtist(trackInformation.getArtist());
+                    id3v2Tag.setAlbum(trackInformation.getRelease());
+
+                    if (trackInformation.getArtwork() != null) {
+                        id3v2Tag.setAlbumImage(trackInformation.getArtwork(), "image/png");
+                    }
+                } else {
+                    id3v2Tag.setTitle(musicInfo.getTitle());
+                    id3v2Tag.setArtist(musicInfo.getArtist());
+                }
+                mp3File.save(Paths.get(musicDir + File.separator + musicInfo.getId() + ".mp3").toString());
+                Files.deleteIfExists(path);
+            } catch (IOException e) {
+                log.error("IOError in mp3 tagging");
+                e.printStackTrace();
+            } catch (InvalidDataException e) {
+                log.error("Not mp3 file");
+                e.printStackTrace();
+            } catch (UnsupportedTagException e) {
+                log.error("No supported tag");
+                e.printStackTrace();
+            } catch (NotSupportedException e) {
+                log.error("No supported");
+                e.printStackTrace();
+            }
 
             // 성공 시 true를 반환
             return true;
-        } catch (IOException e) {
-            // 오류 발생 시 로그를 찍고 false를 반환
-            log.error("Failed to save music file: {}", e.getMessage());
+        } catch (Exception e) {
+            log.error("There is an error in saving music");
             return false;
         }
     }
