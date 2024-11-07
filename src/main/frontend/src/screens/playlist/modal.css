@@ -12,8 +12,8 @@
 }
 
 .modal-overlay .modal {
-    background-color: #ffffffe6;
-
+    background-color: #1b2843;
+    
     max-height: 300px;
     max-width: 400px;
     padding: 20px;
@@ -27,12 +27,15 @@
     padding: 20px;
     border-radius: 10px;
 
-    width: 80%;
+    width: 90%;
 }
 
 .modal-overlay .modal h2 {
     font-size: 30px;
-    margin-bottom: 30px;
+    margin-bottom: 5%;
+    text-align: center;
+    display: flex;
+    flex-direction:column ;
 
 }
 
@@ -45,7 +48,7 @@
     border-radius: 5px;
 }
 
-.modal button {
+.modal-overlay .modal button {
     padding: 15px 30px;
     margin-left: 20px;
     margin-top: 20px;
