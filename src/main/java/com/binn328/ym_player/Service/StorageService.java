@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 /**
  * 파일의 관리를 담당하는 서비스
@@ -55,6 +56,36 @@ public class StorageService {
                     log.error("Failed to create directory: {}", musicDir);
                     return false;
                 }
+            }
+
+            Path path = Paths.get(downloadDir).resolve(UUID.randomUUID().toString() + ".mp3");
+
+
+            log.info("Chromaprint statge started");
+            try {
+                musicFile.transferTo(path);
+                
+            } catch (Exception e) {
+
+            }
+
+            // 음악의 지문을 얻어온다.
+            TrackInformation trackInformation = null;
+            try {
+                ChromaPrint chromaPrint = AcoustID.chromaprint(, "fpcalc");
+                log.info("chromaprint: " + chromaPrint.toString());
+                // 지문을 토대로 검색을 실시한다.
+                String musicbrainzId = AcoustID.lookup(chromaPrint);
+                // 검색에 성공하면
+                if (musicbrainzId != null) {
+                    // 해당 id로 정보를 얻어옴
+                    trackInformation = MusicBrainz.lookup(musicbrainzId);
+                } else {
+                    // 검색에 실패하면
+                }
+            } catch (IOException e) {
+                log.error("Failed to process chromaprint");
+                e.printStackTrace();
             }
 
             // 파일을 저장
