@@ -1,8 +1,9 @@
 /*albumMenu.css*/
 .album-menu {
     /*position: absolute;*/
-    background: rgba(255, 255, 255, 0.9);
-    border: 8px solid #ccc;
+    background: #fafafa;
+    border: 20px solid #201658;
+    border-radius: 8px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     display: flex;
@@ -29,6 +30,7 @@
 
 .album-menu h2 {
     margin-top: 0;
+    text-align: center;
 }
 
 .album-menu ul {
