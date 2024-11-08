@@ -388,6 +388,10 @@ export default function Player() {
                                 </ul>
                             )}
                         </Droppable>
+
+            
+
+
                     </DragDropContext>
                 ) : (
                     <p className="no-playlist-message">플레이리스트가 없습니다.</p>
@@ -400,7 +404,7 @@ export default function Player() {
                 {contextMenu.show && (
                     <div
                         className="context-menu"
-                        style={{ top: contextMenu.y, left: contextMenu.x }}
+                        style={{ top: contextMenu.y, zIndex: 99999}}
                     >
                         <div onClick={() => prioritizeSong(contextMenu.index)}>우선 재생</div>
                         <div onClick={() => deleteSong(contextMenu.index)}>삭제</div>

@@ -73,7 +73,7 @@ const Addsong = ({addToPlaylist, onClose, currentPlaylist}) => {
 
     const handleAddToPlaylist = (selectedSong) => {
         if (currentPlaylist.some(song => song.id === selectedSong.id)) {
-            setMessage('이미 현재 플레이리스트에 있습니다.');
+            setMessage('현재 플레이리스트에 존재하는 곡 입니다.');
         } else {
             addToPlaylist(selectedSong);
             setMessage('');  // Reset message on successful addition
