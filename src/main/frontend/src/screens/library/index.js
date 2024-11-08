@@ -8,6 +8,7 @@ import PlaylistMenu from './playlistMenu';
 import AlbumMenu from './albumMenu';
 import { TbTriangleFilled, TbTriangleInvertedFilled } from "react-icons/tb";
 import SortMenu from './sortMenu';
+import { FaMusic } from "react-icons/fa6";
 
 function MusicPlayer() {
     const [musicData, setMusicData] = useState([]);
@@ -115,10 +116,11 @@ function MusicPlayer() {
             audioRef.current.src = `http://localhost:8080/api/music/item/${music.id}`;
             audioRef.current.play().catch(error => {
                 console.log("Playback failed due to autoplay policy:", error);
-            }); // 새로운 트랙 재생
+            });
         }
-        setShowMusicController(true); // 음악을 재생할 때 MusicController를 열도록 설정
-    };
+        setShowMusicController(true); // MusicController 표시
+        setIsExpanded(true); // 재생바 확장
+    };    
 
 
     const stopMusic = () => {
@@ -471,7 +473,9 @@ function MusicPlayer() {
                     {musicData.map((music, index) => (
                         <div key={music.id || index} className="music-card" onClick={() => playMusic(music, index)}>
                             <div className="music-card-top">
-                                <div className="music-image"></div>
+                                <div className="music-image">
+                                    <FaMusic className="music-icon" />
+                                </div>
                                 <button className="menu-button" onClick={(e) => {
                                     e.stopPropagation();
                                     toggleMenu(index);

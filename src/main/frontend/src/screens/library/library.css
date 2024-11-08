@@ -6,12 +6,23 @@
     padding: 10px;
 }
 
-.music-image{
+.music-image {
     height: 80px;
     width: 100px;
-    border: 5px solid white;
-    align-self: center;
-    margin: 0 auto;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.music-icon {
+    font-size: 40px;
+    color: rgba(255, 255, 255, 0.7);
+    position: absolute;
+    left: 50%;
 }
 
 .sort-button {
@@ -177,7 +188,7 @@
     left: 0;
     right: 0;
     background-color: rgba(30, 42, 62, 0.9);
-    height: 170px;
+    height: 140px;
     padding: 20px;
     display: flex;
     align-items: center;
@@ -201,9 +212,10 @@
     color: white;
     font-size: 1.5rem;
     position: fixed;
-    bottom: 23%;
+    bottom: 20%;
     right: 20px;
     cursor: pointer;
+    padding-right: 10px;
   }  
 
 .music-controller .music-info {
@@ -211,7 +223,7 @@
     /*margin-left: 5%;*/
     color: #fff;
     flex: 1;
-    padding: 20px 80px;
+    padding: 20px 10px;
     white-space: pre-wrap;
 }
 
