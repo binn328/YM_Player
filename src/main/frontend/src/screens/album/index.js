@@ -567,7 +567,8 @@ export default function Album() {
                                     )}
                                 </div>
                             </div>
-                            <h3 className="album-h3" onClick={() => handleAlbumClick(album)}>{album.name}
+                            <h3 className="album-h3" onClick={() => handleAlbumClick(album)}><div
+                                className="album-name">{album.name}</div>
                                 <button className='heart-button' onClick={(e) => {
                                     e.stopPropagation();
                                     toggleFavorite(album);

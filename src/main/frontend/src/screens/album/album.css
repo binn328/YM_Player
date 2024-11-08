@@ -46,10 +46,10 @@
     background-color: #fafafa33;
     height: 3%;
     border-radius: 8px;
-    padding: 1%;
-    width: 97%;
+    padding: 0.5%;
+    width: 93%;
     position: relative;
-    top: -37%;
+    top: -35%;
     z-index: 20;
     margin-left: 2%;
 }
@@ -310,7 +310,7 @@ input {
 
 #create-album {
     z-index: 20;
-    
+
 }
 
 .card-body {
@@ -397,7 +397,10 @@ svg.play-button {
     transform: scale(1.5);
 }
 
-
+.album-name {
+    width: 245px;
+    overflow: auto;
+}
 
 
 
@@ -408,6 +411,10 @@ svg.play-button {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+    }
+    .album-name {
+        width: 120px;
+        overflow: auto;
     }
     .create-album {
         background-color: #00000033;
@@ -435,7 +442,7 @@ svg.play-button {
 
     /* 앨범 카드 크기 조정 */
     .album-card {
-        width: 100%;
+        width: 120px;
         padding: 10px;
         margin: 5px 0; /* 카드 간 간격 */
         background-color: #2b3b4d;
@@ -447,7 +454,7 @@ svg.play-button {
 
     .album-card img {
         width: 120px; /* 이미지 크기 축소 */
-        height: 10%;
+        height: 120px;
         object-fit: cover;
         border-radius: 8px;
         margin: 10%;
@@ -476,6 +483,7 @@ svg.play-button {
     /* 앨범 목록 정렬 및 카드 크기 조정 */
     .album-card-container {
         position: relative;
+        margin-right: 15px;
     }
 
     /* 앨범 커버 이미지 */
