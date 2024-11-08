@@ -1,7 +1,7 @@
 /*라이브러리css*/
 .screen-container {
     position: relative;
-    height: 100vh; /* 화면 높이에 맞추어 크기 고정 */
+    height: 97%; /* 화면 높이에 맞추어 크기 고정 */
     overflow-y: auto; /* 세로 스크롤 활성화 */
     padding: 10px;
 }

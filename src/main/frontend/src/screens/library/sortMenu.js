@@ -18,7 +18,7 @@ const SortMenu = ({ setSortMethod }) => {
       <button onClick={toggleDropdown} className="sort-button">정렬 ▼</button>
       {isOpen && (
         <div className="sort-options">
-          <p onClick={() => handleSortChange("latest")}>최신순</p>
+          <p onClick={() => handleSortChange("upload")}>업로드순</p>
           <p onClick={() => handleSortChange("title")}>제목순</p>
           <p onClick={() => handleSortChange("favorite")}>하트순</p>
         </div>

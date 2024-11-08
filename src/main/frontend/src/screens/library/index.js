@@ -28,17 +28,25 @@ function MusicPlayer() {
     const [openedMenuIndex, setOpenedMenuIndex] = useState(null);
     const [showMusicController, setShowMusicController] = useState(false);
     const [isExpanded, setIsExpanded] = useState(true); // 펼쳐진 상태 여부를 저장
-    const [sortMethod, setSortMethod] = useState(localStorage.getItem("sortMethod") || "latest");
+    const [sortMethod, setSortMethod] = useState(localStorage.getItem("sortMethod") || "upload");
+    const [initialMusicData, setInitialMusicData] = useState([]);
 
     const audioRef = useRef(null);
     const menuRef = useRef(null);
 
+    // 초기 데이터 로드 (최초 1회만)
     useEffect(() => {
         fetchMusicData();
         fetchPlaylists();
         fetchAlbums();
-    }, []);
 
+        const savedSortMethod = localStorage.getItem("sortMethod");
+        if (savedSortMethod) {
+            setSortMethod(savedSortMethod);
+        }
+    }, []); // 의존성 배열이 빈 상태로 최초 1회 실행
+
+    // 오디오 종료 이벤트 관리
     useEffect(() => {
         const audio = audioRef.current;
         if (audio) {
@@ -57,13 +65,17 @@ function MusicPlayer() {
             setSortMethod(savedSortMethod);
         }
         fetchMusicData(); // 데이터 로드
-    }, []);  
+    }, []);
+
+    useEffect(() => {
+        fetchMusicData(); // 페이지 첫 로드 시 서버에서 데이터를 가져옴
+    }, []);
     
     useEffect(() => {
-        if (musicData.length > 0) {
-            sortMusicData(); // 데이터 로드 후 정렬
+        if (sortMethod !== "latest") {
+            sortMusicData(); // 최신순이 아닌 경우에만 클라이언트에서 정렬 수행
         }
-    }, [sortMethod, musicData]);
+    }, [sortMethod]);    
 
     const fetchMusicData = async () => {
         try {
@@ -73,6 +85,7 @@ function MusicPlayer() {
             }
             const data = await response.json();
             setMusicData(data);
+            setInitialMusicData(data); // 첫 로드된 데이터를 저장
         } catch (error) {
             console.error("Error fetching music data:", error);
         }
@@ -93,7 +106,7 @@ function MusicPlayer() {
 
     const fetchAlbums = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/album');
+            const response = await fetch('/api/album');
             if (!response.ok) {
                 throw new Error('Failed to fetch albums');
             }
@@ -106,21 +119,21 @@ function MusicPlayer() {
 
     const playMusic = (music, index) => {
         if (audioRef.current) {
-            audioRef.current.pause(); // 이전 트랙 정지
+            audioRef.current.pause();
         }
         setCurrentTrack(music);
         setSelectedMusic(music.id);
         setCurrentIndex(index);
         setIsPlaying(true);
         if (audioRef.current) {
-            audioRef.current.src = `http://localhost:8080/api/music/item/${music.id}`;
+            audioRef.current.src = `/api/music/item/${music.id}`;
             audioRef.current.play().catch(error => {
                 console.log("Playback failed due to autoplay policy:", error);
             });
         }
-        setShowMusicController(true); // MusicController 표시
-        setIsExpanded(true); // 재생바 확장
-    };    
+        setShowMusicController(true);
+        setIsExpanded(true);
+    };
 
 
     const stopMusic = () => {
@@ -172,54 +185,39 @@ function MusicPlayer() {
     };
 
     const toggleFavorite = async (music) => {
+        const updatedMusicList = musicData.map(item =>
+            item.id === music.id ? { ...item, favorite: !item.favorite } : item
+        );
+        setMusicData(updatedMusicList);
+
         try {
             const formData = new FormData();
             formData.append('id', music.id);
-            formData.append('title', music.title);
-            formData.append('artist', music.artist);
-            formData.append('group', music.group);
             formData.append('favorite', !music.favorite);
-            if (music.chapters) {
-                formData.append('chapters', JSON.stringify(music.chapters));
-            }
 
-            const response = await fetch(`http://localhost:8080/api/music/update/${music.id}`, {
+            const response = await fetch(`/api/music/update/${music.id}`, {
                 method: 'POST',
                 body: formData,
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error('Failed to update favorite status');
-            }
-
-            const updatedMusicData = await response.json();
-
-            const updatedMusicList = musicData.map(item => {
-                if (item.id === music.id) {
-                    return updatedMusicData;
-                }
-                return item;
-            });
-            setMusicData(updatedMusicList);
+            if (!response.ok) throw new Error('Failed to update favorite status');
+            await response.json();
+            fetchMusicData();
         } catch (error) {
             console.error('Error toggling favorite:', error);
         }
     };
 
     const deleteMusic = async (id) => {
+        setMusicData(musicData.filter(music => music.id !== id));
+
         try {
-            const response = await fetch(`http://localhost:8080/api/music/delete/${id}`, {
+            const response = await fetch(`/api/music/delete/${id}`, {
                 method: 'POST',
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error('Failed to delete music');
-            }
-
-            const updatedMusicList = musicData.filter(music => music.id !== id);
-            setMusicData(updatedMusicList);
+            if (!response.ok) throw new Error('Failed to delete music');
+            fetchMusicData();
         } catch (error) {
             console.error('Error deleting music:', error);
         }
@@ -240,10 +238,10 @@ function MusicPlayer() {
             const playlist = playlists.find(p => p.id === playlistId);
             if (!playlist) return;
 
-            const updatedMusics = [...playlist.musics, {id: music.id}];
-            const updatedPlaylist = {...playlist, musics: updatedMusics};
+            const updatedMusics = [...playlist.musics, { id: music.id }];
+            const updatedPlaylist = { ...playlist, musics: updatedMusics };
 
-            const response = await fetch(`http://localhost:8080/api/playlist/update`, {
+            const response = await fetch(`/api/playlist/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -267,10 +265,10 @@ function MusicPlayer() {
             const album = albums.find(a => a.id === albumId);
             if (!album) return;
 
-            const updatedMusics = [...album.musics, {id: music.id}];
-            const updatedAlbum = {...album, musics: updatedMusics};
+            const updatedMusics = [...album.musics, { id: music.id }];
+            const updatedAlbum = { ...album, musics: updatedMusics };
 
-            const response = await fetch(`http://localhost:8080/api/album/update`, {
+            const response = await fetch(`/api/album/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -322,21 +320,36 @@ function MusicPlayer() {
     };
 
     const sortMusicData = () => {
-        let sortedData;
-        if (sortMethod === "latest") {
-            sortedData = [...musicData].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
-        } else if (sortMethod === "title") {
-            sortedData = [...musicData].sort((a, b) => a.title.localeCompare(b.title, 'ko'));
-        } else if (sortMethod === "favorite") {
-            sortedData = [...musicData].sort((a, b) => (b.favorite === true ? 1 : 0) - (a.favorite === true ? 1 : 0));
+        if (sortMethod === "upload") {
+            setMusicData(initialMusicData); // 업로드순일 때 원본 데이터 유지
+        } else {
+            let sortedData = [...musicData];
+            if (sortMethod === "title") {
+                sortedData.sort((a, b) => a.title.localeCompare(b.title, 'ko'));
+            } else if (sortMethod === "favorite") {
+                sortedData.sort((a, b) => (b.favorite === true) - (a.favorite === true));
+            }
+            setMusicData(sortedData);
         }
-        setMusicData(sortedData);
-    };    
+    };
+    
+/*
+    const handleSortMethodChange = (method) => {
+        setSortMethod(method);
+        localStorage.setItem("sortMethod", method);
+    
+        if (method === "latest") {
+            fetchMusicData(); // 최신순 선택 시 서버에서 다시 데이터 가져오기
+        } else {
+            sortMusicData(); // 다른 정렬 방식일 경우 클라이언트에서 정렬 수행
+        }
+    };    */
 
     const handleSortMethodChange = (method) => {
         setSortMethod(method);
-        localStorage.setItem("sortMethod", method); // 로컬 스토리지에 저장
-    };  
+        localStorage.setItem("sortMethod", method);
+        sortMusicData(); // 업로드순, 최신순, 하트순 모두 여기서 처리
+    };    
 
     const openPlaylistMenu = (music) => {
         setMusicToAdd(music);
@@ -387,7 +400,7 @@ function MusicPlayer() {
                 formData.append('chapters', JSON.stringify(editingMusic.chapters));
             }
 
-            const response = await fetch(`http://localhost:8080/api/music/update/${editingMusic.id}`, {
+            const response = await fetch(`/api/music/update/${editingMusic.id}`, {
                 method: 'POST',
                 body: formData,
             });
@@ -398,14 +411,7 @@ function MusicPlayer() {
             }
 
             const updatedMusicData = await response.json();
-            const updatedMusicList = musicData.map(item => {
-                if (item.id === editingMusic.id) {
-                    return updatedMusicData;
-                }
-                return item;
-            });
-
-            setMusicData(updatedMusicList);
+            setMusicData(musicData.map(item => (item.id === editingMusic.id ? updatedMusicData : item)));
             closeEditMenu();
         } catch (error) {
             console.error('Error updating music info:', error);
@@ -437,7 +443,7 @@ function MusicPlayer() {
 
     const downloadMusic = async (music) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/music/item/${music.id}`, {
+            const response = await fetch(`/api/music/item/${music.id}`, {
                 method: 'GET',
             });
 
