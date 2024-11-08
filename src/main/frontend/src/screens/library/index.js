@@ -7,6 +7,7 @@ import MusicController from './musicController';
 import PlaylistMenu from './playlistMenu';
 import AlbumMenu from './albumMenu';
 import { TbTriangleFilled, TbTriangleInvertedFilled } from "react-icons/tb";
+import SortMenu from './sortMenu';
 
 function MusicPlayer() {
     const [musicData, setMusicData] = useState([]);
@@ -26,6 +27,7 @@ function MusicPlayer() {
     const [openedMenuIndex, setOpenedMenuIndex] = useState(null);
     const [showMusicController, setShowMusicController] = useState(false);
     const [isExpanded, setIsExpanded] = useState(true); // 펼쳐진 상태 여부를 저장
+    const [sortMethod, setSortMethod] = useState(localStorage.getItem("sortMethod") || "latest");
 
     const audioRef = useRef(null);
     const menuRef = useRef(null);
@@ -48,6 +50,20 @@ function MusicPlayer() {
         };
     }, [currentTrack, repeatMode]);
 
+    useEffect(() => {
+        const savedSortMethod = localStorage.getItem("sortMethod");
+        if (savedSortMethod) {
+            setSortMethod(savedSortMethod);
+        }
+        fetchMusicData(); // 데이터 로드
+    }, []);  
+    
+    useEffect(() => {
+        if (musicData.length > 0) {
+            sortMusicData(); // 데이터 로드 후 정렬
+        }
+    }, [sortMethod, musicData]);
+
     const fetchMusicData = async () => {
         try {
             const response = await fetch('http://localhost:8080/api/music');
@@ -57,7 +73,7 @@ function MusicPlayer() {
             const data = await response.json();
             setMusicData(data);
         } catch (error) {
-            setError(error.message);
+            console.error("Error fetching music data:", error);
         }
     };
 
@@ -303,6 +319,23 @@ function MusicPlayer() {
         setOpenedMenuIndex(prevState => (prevState === index ? null : index));
     };
 
+    const sortMusicData = () => {
+        let sortedData;
+        if (sortMethod === "latest") {
+            sortedData = [...musicData].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+        } else if (sortMethod === "title") {
+            sortedData = [...musicData].sort((a, b) => a.title.localeCompare(b.title, 'ko'));
+        } else if (sortMethod === "favorite") {
+            sortedData = [...musicData].sort((a, b) => (b.favorite === true ? 1 : 0) - (a.favorite === true ? 1 : 0));
+        }
+        setMusicData(sortedData);
+    };    
+
+    const handleSortMethodChange = (method) => {
+        setSortMethod(method);
+        localStorage.setItem("sortMethod", method); // 로컬 스토리지에 저장
+    };  
+
     const openPlaylistMenu = (music) => {
         setMusicToAdd(music);
         setShowPlaylistMenu(true);
@@ -377,9 +410,20 @@ function MusicPlayer() {
         }
     };
 
-    const toggleMusicController = () => {
+    /*const toggleMusicController = () => {
         setShowMusicController(!showMusicController);
-    };
+    };*/
+/*
+    const toggleMusicController = () => {
+        if (!showMusicController) {
+            setShowMusicController(true);
+        } else {
+            setIsExpanded(prev => !prev); // showMusicController가 true일 때만 isExpanded 토글
+        }
+    };    */
+    const toggleMusicController = () => {
+        setIsExpanded(!isExpanded);  // 토글 버튼 클릭 시 상태 전환
+      };
 
     const toggleController = () => {
         setIsExpanded((prev) => !prev);
@@ -421,34 +465,31 @@ function MusicPlayer() {
             <div className='playlist-list'>
                 <div className='library-header'>
                     <h2>Library</h2>
+                    <SortMenu setSortMethod={setSortMethod} />
                 </div>
-                {/*<h2 className='library-h2'>Library</h2>*/}
                 <div className="library-card">
                     {musicData.map((music, index) => (
-                        <div key={music.id} className="music-card" onClick={() => playMusic(music, index)}>
-                        <div className="music-card-top">
-                            <div className="music-image"></div>
-                            <button className='menu-button' onClick={(e) => {
+                        <div key={music.id || index} className="music-card" onClick={() => playMusic(music, index)}>
+                            <div className="music-card-top">
+                                <div className="music-image"></div>
+                                <button className="menu-button" onClick={(e) => {
                                     e.stopPropagation();
                                     toggleMenu(index);
                                 }}>
-                                    <CiMenuKebab/>
+                                    <CiMenuKebab />
                                 </button>
-                        </div>
+                            </div>
                             <div className="music-info">
                                 <div className="music-title-container">
-                                    <div
-                                        className={`music-title`}
-                                        ref={el => {
-                                            if (el) {
-                                                if (checkIfTruncated(el)) {
-                                                    el.classList.add('truncated');
-                                                } else {
-                                                    el.classList.remove('truncated');
-                                                }
+                                    <div className="music-title" ref={el => {
+                                        if (el) {
+                                            if (checkIfTruncated(el)) {
+                                                el.classList.add('truncated');
+                                            } else {
+                                                el.classList.remove('truncated');
                                             }
-                                        }}
-                                    >
+                                        }
+                                    }}>
                                         {music.title}
                                     </div>
                                     <button className='heart-button' onClick={(e) => {
@@ -459,13 +500,6 @@ function MusicPlayer() {
                                     </button>
                                 </div>
                                 <p className="artist">by {music.artist}</p>
-                                {/*<p className="group">({music.group})</p>*/}
-                               {/* <button className='menu-button' onClick={(e) => {
-                                    e.stopPropagation();
-                                    toggleMenu(index);
-                                }}>
-                                    <CiMenuKebab/>
-                                </button>*/}
                                 {showMenu[index] && (
                                     <div className="menu" ref={menuRef}>
                                         <p onClick={(e) => {
@@ -496,6 +530,7 @@ function MusicPlayer() {
                     ))}
                 </div>
             </div>
+    
             {showPlaylistMenu && (
                 <PlaylistMenu
                     music={musicToAdd}
@@ -504,6 +539,7 @@ function MusicPlayer() {
                     onClose={closePlaylistMenu}
                 />
             )}
+    
             {showAlbumMenu && (
                 <AlbumMenu
                     music={musicToAdd}
@@ -512,7 +548,8 @@ function MusicPlayer() {
                     onClose={closeAlbumMenu}
                 />
             )}
-            {selectedMusic && showMusicController && (
+    
+            {showMusicController && (
                 <MusicController
                     currentTrack={currentTrack}
                     isPlaying={isPlaying}
@@ -524,13 +561,10 @@ function MusicPlayer() {
                     repeatMode={repeatMode}
                     handleRepeatToggle={handleRepeatToggle}
                     toggleMusicController={toggleMusicController}
+                    isExpanded={isExpanded}
                 />
             )}
-            {!showMusicController && (
-                <button className="toggle-controller" onClick={toggleMusicController}>
-                    <AiFillCaretUp/>
-                </button>
-            )}
+    
             {editingMusic && (
                 <div className="edit-menu">
                     <form onSubmit={handleEditSubmit}>
@@ -582,7 +616,7 @@ function MusicPlayer() {
                 </div>
             )}
         </div>
-    );
+    );     
 }
 
 export default MusicPlayer;

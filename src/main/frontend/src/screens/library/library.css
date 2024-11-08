@@ -13,6 +13,54 @@
     align-self: center;
     margin: 0 auto;
 }
+
+.sort-button {
+    padding: 5px 10px;
+    font-size: 16px;
+    background-color: #1e2a3e;
+    color: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sort-menu {
+    position: relative;
+    z-index: 10; /* 메뉴를 음악 카드 위에 표시 */
+}
+
+.sort-options {
+    position: absolute;
+    background-color: #1e2a3e;
+    color: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+    padding: 5px;
+    z-index: 15; /* 정렬 옵션이 카드 위에 위치하도록 z-index 설정 */
+}
+
+.sort-options p {
+    margin: 5px 0;
+    cursor: pointer;
+}
+
+.sort-options p:hover {
+    background-color: #2e3a4e;
+}
+
+.sort-button:hover {
+    background-color: #2e3a4e;
+}
+
+.sort-dropdown {
+    padding: 5px;
+    font-size: 16px;
+    background-color: #1e2a3e;
+    color: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+}
+
 /*
 .library-h2 {
     color: white;
@@ -23,7 +71,7 @@
 }*/
 
 .library-header{
-    color: red;
+    color: white;
     font-size: 30px;
     margin-bottom: 10px;
     margin-left: 2%;
@@ -122,17 +170,41 @@
     cursor: pointer;
 }
 
+/* 기본 스타일 */
 .music-controller {
+    position: fixed;
     bottom: 0;
+    left: 0;
+    right: 0;
     background-color: rgba(30, 42, 62, 0.9);
+    height: 170px;
     padding: 20px;
     display: flex;
     align-items: center;
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
-    position: fixed;
-    width: calc(100% - 100px);
-    height: 170px;
+    z-index: 10;
+    transition: transform 0.3s ease;
 }
+/*
+.music-controller.collapsed {
+    transform: translateY(100%);
+}*/
+
+/* library.css */
+.library-music-controller.collapsed .music-controller {
+    display: none;  /* 접힘 상태일 때 컨트롤러 내용 숨기기 */
+  }
+  
+  .toggle-controller {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    position: fixed;
+    bottom: 23%;
+    right: 20px;
+    cursor: pointer;
+  }  
 
 .music-controller .music-info {
     text-align: center;
