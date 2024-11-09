@@ -232,7 +232,7 @@ const sortMusicData = () => {
             });
 
             if (!response.ok) throw new Error('Failed to delete music');
-            fetchMusicData();
+            fetchMusicData(sortMethod);
         } catch (error) {
             console.error('Error deleting music:', error);
         }
