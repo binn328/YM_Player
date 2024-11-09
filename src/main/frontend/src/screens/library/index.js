@@ -34,62 +34,77 @@ function MusicPlayer() {
     const audioRef = useRef(null);
     const menuRef = useRef(null);
 
-    // 초기 데이터 로드 (최초 1회만)
-    useEffect(() => {
-        fetchMusicData();
-        fetchPlaylists();
-        fetchAlbums();
-
-        const savedSortMethod = localStorage.getItem("sortMethod");
-        if (savedSortMethod) {
-            setSortMethod(savedSortMethod);
-        }
-    }, []); // 의존성 배열이 빈 상태로 최초 1회 실행
-
-    // 오디오 종료 이벤트 관리
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (audio) {
-            audio.addEventListener('ended', handleTrackEnd);
-        }
-        return () => {
-            if (audio) {
-                audio.removeEventListener('ended', handleTrackEnd);
-            }
-        };
-    }, [currentTrack, repeatMode]);
-
-    useEffect(() => {
-        const savedSortMethod = localStorage.getItem("sortMethod");
-        if (savedSortMethod) {
-            setSortMethod(savedSortMethod);
-        }
-        fetchMusicData(); // 데이터 로드
-    }, []);
-
-    useEffect(() => {
-        fetchMusicData(); // 페이지 첫 로드 시 서버에서 데이터를 가져옴
-    }, []);
+   // 초기 데이터 로드 (최초 1회만)
+useEffect(() => {
+    const savedSortMethod = localStorage.getItem("sortMethod") || "upload";
     
-    useEffect(() => {
-        if (sortMethod !== "latest") {
-            sortMusicData(); // 최신순이 아닌 경우에만 클라이언트에서 정렬 수행
-        }
-    }, [sortMethod]);    
+    setSortMethod(savedSortMethod);
+    fetchMusicData(savedSortMethod); // savedSortMethod를 전달하여 초기 정렬 상태를 반영
 
-    const fetchMusicData = async () => {
-        try {
-            const response = await fetch('http://localhost:8080/api/music');
-            if (!response.ok) {
-                throw new Error('Failed to fetch music data');
-            }
-            const data = await response.json();
-            setMusicData(data);
-            setInitialMusicData(data); // 첫 로드된 데이터를 저장
-        } catch (error) {
-            console.error("Error fetching music data:", error);
+    fetchPlaylists();
+    fetchAlbums();
+}, []); // 빈 의존성 배열로 최초 1회 실행
+
+// 오디오 종료 이벤트 관리
+useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+        audio.addEventListener('ended', handleTrackEnd);
+    }
+    return () => {
+        if (audio) {
+            audio.removeEventListener('ended', handleTrackEnd);
         }
     };
+}, [currentTrack, repeatMode]);
+
+// 정렬 방식 변경 시마다 정렬 수행
+useEffect(() => {
+    if (initialMusicData.length > 0) { // 초기 데이터가 로드된 경우에만 정렬
+        sortMusicData();
+    }
+}, [sortMethod]);
+
+// fetchMusicData가 초기 정렬 상태를 반영하도록 수정
+const fetchMusicData = async (initialSortMethod) => {
+    try {
+        const response = await fetch('http://localhost:8080/api/music');
+        if (!response.ok) {
+            throw new Error('Failed to fetch music data');
+        }
+        const data = await response.json();
+
+        setInitialMusicData(data); // 초기 데이터를 저장
+
+        // 가져온 데이터에 초기 정렬 방식 적용
+        const sortedData = applySort(data, initialSortMethod);
+        setMusicData(sortedData); // 정렬된 데이터를 설정
+    } catch (error) {
+        console.error("Error fetching music data:", error);
+    }
+};
+
+// 정렬 적용 함수
+const applySort = (data, sortMethod) => {
+    let sortedData = [...data];
+    if (sortMethod === "title") {
+        sortedData.sort((a, b) => a.title.localeCompare(b.title, 'ko'));
+    } else if (sortMethod === "favorite") {
+        sortedData.sort((a, b) => (b.favorite === true) - (a.favorite === true));
+    }
+    return sortedData;
+};
+
+// 정렬 함수
+const sortMusicData = () => {
+    if (sortMethod === "upload") {
+        setMusicData(initialMusicData); // 업로드순일 때 원본 데이터 유지
+    } else {
+        const sortedData = applySort(initialMusicData, sortMethod);
+        setMusicData(sortedData);
+    }
+};
+
 
     const fetchPlaylists = async () => {
         try {
@@ -202,7 +217,7 @@ function MusicPlayer() {
 
             if (!response.ok) throw new Error('Failed to update favorite status');
             await response.json();
-            fetchMusicData();
+            fetchMusicData(sortMethod);
         } catch (error) {
             console.error('Error toggling favorite:', error);
         }
@@ -319,19 +334,8 @@ function MusicPlayer() {
         setOpenedMenuIndex(prevState => (prevState === index ? null : index));
     };
 
-    const sortMusicData = () => {
-        if (sortMethod === "upload") {
-            setMusicData(initialMusicData); // 업로드순일 때 원본 데이터 유지
-        } else {
-            let sortedData = [...musicData];
-            if (sortMethod === "title") {
-                sortedData.sort((a, b) => a.title.localeCompare(b.title, 'ko'));
-            } else if (sortMethod === "favorite") {
-                sortedData.sort((a, b) => (b.favorite === true) - (a.favorite === true));
-            }
-            setMusicData(sortedData);
-        }
-    };
+    
+    
     
 /*
     const handleSortMethodChange = (method) => {

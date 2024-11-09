@@ -1,17 +1,27 @@
 // sortMenu.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const SortMenu = ({ setSortMethod }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(() => {
+    const savedSortMethod = localStorage.getItem("sortMethod");
+    if (savedSortMethod) {
+      setSortMethod(savedSortMethod);
+    }
+  }, [setSortMethod]);
+
+
   const handleSortChange = (sortOption) => {
     setSortMethod(sortOption);
+    localStorage.setItem("sortMethod", sortOption);
     setIsOpen(false); // 정렬 선택 후 드롭다운 닫기
   };
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
 
   return (
     <div className="sort-menu">
