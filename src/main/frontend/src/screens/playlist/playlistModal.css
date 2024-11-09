@@ -65,15 +65,29 @@
     .playlist-modal {
         width: 40%;
         padding: 5px;
+
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        max-width: 100%;
+        max-height: 35%;
     }
 
-    .playlist-modal .current-playlist, .music-list {
+    .playlist-modal .current-playlist, .playlist-modal .music-list {
         margin-bottom: 10px;
-        width: 40%;
+        width: 60%;
+        max-width: 100%;
+
 
     }
+    .playlist-modal .music-list h2, .playlist-modal .current-playlist h2 {
+        font-size: 20px;
+    }
 
-    .playlist-modal .current-playlist li, .music-list li {
+    .playlist-modal .current-playlist li, .playlist-modal .music-list li {
         padding: 8px;
         font-size: 14px;
     }
@@ -91,18 +105,28 @@
 
 @media (max-width: 768px) {
     .playlist-modal {
-        width: 50%;
+        width: 95%;
         padding: 10px;
     }
 
     .current-playlist, .music-list {
         margin-bottom: 10px;
-        width: 50%;
+        width: 35%;
+    }
+
+    .playlist-modal .current-playlist h2, .playlist-modal .music-list h2 {
+        font-size: 20px;
     }
 
     .current-playlist li, .music-list li {
         padding: 8px;
         font-size: 16px;
+    }
+
+    .playlist-modal .music-list ul{
+        cursor: pointer;
+        max-height: 25vh;
+        overflow-y: auto;
     }
 
     .playlist-modal button {
@@ -114,9 +138,6 @@
         margin-left: 10px;
     }
 
-    .current-playlist h2, .music-list h2 {
-        font-size: 25px;
-    }
 
     .song-icons, .liked-icons {
         font-size: 50px;
