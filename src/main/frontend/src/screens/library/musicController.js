@@ -19,7 +19,7 @@ const MusicController = ({
     audioRef,
     repeatMode,
     handleRepeatToggle,
-    toggleMusicController, // 토글 함수 추가
+    toggleMusicController, 
     isExpanded, // 펼침 상태 추가
 }) => {
     const [currentTime, setCurrentTime] = useState(0);
@@ -30,6 +30,10 @@ const MusicController = ({
 
         const updateTime = () => setCurrentTime(audio.currentTime);
         const updateDuration = () => setDuration(audio.duration);
+
+        if (audio && isPlaying) {
+            audio.play();  // 노래 시작
+        }
 
         if (audio) {
             audio.addEventListener("timeupdate", updateTime);
@@ -42,7 +46,7 @@ const MusicController = ({
                 audio.removeEventListener("loadedmetadata", updateDuration);
             }
         };
-    }, [audioRef]);
+    }, [audioRef, isPlaying]);
 
     const handleRangeChange = (event) => {
         const newTime = event.target.value;
@@ -61,6 +65,13 @@ const MusicController = ({
     return (
         <div className={`library-music-controller ${isExpanded ? "" : "collapsed"}`}>
             <div className="music-controller">
+                <audio ref={audioRef}>
+                    <source
+                        src={`/api/music/item/${currentTrack.id}`}
+                        type="audio/mpeg"
+                    />
+                </audio>
+          
                 {/* 음악 정보와 컨트롤 영역 */}
                 {isExpanded && (
                     <>
@@ -69,12 +80,12 @@ const MusicController = ({
                             <p className="artist">{currentTrack.artist}</p>
                         </div>
                         <div className="player-controls">
-                            <audio ref={audioRef}>
+                            {/*<audio ref={audioRef}>
                                 <source
                                     src={`/api/music/item/${currentTrack.id}`}
                                     type="audio/mpeg"
                                 />
-                            </audio>
+                            </audio>*/}
                             <div className="range-controls">
                                 <div className="time-range-container">
                                     <span className="current-time">{formatTime(currentTime)}</span>

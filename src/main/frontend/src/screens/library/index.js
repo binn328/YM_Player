@@ -147,7 +147,7 @@ function MusicPlayer() {
             });
         }
         setShowMusicController(true);
-        setIsExpanded(true);
+        //setIsExpanded(true);
     };
 
     const stopMusic = () => {
@@ -431,11 +431,12 @@ function MusicPlayer() {
             setIsExpanded(prev => !prev); // showMusicController가 true일 때만 isExpanded 토글
         }
     };    */
-    const toggleMusicController = () => {
+    
+    /*const toggleMusicController = () => {
         setIsExpanded(!isExpanded); // 토글 버튼 클릭 시 상태 전환
-    };
+    };*/
 
-    const toggleController = () => {
+    const toggleMusicController = () => {
         setIsExpanded((prev) => !prev);
     };
 
