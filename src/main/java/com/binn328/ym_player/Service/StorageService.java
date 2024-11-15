@@ -9,11 +9,14 @@ import com.binn328.ym_player.Util.TrackInformation;
 import com.mpatric.mp3agic.*;
 import com.wonkglorg.ytdlp.mapper.json.VideoInfo;
 import lombok.extern.log4j.Log4j2;
+import org.apache.http.entity.ContentType;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,7 +45,7 @@ public class StorageService {
     /**
      * 음악파일을 받아서 저장소에 저장하는 함수
      * @param musicFile 웹으로 전송받은 파일
-     * @param fileName 저장될 파일의 이름, 데이터베이스의 id이다.
+     * @param musicInfo 저장될 파일의 정보
      * @return 저장 성공 시 true, 아니면 false
      */
     public boolean saveMusic(MultipartFile musicFile, Music musicInfo) {
@@ -54,6 +57,12 @@ public class StorageService {
                     log.error("Failed to create directory: {}", musicDir);
                     return false;
                 }
+            }
+
+            // 해당 파일이 유효한지를 검사
+            if (musicFile.isEmpty() || !isAllowedMusicFile(musicFile)) {
+                log.error("Invalid music file: {}", musicFile.getOriginalFilename());
+                return false;
             }
 
             Path path = Paths.get(downloadDir).resolve(UUID.randomUUID().toString() + ".mp3");
@@ -192,7 +201,13 @@ public class StorageService {
      */
     public boolean saveAlbumArt(String fileName, MultipartFile artFile) {
         try {
-            // 디렉터리가 존재하는지 확인하고 생성
+            // 파일을 검증한다.
+            if (artFile.isEmpty() || !isAllowedImageFile(artFile)) {
+                log.error("Invalid image file: {}", artFile.getOriginalFilename());
+                return false;
+            }
+
+            // 디렉토리가 존재하는지 확인한다.
             File dir = new File(artDir);
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
@@ -201,15 +216,15 @@ public class StorageService {
                 }
             }
 
-            // 파일을 저장
+            // 파일을 저장한다.
             String filePath = artDir + File.separator + fileName + ".png";
             Path path = Paths.get(filePath).toAbsolutePath();
             artFile.transferTo(path.toFile());
 
-            // 성공 시 true를 반환
+            // 성공
             return true;
         } catch (IOException e) {
-            // 오류 발생 시 로그를 찍고 false를 반환
+            // 실패하면 로그를 기록하고 false를 반환한다.
             log.error("Failed to save art file: {}", e.getMessage());
             return false;
         }
@@ -328,5 +343,66 @@ public class StorageService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * 유효한 음악 파일인지를 검사합니다.
+     * @param file 검사할 파일
+     * @return 확장자와 콘텐츠 형식이 모두 일치하면 true를 반환합니다.
+     */
+    private boolean isAllowedMusicFile(MultipartFile file) {
+        String contentType = file.getContentType();
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = org.springframework.util.StringUtils.getFilenameExtension(originalFilename).toLowerCase();
+
+        boolean isAllowedType = contentType.equals("audio/mpeg") || contentType.equals("audio/wav");
+        boolean isAllowedExtension = fileExtension.equals("mp3") || fileExtension.equals("wav");
+
+        return isAllowedType && isAllowedExtension;
+    }
+
+    private boolean isAllowedImageFile(MultipartFile file) {
+        // Check the content type
+        String contentType = file.getContentType();
+        if (contentType == null || !isAllowedContentType(contentType)) {
+            return false;
+        }
+
+        // Check the file extension
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null) {
+            return false;
+        }
+        String fileExtension = org.springframework.util.StringUtils.getFilenameExtension(originalFilename).toLowerCase();
+        if (!isAllowedExtension(fileExtension)) {
+            return false;
+        }
+
+        // Verify the file is an actual image
+        try {
+            BufferedImage image = ImageIO.read(file.getInputStream());
+            if (image == null) {
+                // The file is not a valid image
+                return false;
+            }
+        } catch (IOException e) {
+            // Unable to read the file as an image
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isAllowedContentType(String contentType) {
+        return contentType.equals("image/png") ||
+                contentType.equals("image/jpeg") ||
+                contentType.equals("image/gif");
+    }
+
+    private boolean isAllowedExtension(String extension) {
+        return extension.equals("png") ||
+                extension.equals("jpg") ||
+                extension.equals("jpeg") ||
+                extension.equals("gif");
     }
 }
