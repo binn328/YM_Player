@@ -1,8 +1,12 @@
 package com.binn328.ym_player.Controller;
 
 import com.binn328.ym_player.Model.Album;
+import com.binn328.ym_player.Model.Music;
+import com.binn328.ym_player.Model.MusicId;
 import com.binn328.ym_player.Repository.AlbumRepository;
+import com.binn328.ym_player.Repository.MusicRepository;
 import com.binn328.ym_player.Service.StorageService;
+import com.binn328.ym_player.Util.AlbumArtworkFetcher;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -20,9 +24,12 @@ import java.util.Optional;
 public class AlbumAPIController {
     private final AlbumRepository albumRepository;
     private final StorageService storageService;
-    public AlbumAPIController(AlbumRepository albumRepository, StorageService storageService) {
+    private final MusicRepository musicRepository;
+
+    public AlbumAPIController(AlbumRepository albumRepository, StorageService storageService, MusicRepository musicRepository) {
         this.albumRepository = albumRepository;
         this.storageService = storageService;
+        this.musicRepository = musicRepository;
     }
 
     /**
@@ -72,11 +79,39 @@ public class AlbumAPIController {
     @PostMapping()
     public ResponseEntity<Album> createAlbum(Album album) {
         log.info(album.toString());
-        if(album.getName() != null) {
-            Album savedAlbum = albumRepository.save(album);
-            return ResponseEntity.ok(savedAlbum);
+        Album savedAlbum;
+        if (album.getName() == null) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.badRequest().build();
+
+        // 앨범이 음악을 가지고 있다면
+        if (album.getMusics() != null && !album.getMusics().isEmpty()) {
+            savedAlbum = albumRepository.save(album);
+            List<MusicId> musicIds = album.getMusics();
+            Optional<Music> musicOptional = musicRepository.findById(musicIds.getFirst().getId());
+            if (musicOptional.isPresent()) {
+                String mbId = musicOptional.get().getMusicbrainz_id();
+                // mbid가 있다면
+                if (mbId != null && !mbId.isEmpty()) {
+                    try {
+                        AlbumArtworkFetcher fetcher = new AlbumArtworkFetcher();
+                        byte[] artwork = fetcher.fetchAlbumArtworkBytes(mbId);
+
+                        if (storageService.saveAlbumArt(album.getId(), artwork)) {
+                            return ResponseEntity.ok().build();
+                        } else {
+                            return ResponseEntity.internalServerError().build();
+                        }
+                    } catch(Exception e) {
+                        log.error("앨범 아트 가져오는 중 오류 발생: ", e);
+                        return ResponseEntity.internalServerError().build();
+                    }
+                }
+            }
+        } else {
+            savedAlbum = albumRepository.save(album);
+        }
+        return ResponseEntity.ok(savedAlbum);
     }
 
     /**
@@ -98,6 +133,8 @@ public class AlbumAPIController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+
 
     /**
      * 앨범 정보 수정

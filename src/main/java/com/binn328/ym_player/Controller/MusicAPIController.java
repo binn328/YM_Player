@@ -66,14 +66,15 @@ public class MusicAPIController {
     /**
      * 음악을 추가합니다.
      * 우선 데이터베이스에 저장하여 id를 가져온 후, 해당 id를 이름으로 파일을 저장합니다.
-     * @param form 추가될 음악의 정보입니다.
      * @return 실패시 502, 성공 시 202
      */
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Music> createMusic(MusicForm form, @RequestPart("file") MultipartFile file) {
-        // 받아온 음악을 엔티티화
-        Music music = form.toEntity();
-        log.info(music.toString());
+    public ResponseEntity<Music> createMusic(@RequestPart("file") MultipartFile file) {
+        // 받아온 파일을 기반으로 music 초기화
+        Music music = new Music();
+        music.setTitle(file.getOriginalFilename());
+        music.setArtist("");
+        music.setGroup("");
         // DB에 저장
         Music savedMusic = musicRepository.save(music);
         // 음악파일을 저장, 실패하면 작업을 되돌리고 서버 오류를 반환

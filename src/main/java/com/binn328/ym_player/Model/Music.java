@@ -21,6 +21,8 @@ public class Music {
     private String title;
     private String artist;
     private String group;
+    private String musicbrainz_id;
     private boolean favorite;
     private List<Chapter> chapters;
+
 }

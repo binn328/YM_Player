@@ -16,6 +16,6 @@ public class MusicForm {
     private List<Chapter> chapters;
 
     public Music toEntity() {
-        return new Music(id, title, artist, group, favorite, chapters);
+        return new Music(id, title, artist, group, "", favorite, chapters);
     }
 }

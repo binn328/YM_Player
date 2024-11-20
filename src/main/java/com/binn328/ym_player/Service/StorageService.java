@@ -17,8 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,6 +44,7 @@ public class StorageService {
     public StorageService(MusicRepository musicRepository) {
         this.musicRepository = musicRepository;
     }
+
     /**
      * 음악파일을 받아서 저장소에 저장하는 함수
      * @param musicFile 웹으로 전송받은 파일
@@ -49,6 +52,7 @@ public class StorageService {
      * @return 저장 성공 시 true, 아니면 false
      */
     public boolean saveMusic(MultipartFile musicFile, Music musicInfo) {
+        String musicbrainzId = null;
         try {
             // 디렉터리가 존재하는지 확인하고 생성
             File dir = new File(musicDir);
@@ -58,6 +62,15 @@ public class StorageService {
                     return false;
                 }
             }
+
+            dir = new File(downloadDir);
+            if (!dir.exists()) {
+                if (!dir.mkdirs()) {
+                    log.error("Failed to create directory: {}", downloadDir);
+                    return false;
+                }
+            }
+
 
             // 해당 파일이 유효한지를 검사
             if (musicFile.isEmpty() || !isAllowedMusicFile(musicFile)) {
@@ -82,7 +95,7 @@ public class StorageService {
                 log.info("chromaprint: " + chromaPrint.getChromaprint());
                 log.info("duration: " + chromaPrint.getDuration());
                 // 지문을 토대로 검색을 실시한다.
-                String musicbrainzId = AcoustID.lookup(chromaPrint);
+                musicbrainzId = AcoustID.lookup(chromaPrint);
                 // 검색에 성공하면
                 if (musicbrainzId != null) {
                     // 해당 id로 정보를 얻어옴
@@ -103,6 +116,7 @@ public class StorageService {
                     music.setArtist(trackInformation.getArtist());
                     music.setGroup(trackInformation.getRelease());
                     music.setFavorite(false);
+                    music.setMusicbrainz_id(musicbrainzId);
 
                     musicRepository.save(music);
                 }
@@ -231,6 +245,53 @@ public class StorageService {
     }
 
     /**
+     * 앨범 아트를 저장한다.
+     * @param fileName 저장될 파일의 이름
+     * @param artFile 저장될 파일
+     * @return 성공적이면 true, 아니면 false
+     */
+    public boolean saveAlbumArt(String fileName, byte[] artFile) {
+        try {
+            // 파일을 검증한다.
+            if (artFile == null || artFile.length == 0) {
+                log.error("Invalid image file");
+                return false;
+            }
+
+            // 이미지 데이터 유효성 검사
+            InputStream is = new ByteArrayInputStream(artFile);
+            BufferedImage img = ImageIO.read(is);
+            if (img == null) {
+                log.error("Invalid image data");
+                return false;
+            }
+
+            // 디렉토리가 존재하는지 확인한다.
+            Path dirPath = Paths.get(artDir);
+            if (!Files.exists(dirPath)) {
+                Files.createDirectories(dirPath);
+            }
+
+            // 파일 확장자 결정
+            String extension = "png";
+
+            // 파일을 저장한다.
+            Path filePath = dirPath.resolve(fileName + "." + extension).toAbsolutePath();
+
+            // 바이트 배열을 파일에 쓰기
+            Files.write(filePath, artFile);
+
+            // 성공
+            return true;
+        } catch (IOException e) {
+            // 실패하면 로그를 기록하고 false를 반환한다.
+            log.error("Failed to save art file", e);
+            return false;
+        }
+    }
+
+
+    /**
      * 앨범아트를 삭제한다.
      * @param id 삭제할 앨범아트의 id
      * @return 성공하면 true, 아니면 false
@@ -294,10 +355,12 @@ public class StorageService {
             music.setTitle(trackInformation.getTitle());
             music.setArtist(trackInformation.getArtist());
             music.setGroup(trackInformation.getRelease());
+            music.setMusicbrainz_id(trackInformation.getMusicbrainzid());
             music.setFavorite(false);
         } else {
             music.setTitle(videoInfo.getTitle());
             music.setArtist(videoInfo.getUploader());
+            music.setMusicbrainz_id("");
             music.setGroup("Unknown");
             music.setFavorite(false);
         }
