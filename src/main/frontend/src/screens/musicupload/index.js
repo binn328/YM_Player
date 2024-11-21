@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './musicupload.css';
 
 function MusicForm() {
@@ -10,6 +10,8 @@ function MusicForm() {
     const [progress, setProgress] = useState(0);
     const [isSimulating, setIsSimulating] = useState(false);
     const [uploadCompleted, setUploadCompleted] = useState(false);
+
+    const fileInputRef = useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,7 +27,7 @@ function MusicForm() {
 
         try {
             if (link) {
-                alert('링크 변환 요청을 처리 중입니다...');
+                alert('링크 변환에 성공했지만, 음악 업로드에는 약간의 시간이 소요될 수 있습니다.');
                 setIsSimulating(true);
 
                 const dlResponse = await fetch('/api/dl', {
@@ -65,6 +67,13 @@ function MusicForm() {
                 console.log('음악 업로드 성공');
                 setProgress(100);
                 setUploadCompleted(true);
+
+                // 파일 입력폼 초기화
+                setFile(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+
                 resetProgressBarAfterDelay();
             }
             setLink('');
@@ -126,11 +135,11 @@ function MusicForm() {
                 <div className="form-box">
                     <h1>Music Upload</h1>
                     <form onSubmit={handleSubmit} encType="multipart/form-data" className="music-form">
-
                         <div className="form-group">
                             <label>파일</label>
                             <input
                                 type="file"
+                                ref={fileInputRef}
                                 onChange={(e) => setFile(e.target.files[0])}
                                 required={!link}
                                 disabled={isSimulating}
