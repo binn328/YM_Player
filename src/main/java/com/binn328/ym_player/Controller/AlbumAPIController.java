@@ -88,7 +88,7 @@ public class AlbumAPIController {
         if (album.getMusics() != null && !album.getMusics().isEmpty()) {
             savedAlbum = albumRepository.save(album);
             List<MusicId> musicIds = album.getMusics();
-            Optional<Music> musicOptional = musicRepository.findById(musicIds.getFirst().getId());
+            Optional<Music> musicOptional = musicRepository.findById(musicIds.get(0).getId());
             if (musicOptional.isPresent()) {
                 String mbId = musicOptional.get().getMusicbrainz_id();
                 // mbid가 있다면
