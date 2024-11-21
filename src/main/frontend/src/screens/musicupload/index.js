@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import './musicupload.css';
 
 function MusicForm() {
@@ -7,68 +7,125 @@ function MusicForm() {
     const [group, setGroup] = useState('');
     const [file, setFile] = useState(null);
     const [link, setLink] = useState('');
+    const [progress, setProgress] = useState(0);
+    const [isSimulating, setIsSimulating] = useState(false);
+    const [uploadCompleted, setUploadCompleted] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!link && (!title || !artist || !group || !file)) {
+        setProgress(0);
+        setUploadCompleted(false);
+        setIsSimulating(false);
+
+        if (!link &&  !file) {
             alert('제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요.');
             return;
         }
 
         try {
             if (link) {
-                alert('링크 변환에 성공했지만, 음악 업로드에는 약간의 시간이 소요될 수 있습니다.');
+                alert('링크 변환 요청을 처리 중입니다...');
+                setIsSimulating(true);
 
                 const dlResponse = await fetch('/api/dl', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({url: link})
+                    body: JSON.stringify({ url: link }),
                 });
 
                 if (!dlResponse.ok) {
                     const errorDetails = await dlResponse.text();
-                    throw new Error(`링크를 통해 파일을 변환하는데 실패했습니다: ${errorDetails}`);
+                    throw new Error(`링크 변환 실패: ${errorDetails}`);
                 }
 
                 console.log('링크 변환 요청 성공');
             } else {
-                alert('음악이 성공적으로 업로드되었습니다.');
+                alert('음악 파일 업로드 요청을 처리 중입니다...');
                 const formData = new FormData();
-                formData.append('title', title);
+                /*formData.append('title', title);
                 formData.append('artist', artist);
                 formData.append('group', group);
+                */
                 formData.append('file', file);
                 formData.append('favorite', 'false');
 
-                for (const pair of formData.entries()) {
-                    console.log(`${pair[0]}: ${pair[1]}`);
-                }
+                  // title, artist, group은 값이 있는 경우에만 추가
+                  if (title) formData.append('title', title);
+                  if (artist) formData.append('artist', artist);
+                  if (group) formData.append('group', group);
 
                 const response = await fetch('/api/music', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
                 });
 
                 if (!response.ok) {
                     const errorText = await response.text();
-                    throw new Error(`음악 업로드에 실패했습니다: ${errorText}`);
+                    throw new Error(`음악 파일 업로드 실패: ${errorText}`);
                 }
 
                 console.log('음악 업로드 성공');
+                setProgress(100);
+                setUploadCompleted(true);
+                resetProgressBarAfterDelay();
             }
-
-            // Reset
-            setTitle('');
-            setArtist('');
-            setGroup('');
-            setFile(null);
             setLink('');
         } catch (error) {
-            console.error('음악 업로드 중 에러 발생:', error);
+            console.error('업로드 중 에러:', error);
         }
+    };
+
+    useEffect(() => {
+        if (!isSimulating) return;
+
+        const interval = setInterval(async () => {
+            try {
+                const response = await fetch('/api/dl');
+                if (!response.ok) {
+                    throw new Error('다운로드 상태 확인 실패');
+                }
+
+                let progressData = await response.json();
+                console.log('다운로드 상태:', progressData);
+
+                // COMPLETED 및 FAILED 상태 제거
+                progressData = progressData.filter(
+                    (item) => item.status === 'NOT_STARTED' || item.status === 'IN_PROGRESS'
+                );
+
+                const inProgress = progressData.some((item) => item.status === 'IN_PROGRESS');
+
+                if (inProgress) {
+                    // 단계적으로 증가시키기
+                    setProgress((prevProgress) => {
+                        const nextProgress = prevProgress + 10;
+                        return nextProgress > 90 ? 90 : nextProgress; // 90%
+                    });
+                }
+
+                if (progressData.length === 0) {
+                    setProgress(100); // 다운로드 완료
+                    setUploadCompleted(true);
+                    setIsSimulating(false);
+                    resetProgressBarAfterDelay();
+                }
+            } catch (error) {
+                console.error('다운로드 상태 확인 에러:', error);
+            }
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [isSimulating]);
+
+
+    const resetProgressBarAfterDelay = () => {
+        setTimeout(() => {
+            setProgress(0);
+            setUploadCompleted(false);
+        }, 2000);
     };
 
     return (
@@ -77,42 +134,12 @@ function MusicForm() {
                 <div className="form-box">
                     <h1>Music Upload</h1>
                     <form onSubmit={handleSubmit} encType="multipart/form-data" className="music-form">
-                        <div className="form-group">
-                            <label>제목</label>
-                            <input
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요."
-                                required={!link}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>가수</label>
-                            <input
-                                type="text"
-                                value={artist}
-                                onChange={(e) => setArtist(e.target.value)}
-                                placeholder="제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요."
-                                required={!link}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>그룹</label>
-                            <input
-                                type="text"
-                                value={group}
-                                onChange={(e) => setGroup(e.target.value)}
-                                placeholder="제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요."
-                                required={!link}
-                            />
-                        </div>
+
                         <div className="form-group">
                             <label>파일</label>
                             <input
                                 type="file"
                                 onChange={(e) => setFile(e.target.files[0])}
-                                title="제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요."
                                 required={!link}
                             />
                         </div>
@@ -122,14 +149,23 @@ function MusicForm() {
                                 type="url"
                                 value={link}
                                 onChange={(e) => setLink(e.target.value)}
-                                placeholder="제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요."
+                                placeholder="업로드할 링크를 입력하세요."
                                 required={!title && !artist && !group && !file}
                             />
                         </div>
-                        <br/>
-                        <input type="hidden" name="favorite" value="false"/>
                         <button type="submit">확인</button>
                     </form>
+                </div>
+                <div className="progress-container">
+                    <h2>업로드 진행률</h2>
+                    <div className="progress-bar">
+                        <div
+                            className="progress-bar-fill"
+                            style={{ width: `${progress}%` }}
+                        >
+                            {progress.toFixed(0)}%
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

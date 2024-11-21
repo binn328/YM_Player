@@ -309,7 +309,7 @@ function MusicPlayer() {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
-                closeMenu();
+                closeMenu(); // 메뉴 닫기
             }
         };
 
@@ -528,6 +528,7 @@ function MusicPlayer() {
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 openPlaylistMenu(music);
+                                                closeMenu();
                                             }}>
                                             플레이리스트에 추가
                                         </p>
@@ -535,6 +536,7 @@ function MusicPlayer() {
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 openAlbumMenu(music);
+                                                closeMenu();
                                             }}>
                                             앨범에 추가
                                         </p>
@@ -543,6 +545,7 @@ function MusicPlayer() {
                                                 e.stopPropagation();
                                                 openEditMenu(music);
                                                 toggleMenu(index);
+                                                closeMenu();
                                             }}>
                                             정보 수정
                                         </p>
@@ -550,6 +553,7 @@ function MusicPlayer() {
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 downloadMusic(music);
+                                                closeMenu();
                                             }}>
                                             다운로드
                                         </p>
@@ -557,6 +561,7 @@ function MusicPlayer() {
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 deleteMusic(music.id);
+                                                closeMenu();
                                             }}>
                                             삭제
                                         </p>
