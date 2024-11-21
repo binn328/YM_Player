@@ -13,11 +13,12 @@
 }
 
 .favorite-modal h2 {
-
+   font-size: 37px;
     margin-top: 10px;
 }
 
 .favorite-modal ul {
+     overflow-y: scroll;
     list-style-type: none;
     padding: 0;
 }
@@ -26,10 +27,11 @@
     background:#fafafa;;
     border-radius: 20px;
     padding: 20px;
-    font-size: 30px;
+    font-size: 25px;
     text-align: center;
     height: 93%;
-    overflow: scroll;
+    display: flex;
+    flex-direction: column;
 }
 
 .favorite-modal li {
@@ -72,6 +74,42 @@
     display: none;
 }
 
-.Fmodal::-webkit-scrollbar {
-    display: none;
+.favorite-modal ul::-webkit-scrollbar {
+   /* display: none;*/
+   width:8px;
+   
 }
+
+.favorite-modal ul::-webkit-scrollbar-thumb {
+    background-color: rgba(32, 22, 88, 0.5); /* 스크롤바 색상 */
+    border-radius: 4px;
+
+ }
+
+@media (max-width: 768px) {
+    .Fmodal{
+        background:#fafafa;;
+        border-radius: 20px;
+        padding: 10px;
+        font-size: 30px;
+        text-align: center;
+        height: 93%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .favorite-modal h2 {
+        margin-top: 5px;
+        font-size:30px;
+    }
+
+    .favorite-list li {
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+        cursor: pointer;
+        overflow: scroll;
+        font-size:15px;
+    }
+    
+    }
