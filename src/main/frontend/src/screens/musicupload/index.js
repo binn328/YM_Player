@@ -18,7 +18,7 @@ function MusicForm() {
         setUploadCompleted(false);
         setIsSimulating(false);
 
-        if (!link &&  !file) {
+        if (!link && !file) {
             alert('제목, 가수, 그룹, 파일을 모두 입력하거나 링크를 입력하세요.');
             return;
         }
@@ -45,17 +45,12 @@ function MusicForm() {
             } else {
                 alert('음악 파일 업로드 요청을 처리 중입니다...');
                 const formData = new FormData();
-                /*formData.append('title', title);
-                formData.append('artist', artist);
-                formData.append('group', group);
-                */
+
+                if (title) formData.append('title', title);
+                if (artist) formData.append('artist', artist);
+                if (group) formData.append('group', group);
                 formData.append('file', file);
                 formData.append('favorite', 'false');
-
-                  // title, artist, group은 값이 있는 경우에만 추가
-                  if (title) formData.append('title', title);
-                  if (artist) formData.append('artist', artist);
-                  if (group) formData.append('group', group);
 
                 const response = await fetch('/api/music', {
                     method: 'POST',
@@ -91,7 +86,6 @@ function MusicForm() {
                 let progressData = await response.json();
                 console.log('다운로드 상태:', progressData);
 
-                // COMPLETED 및 FAILED 상태 제거
                 progressData = progressData.filter(
                     (item) => item.status === 'NOT_STARTED' || item.status === 'IN_PROGRESS'
                 );
@@ -99,15 +93,14 @@ function MusicForm() {
                 const inProgress = progressData.some((item) => item.status === 'IN_PROGRESS');
 
                 if (inProgress) {
-                    // 단계적으로 증가시키기
                     setProgress((prevProgress) => {
                         const nextProgress = prevProgress + 10;
-                        return nextProgress > 90 ? 90 : nextProgress; // 90%
+                        return nextProgress > 90 ? 90 : nextProgress;
                     });
                 }
 
                 if (progressData.length === 0) {
-                    setProgress(100); // 다운로드 완료
+                    setProgress(100);
                     setUploadCompleted(true);
                     setIsSimulating(false);
                     resetProgressBarAfterDelay();
@@ -119,7 +112,6 @@ function MusicForm() {
 
         return () => clearInterval(interval);
     }, [isSimulating]);
-
 
     const resetProgressBarAfterDelay = () => {
         setTimeout(() => {
@@ -141,6 +133,7 @@ function MusicForm() {
                                 type="file"
                                 onChange={(e) => setFile(e.target.files[0])}
                                 required={!link}
+                                disabled={isSimulating}
                             />
                         </div>
                         <div className="form-group">
@@ -151,9 +144,12 @@ function MusicForm() {
                                 onChange={(e) => setLink(e.target.value)}
                                 placeholder="업로드할 링크를 입력하세요."
                                 required={!title && !artist && !group && !file}
+                                disabled={isSimulating}
                             />
                         </div>
-                        <button type="submit">확인</button>
+                        <button type="submit" disabled={isSimulating}>
+                            {isSimulating ? '업로드 중...' : '확인'}
+                        </button>
                     </form>
                 </div>
                 <div className="progress-container">
