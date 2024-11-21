@@ -483,7 +483,11 @@ function MusicPlayer() {
                         <div
                             key={music.id || index}
                             className="music-card"
-                            onClick={() => playMusic(music, index)}>
+                            onClick={() => {
+                                if (!showMenu[index]) {
+                                    playMusic(music, index); // 메뉴가 열려 있지 않을 때만 실행
+                                }
+                            }}>
                             <div className="music-card-top">
                                 <div className="music-image">
                                     <FaMusic className="music-icon" />
@@ -491,7 +495,7 @@ function MusicPlayer() {
                                 <button
                                     className="menu-button"
                                     onClick={(e) => {
-                                        e.stopPropagation();
+                                        e.stopPropagation(); // 클릭 이벤트 전파 방지
                                         toggleMenu(index);
                                     }}>
                                     <CiMenuKebab />
@@ -523,7 +527,11 @@ function MusicPlayer() {
                                 </div>
                                 <p className="artist">by {music.artist}</p>
                                 {showMenu[index] && (
-                                    <div className="menu" ref={menuRef}>
+                                    <div
+                                        className="menu"
+                                        ref={menuRef}
+                                        onMouseDown={(e) => e.stopPropagation()} // 메뉴 클릭 시 전파 차단
+                                    >
                                         <p
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -572,7 +580,7 @@ function MusicPlayer() {
                     ))}
                 </div>
             </div>
-
+    
             {showPlaylistMenu && (
                 <PlaylistMenu
                     music={musicToAdd}
@@ -581,7 +589,7 @@ function MusicPlayer() {
                     onClose={closePlaylistMenu}
                 />
             )}
-
+    
             {showAlbumMenu && (
                 <AlbumMenu
                     music={musicToAdd}
@@ -590,7 +598,7 @@ function MusicPlayer() {
                     onClose={closeAlbumMenu}
                 />
             )}
-
+    
             {showMusicController && (
                 <MusicController
                     currentTrack={currentTrack}
@@ -606,7 +614,7 @@ function MusicPlayer() {
                     isExpanded={isExpanded}
                 />
             )}
-
+    
             {editingMusic && (
                 <div className="edit-menu">
                     <form onSubmit={handleEditSubmit}>
@@ -666,7 +674,7 @@ function MusicPlayer() {
                 </div>
             )}
         </div>
-    );
+    );    
 }
 
 export default MusicPlayer;
