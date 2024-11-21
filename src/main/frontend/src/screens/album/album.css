@@ -438,6 +438,7 @@ svg.play-button {
         top: 20%;
         width: 89%;
         z-index: 0;
+        margin-left: 30px;
     }
 
     /* 앨범 카드 크기 조정 */
@@ -530,7 +531,7 @@ svg.play-button {
 
     .create-album button {
         font-size: 0.9rem;
-        padding: 8px 12px;
+        padding: 3px 12px;
     }
 
     /* 앨범 메뉴 표시 및 수정 */
@@ -591,5 +592,45 @@ svg.play-button {
 
     .album-card:hover {
         transform: scale(1);
+    }
+}
+
+@media (max-width: 320px) {
+    .create-album button {
+        font-size: .6rem;
+        padding: 5px 5px;
+    }
+    .album-card-container {
+        position: relative;
+        margin-right: 0px;
+        width: 140px;
+    }
+    .card-body {
+        top: 25%;
+        margin-left: -1px;
+    }
+    .create-album {
+        top: -34%;
+        background-color: #0003;
+    }
+    .album-card img {
+        border-radius: 15px 15px 0 0;
+        height: 100px;
+        object-fit: cover;
+        width: 100px;
+    }
+    .album-name {
+        overflow: auto;
+        width: 140px;
+    }
+    .album-card {
+        align-items: center;
+        background-color: #2b3b4d;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        margin: 10px;
+        padding: 5px;
+        flex-direction: column;
     }
 }
